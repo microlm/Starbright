@@ -6,9 +6,13 @@ public class GameRunner {
 	private static GameRunner game;
 	private static GameState state;
 
+	/* Static Gameplay Things */
+	private int score;
+	private Player mainCharacter;
+
 	public GameRunner() {}
 
-	public GameRunner Game {
+	public static GameRunner Game {
 		get { 
 			if (game == null )
 				game = new GameRunner();
@@ -30,6 +34,8 @@ public class GameRunner {
 				case (GameState.Start):
 					Debug.Log("Starting...");
 					//load first level
+					Score = 0;
+					//set main character
 					State = GameState.Playing;
 					break;
 				case (GameState.MainMenu):
@@ -54,6 +60,19 @@ public class GameRunner {
 					break;
 				}
 			}
+		}
+	}
+
+	public int Score {
+		get { return score; }
+		set { score = value; }
+	}
+
+	public Player MainCharacter {
+		get { return mainCharacter; }
+		set { 
+			mainCharacter = value;
+			Debug.Log("Setting main character...");
 		}
 	}
 	

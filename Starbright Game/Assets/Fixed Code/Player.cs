@@ -12,6 +12,7 @@ public class Player : SpaceBody {
 	private Vector2 velocity; //current velocity of movement
 	private bool isOrbiting; //whether or not player is orbiting a planet
 	private SpaceBody orbitingBody; //what te player is currently orbiting
+	private bool isColliding; //whether player is coliding at current tick
 
 	// Use this for initialization
 	void Start () {
@@ -36,11 +37,16 @@ public class Player : SpaceBody {
 	}
 
 
-	/** GETTERS AD SETTERS */
+	/**** GETTERS AND SETTERS ****/
 
 	public bool IsOrbiting {
 		get { return isOrbiting; }
 		set { isOrbiting = value; }
+	}
+
+	public bool IsColliding {
+		get { return isColliding; }
+		set { isColliding = value; }
 	}
 
 	public SpaceBody OrbitingBody {
@@ -54,7 +60,7 @@ public class Player : SpaceBody {
 	}
 
 
-	/** ORBITING FUNCTIONS **/
+	/**** ORBITING FUNCTIONS ****/
 
 	//starts player orbiting a specific Body
 	public void StartOrbit(SpaceBody b) {
@@ -76,4 +82,8 @@ public class Player : SpaceBody {
 		//update velocity with calculated acceleration
 		Velocity += (gravity * Mass * dist / Mathf.Pow (dist, orbitalStrength) * r);
 	}
+
+
+	/**** COLLIDING FUNCTIONS ****/
+
 }
