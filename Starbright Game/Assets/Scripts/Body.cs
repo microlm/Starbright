@@ -67,8 +67,8 @@ public class Body : MonoBehaviour {
 
 					float dim = Mathf.Pow (b.gameObject.renderer.bounds.size.x/2f, 0.5f);
 					Vector3 bPos = b.transform.position;
-					GameObject.Destroy(b.gameObject);
-					collapseAsteroid(mass, dim, bPos);
+					//GameObject.Destroy(b.gameObject);
+					//collapseAsteroid(mass, dim, bPos);
 				}
 			}
 
