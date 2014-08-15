@@ -9,6 +9,7 @@ public class GameRunner {
 	/* Static Gameplay Things */
 	private int score;
 	private Player mainCharacter;
+	private static string levelOne = "Asteroids";
 
 	public GameRunner() {}
 
@@ -36,17 +37,20 @@ public class GameRunner {
 					//load first level
 					Score = 0;
 					//set main character
+					Debug.Log("Loading Asteroids Level...");
+					Application.LoadLevel(levelOne);
 					State = GameState.Playing;
 					break;
 				case (GameState.MainMenu):
 					//go to main menu
 					break;
 				case (GameState.Pause):
+					Debug.Log("Pause");
 					Time.timeScale = 0.0f; //pause
 					//bring up pause menu (still in current level)
 					break;
 				case (GameState.Playing):
-					Debug.Log("Playing");
+					Debug.Log("Playing...");
 					if (lastState == GameState.Pause)
 						Time.timeScale = 1.0f; //resume
 					break;
