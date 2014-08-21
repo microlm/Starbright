@@ -3,6 +3,8 @@ using System.Collections;
 
 public class ScoreManager : MonoBehaviour {
 
+	// This class gets the current score and updates the gui
+
 	int score = 0;
 
 	// Use this for initialization

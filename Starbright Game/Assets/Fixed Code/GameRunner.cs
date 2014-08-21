@@ -7,7 +7,7 @@ public class GameRunner {
 	private static GameState state;
 
 	/* Static Gameplay Things */
-	private int score;
+	private ScoreObject score;
 	private Player mainCharacter;
 	private static string levelOne = "Asteroids";
 
@@ -35,7 +35,7 @@ public class GameRunner {
 				case (GameState.Start):
 					Debug.Log("Starting...");
 					//load first level
-					Score = 0;
+					Score = new ScoreObject();
 					//set main character
 					Debug.Log("Loading Asteroids Level...");
 					Application.LoadLevel(levelOne);
@@ -67,7 +67,7 @@ public class GameRunner {
 		}
 	}
 
-	public int Score {
+	public ScoreObject Score {
 		get { return score; }
 		set { score = value; }
 	}
