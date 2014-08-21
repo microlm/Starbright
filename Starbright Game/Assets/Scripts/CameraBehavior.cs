@@ -22,7 +22,7 @@ public class CameraBehavior : MonoBehaviour {
 	private float minX, minY, maxX, maxY;
 	private float mapX=100.0f;
 	private float mapY = 100.0f;
-	private float border = 0.8f;
+	private float border = 0.85f;
 	
 	private float vertExtent, horzExtent;
 	
@@ -131,8 +131,8 @@ public class CameraBehavior : MonoBehaviour {
 	{
 		
 		Vector2 pos = player.transform.position;
-		
-		if((pos.x < maxX && pos.x > minX) && (pos.y < maxY && pos.y > minY))
+		float radius = player.renderer.bounds.size.x/2f;
+		if((pos.x + radius < maxX && pos.x - radius > minX) && (pos.y + radius < maxY && pos.y - radius > minY))
 		{
 			return true;
 		}

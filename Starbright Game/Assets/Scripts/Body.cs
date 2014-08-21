@@ -18,6 +18,7 @@ public class Body : MonoBehaviour {
 	private Vector3 cMaxScale;
 
 	GameObject pc;
+
 	ColorOption colorOpt;
 	GameObject camera;
 
@@ -67,8 +68,10 @@ public class Body : MonoBehaviour {
 
 					float dim = Mathf.Pow (b.gameObject.renderer.bounds.size.x/2f, 0.5f);
 					Vector3 bPos = b.transform.position;
-					//GameObject.Destroy(b.gameObject);
-					//collapseAsteroid(mass, dim, bPos);
+					float bodyMass = b.mass;
+					Debug.Log (bodyMass);
+					GameObject.Destroy(b.gameObject);
+					Smash.generateAsteroids(bPos.x, bPos.y, mass, bodyMass, dim);
 				}
 			}
 
@@ -145,10 +148,4 @@ public class Body : MonoBehaviour {
 		return finalNormal + finalTangent;
 	}
 
-	public void collapseAsteroid(float playerMass, float dim, Vector3 pos)
-	{
-		GameObject gen = GameObject.Find ("Generator");
-		Debug.Log (dim);
-		//gen.GetComponent<Generator>().generateAsteroids(dim, dim, pos.x - dim/2f, pos.y - dim/2f, 4f/(dim * dim), 3f, 0.7f, 1, ((int)mass)/((int)playerMass*2), 0, 2, 1f, renderer.bounds.size.x/1.5f, gen.GetComponent<Generator>().sizeDistribution) ;
-	}
 }
