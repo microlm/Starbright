@@ -9,9 +9,11 @@ public class GameRunner {
 	/* Static Gameplay Things */
 	private ScoreObject score;
 	private Player mainCharacter;
+	private ColorOption colors;
 
 	private const string LEVEL_ONE = "Asteroids";
 	private const string PLAYER = "PC";
+	private const string COLORS = "ColorOptions";
 
 	public GameRunner() {}
 
@@ -40,9 +42,10 @@ public class GameRunner {
 					Debug.Log("Loading Asteroids Level...");
 					Application.LoadLevel(LEVEL_ONE);
 
-					Score = new ScoreObject();
-
+					//assign values to everything
+					score = new ScoreObject();
 					MainCharacter = GameObject.Find(PLAYER).GetComponent<Player>();
+					colors = GameObject.Find(COLORS).GetComponent<ColorOption>();
 
 					State = GameState.Playing;
 					break;
@@ -82,7 +85,6 @@ public class GameRunner {
 
 	public ScoreObject Score {
 		get { return score; }
-		set { score = value; }
 	}
 
 	public Player MainCharacter {
@@ -93,6 +95,10 @@ public class GameRunner {
 			if (value == null)
 				Debug.LogError("Could not find and set main character");
 		}
+	}
+
+	public ColorOption Colors {
+		get { return colors; }
 	}
 	
 	public enum GameState {

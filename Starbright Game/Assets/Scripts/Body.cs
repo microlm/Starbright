@@ -7,7 +7,7 @@ public class Body : MonoBehaviour {
 	public static float orbitalStrength = 2f;
 
 	private float G = .0001f;
-	private float growth = .2f;
+	private float growth = .1f;
 
 	private Vector2 velocity;
 	public float mass;
@@ -69,9 +69,9 @@ public class Body : MonoBehaviour {
 					float dim = Mathf.Pow (b.gameObject.renderer.bounds.size.x/2f, 0.5f);
 					Vector3 bPos = b.transform.position;
 					float bodyMass = b.mass;
-					Debug.Log (bodyMass);
-					GameObject.Destroy(b.gameObject);
-					Smash.generateAsteroids(bPos.x, bPos.y, mass, bodyMass, dim);
+					//Debug.Log (bodyMass);
+					//GameObject.Destroy(b.gameObject);
+					//Smash.generateAsteroids(bPos.x, bPos.y, mass, bodyMass, dim);
 				}
 			}
 
