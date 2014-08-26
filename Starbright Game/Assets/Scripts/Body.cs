@@ -70,8 +70,8 @@ public class Body : MonoBehaviour {
 					Vector3 bPos = b.transform.position;
 					float bodyMass = b.mass;
 					Debug.Log (bodyMass);
-					GameObject.Destroy(b.gameObject);
-					Smash.generateAsteroids(bPos.x, bPos.y, mass, bodyMass, dim);
+					//GameObject.Destroy(b.gameObject);
+					//Smash.generateAsteroids(bPos.x, bPos.y, mass, bodyMass, dim);
 				}
 			}
 
