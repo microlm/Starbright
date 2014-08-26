@@ -3,17 +3,21 @@ using System.Collections;
 
 public class ScoreManager : MonoBehaviour {
 
-	int score = 0;
+	//gets the current score and updates the gui
+
 
 	// Use this for initialization
 	void Start () {
-		//set text equal to score
-		guiText.text = score.ToString(); //GameRunner.Game.Score;
+		updateScore ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		score ++;
-		guiText.text = score.ToString();
+		updateScore ();
 	}
+
+	private void updateScore() {
+		guiText.text = GameRunner.Game.Score.Value.ToString();
+	}
+	
 }

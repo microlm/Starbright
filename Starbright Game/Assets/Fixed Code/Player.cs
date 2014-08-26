@@ -66,6 +66,9 @@ public class Player : SpaceBody {
 	public void StartOrbit(SpaceBody b) {
 		IsOrbiting = true;
 		OrbitingBody = b;
+
+		//incriment multiplier
+		GameRunner.Game.Score.IncreaseMultiplier ();
 	}
 
 	//stops player from orbiting a planet
@@ -85,5 +88,8 @@ public class Player : SpaceBody {
 
 
 	/**** COLLIDING FUNCTIONS ****/
+	public void Hit (SpaceBody b) {
+
+	}
 
 }

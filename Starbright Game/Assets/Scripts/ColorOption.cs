@@ -9,4 +9,8 @@ public class ColorOption : MonoBehaviour {
 	public Color assignColor(float mass) {
 		return colorGradient.Evaluate(mass/maxMass);
 	}
+
+	public Color getColor(float percent) {
+		return colorGradient.Evaluate;
+	}
 }

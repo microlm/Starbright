@@ -7,9 +7,13 @@ public class GameRunner {
 	private static GameState state;
 
 	/* Static Gameplay Things */
-	private int score;
+	private ScoreObject score;
 	private Player mainCharacter;
-	private static string levelOne = "Asteroids";
+	private ColorOption colors;
+
+	private const string LEVEL_ONE = "Asteroids";
+	private const string PLAYER = "PC";
+	private const string COLORS = "ColorOptions";
 
 	public GameRunner() {}
 
@@ -34,11 +38,15 @@ public class GameRunner {
 				switch(value) {
 				case (GameState.Start):
 					Debug.Log("Starting...");
-					//load first level
-					Score = 0;
-					//set main character
+
 					Debug.Log("Loading Asteroids Level...");
-					Application.LoadLevel(levelOne);
+					Application.LoadLevel(LEVEL_ONE);
+
+					//assign values to everything
+					score = new ScoreObject();
+					MainCharacter = GameObject.Find(PLAYER).GetComponent<Player>();
+					colors = GameObject.Find(COLORS).GetComponent<ColorOption>();
+
 					State = GameState.Playing;
 					break;
 				case (GameState.MainMenu):
@@ -54,22 +62,29 @@ public class GameRunner {
 					if (lastState == GameState.Pause)
 						Time.timeScale = 1.0f; //resume
 					break;
+				case (GameState.Death):
+					Debug.Log ("Death State");
+					//death. Drop back a level?
+					break;
 				case (GameState.GameOver):
 					Debug.Log("Game Over");
-					//death. Drop back a level?
+					//game over screen
 					break;
 				case (GameState.Quit):
 					Debug.Log("Quit");
 					Application.Quit();
+					break;
+				default:
+					Debug.LogError("Invalid Game State");
+					Debug.Break();
 					break;
 				}
 			}
 		}
 	}
 
-	public int Score {
+	public ScoreObject Score {
 		get { return score; }
-		set { score = value; }
 	}
 
 	public Player MainCharacter {
@@ -77,7 +92,13 @@ public class GameRunner {
 		set { 
 			mainCharacter = value;
 			Debug.Log("Setting main character...");
+			if (value == null)
+				Debug.LogError("Could not find and set main character");
 		}
+	}
+
+	public ColorOption Colors {
+		get { return colors; }
 	}
 	
 	public enum GameState {
@@ -86,6 +107,7 @@ public class GameRunner {
 		MainMenu,
 		Playing,
 		Pause,
+		Death,
 		GameOver,
 		Quit
 	}
