@@ -11,6 +11,6 @@ public class ColorOption : MonoBehaviour {
 	}
 
 	public Color getColor(float percent) {
-		return colorGradient.Evaluate;
+		return colorGradient.Evaluate(percent);
 	}
 }
