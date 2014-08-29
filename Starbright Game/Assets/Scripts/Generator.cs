@@ -28,7 +28,7 @@ public class Generator : MonoBehaviour {
 			instance = this;
 		}
 		generate(30);
-		//generate(40);
+		generate(40);
 	}
 
 	public void generate(float depth)
