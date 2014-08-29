@@ -27,13 +27,9 @@ public class Generator : MonoBehaviour {
 		{
 			instance = this;
 		}
-<<<<<<< HEAD
-		generate(30);
-		generate(40);
-=======
+
 		generate(30, 1);
 		generate(40, 3);
->>>>>>> FETCH_HEAD
 	}
 
 	public void generate(float depth, float size, float density)
