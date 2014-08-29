@@ -27,14 +27,19 @@ public class Generator : MonoBehaviour {
 		{
 			instance = this;
 		}
+<<<<<<< HEAD
 		generate(30);
 		generate(40);
+=======
+		generate(30, 1);
+		generate(40, 3);
+>>>>>>> FETCH_HEAD
 	}
 
-	public void generate(float depth)
+	public void generate(float depth, float size, float density)
 	{
-		float[][] asteroids = ProceduralGeneration.generate(areaWidth, areaHeight, minDensity, densityRange, genChance, minGenSize, genSizeRange, minGenSpacing,
-		                                                    genSpacingRange, minAsteroidSize, asteroidSizeRange, sizeDistribution);
+		float[][] asteroids = ProceduralGeneration.generate(areaWidth, areaHeight, minDensity / size, densityRange / size, genChance, minGenSize, genSizeRange, minGenSpacing,
+		                                                    genSpacingRange, minAsteroidSize * size, asteroidSizeRange * size, sizeDistribution);
 		
 		foreach(float[] a in asteroids)
 		{
