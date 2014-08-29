@@ -28,6 +28,8 @@ public class CameraBehavior : MonoBehaviour {
 	
 	Vector3 center;
 	private float xratio, yratio;
+
+	bool outShow;
 	
 	// Use this for initialization
 	void Start () {
@@ -134,9 +136,19 @@ public class CameraBehavior : MonoBehaviour {
 		float radius = player.renderer.bounds.size.x/2f;
 		if((pos.x + radius < maxX && pos.x - radius > minX) && (pos.y + radius < maxY && pos.y - radius > minY))
 		{
+			outShow = true;
 			return true;
 		}
-		
+
+		if(outShow)
+		{
+			Debug.Log ("OUT!" + pos);
+			Debug.Log ("x: " + (pos.x + radius) + " " + maxX + " " + (pos.x - radius) + " " + minX);
+			Debug.Log ("y: " + (pos.y + radius) + " " + maxY + " " + (pos.y - radius) + " " + minY);
+			Debug.Log ("----------------------");
+			outShow = false;
+		}
+
 		return false;
 	}
 	
