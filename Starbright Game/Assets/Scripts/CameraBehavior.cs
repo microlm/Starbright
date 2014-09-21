@@ -4,32 +4,36 @@ using System.Collections;
 public class CameraBehavior : MonoBehaviour {
 	
 	public GameObject player;
+	protected PlayerCharacter pc;
 	public float ease = .15f; //camera movement adjustment speed
-	private float scalingRate = .05f; //speed of scale
+	protected float scalingRate = .05f; //speed of scale
 	public float gameScale = 1f; //scale of game to window size, lower number, bigger objects
 	public Color backgroundColor = new Color (.05f, .1f, .15f, 1f); //overrides default
 	
-	private Vector3 scrollingTarget; //when player swipes, new postion that we should follow
-	private bool isScrolling; // whether player is swiping to move camera
+	protected Vector3 scrollingTarget; //when player swipes, new postion that we should follow
+	protected bool isScrolling; // whether player is swiping to move camera
 	
-	private float initialMass;
-	private float initialSize;
-	private float previousSize;
+	protected float initialMass;
+	protected float initialSize;
+	protected float previousSize;
 	
-	private Vector3 screenCenter;
+	protected Vector3 screenCenter;
 	
-	private Vector3 diff;
-	private float minX, minY, maxX, maxY;
-	private float mapX=100.0f;
-	private float mapY = 100.0f;
-	private float border = 0.85f;
+	protected Vector3 deltaPosition;
+	protected Vector3 lastPos;
+	protected float minX, minY, maxX, maxY;
+	protected float mapX=100.0f;
+	protected float mapY = 100.0f;
+	protected float border = 0.85f;
 	
-	private float vertExtent, horzExtent;
-	
-	Vector3 center;
-	private float xratio, yratio;
+	protected float vertExtent, horzExtent;
 
-	bool outShow;
+	protected Vector3 center;
+	protected float xratio, yratio;
+
+	protected bool outShow;
+
+	protected float cameraDepth;
 	
 	// Use this for initialization
 	void Start () {
@@ -56,23 +60,57 @@ public class CameraBehavior : MonoBehaviour {
 		maxX = (mapX + horzExtent) * border;
 		minY = (mapY - vertExtent) * border;
 		maxY = (mapY + vertExtent) * border;
+
+		pc = player.GetComponent<PlayerCharacter>();
+		lastPos = camera.transform.position;
+		cameraDepth = camera.transform.position.z;
 		
 	}
 	
 	// Update is called once per frame
-	void LateUpdate () {
+	void LateUpdate () 
+	{
 		
-		if (!player.GetComponent<PlayerCharacter>().IsOrbiting()) 
+		moveCamera (1f);
+		
+		if(camera.orthographicSize != vertExtent && !isScrolling)
+		{
+			vertExtent = camera.orthographicSize/gameScale;
+			horzExtent = vertExtent * Screen.width / Screen.height;
+			
+			mapX = camera.transform.position.x;
+			mapY = camera.transform.position.y;
+			
+			minX = (mapX - horzExtent) * border;
+			maxX = (mapX + horzExtent) * border;
+			minY = (mapY - vertExtent) * border;
+			maxY = (mapY + vertExtent) * border;
+			
+			previousSize = camera.orthographicSize;
+
+		}
+
+		deltaPosition = camera.transform.position - lastPos;
+		
+		lastPos = camera.transform.position;
+		
+	}
+
+	protected void moveCamera(float speedFactor)
+	{
+		if (!pc.IsOrbiting()) 
 		{
 			
-			if (isScrolling) {
+			if (isScrolling) 
+			{
 				
 				// if user if scrolling
 				// follow scrollig target
 				
 				transform.position = Vector3.Lerp(transform.position, scrollingTarget, ease * Time.deltaTime);
 			}
-			else {
+			else 
+			{
 				
 				// if the player lets go of scrolling,
 				// return camera to proper position
@@ -83,9 +121,10 @@ public class CameraBehavior : MonoBehaviour {
 				}
 				
 				// follow player
-				
-				transform.position = Vector3.Lerp(transform.position, player.transform.position, ease * Time.deltaTime);
-				
+
+				camera.transform.position = Vector3.Lerp(camera.transform.position, getTarget(speedFactor), ease  * Time.deltaTime);
+				camera.transform.position = new Vector3(camera.transform.position.x, camera.transform.position.y, cameraDepth);
+
 				// scale camera relative to the size of player
 				
 				previousSize = camera.orthographicSize;
@@ -109,27 +148,9 @@ public class CameraBehavior : MonoBehaviour {
 				OrthoZoom(center);
 			}
 		}
-		
-		if(camera.orthographicSize != vertExtent && !isScrolling)
-		{
-			vertExtent = camera.orthographicSize/gameScale;
-			horzExtent = vertExtent * Screen.width / Screen.height;
-			
-			mapX = camera.transform.position.x;
-			mapY = camera.transform.position.y;
-			
-			minX = (mapX - horzExtent) * border;
-			maxX = (mapX + horzExtent) * border;
-			minY = (mapY - vertExtent) * border;
-			maxY = (mapY + vertExtent) * border;
-			
-			previousSize = camera.orthographicSize;
-			
-		}
-		
 	}
 	
-	bool inBounds()
+	protected bool inBounds()
 	{
 		
 		Vector2 pos = player.transform.position;
@@ -142,10 +163,6 @@ public class CameraBehavior : MonoBehaviour {
 
 		if(outShow)
 		{
-			Debug.Log ("OUT!" + pos);
-			Debug.Log ("x: " + (pos.x + radius) + " " + maxX + " " + (pos.x - radius) + " " + minX);
-			Debug.Log ("y: " + (pos.y + radius) + " " + maxY + " " + (pos.y - radius) + " " + minY);
-			Debug.Log ("----------------------");
 			outShow = false;
 		}
 
@@ -164,7 +181,7 @@ public class CameraBehavior : MonoBehaviour {
 	}
 	
 	// determines how much the camera needs to grow by to keep up with the velocity of the  object
-	float projectedGrowthRate()
+	protected float projectedGrowthRate()
 	{
 		float projectedX, projectedY, projected, growth;
 		float newArea, oldArea;
@@ -211,11 +228,30 @@ public class CameraBehavior : MonoBehaviour {
 	public void Scroll(Vector3 scrollAmt)
 	{
 		isScrolling = true;
-		scrollingTarget = transform.position + scrollAmt;
+		scrollingTarget = new Vector3(transform.position.x + scrollAmt.x, transform.position.y + scrollAmt.y, transform.position.z);
 	}
 	
 	public void StopScroll() {
 		isScrolling = false;
+	}
+
+	protected Vector3 getTarget(float speedFactor)
+	{
+		if(speedFactor == 1f)
+		{
+			return new Vector3(player.transform.position.x, player.transform.position.y, cameraDepth);
+		}
+		else
+		{
+			Vector3 deltaPos = pc.getDeltaPosition();
+
+			return new Vector3(camera.transform.position.x + (deltaPos.x * speedFactor), camera.transform.position.y + (deltaPos.y * speedFactor), cameraDepth);
+		}
+	}
+
+	public Vector3 getDeltaPosition()
+	{
+		return deltaPosition;
 	}
 	
 }

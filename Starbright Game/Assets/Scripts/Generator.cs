@@ -19,17 +19,26 @@ public class Generator : MonoBehaviour {
 	public float minAsteroidSize;
 	public float asteroidSizeRange;
 	public Gradient sizeDistribution;
-	
+
+	private GameObject backgroundLayer;
+	private GameObject foregroundLayer;
+
 	// Use this for initialization
 	void Start () 
 	{	
+		backgroundLayer = GameObject.Find ("Background Planets");
+		foregroundLayer = GameObject.Find ("Foreground Planets");
+
 		if(instance == null)
 		{
 			instance = this;
 		}
 
-		generate(30, 1);
-		generate(40, 3);
+		generate(30, 1f, 0.3f);
+		generate(40, 20f, 0.1f);
+
+		backgroundLayer.GetComponent<BackgroundLayerBehavior>().setTargetMass(20f);
+
 	}
 
 	public void generate(float depth, float size, float density)
@@ -43,6 +52,18 @@ public class Generator : MonoBehaviour {
 				GameObject asteroid = (GameObject)Instantiate(asteroidPrefab, new Vector3(a[0] - (areaWidth / 2), a[1] - (areaHeight / 2), depth), Quaternion.identity);
 				Body asteroidScript = asteroid.GetComponent<Body>();
 				asteroidScript.mass = a[2];
+
+				if(depth > 30)
+				{
+					asteroid.transform.parent = backgroundLayer.transform;
+					asteroid.rigidbody2D.collider2D.enabled = false;
+				}
+				else
+				{
+					asteroid.transform.parent = foregroundLayer.transform;
+
+				}
+
 			}
 		}
 	}
