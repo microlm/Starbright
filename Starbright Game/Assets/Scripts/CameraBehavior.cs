@@ -9,6 +9,7 @@ public class CameraBehavior : MonoBehaviour {
 	protected float scalingRate = .05f; //speed of scale
 	public float gameScale = 1f; //scale of game to window size, lower number, bigger objects
 	public Color backgroundColor = new Color (.05f, .1f, .15f, 1f); //overrides default
+	public bool zoom;
 	
 	protected Vector3 scrollingTarget; //when player swipes, new postion that we should follow
 	protected bool isScrolling; // whether player is swiping to move camera
@@ -178,6 +179,7 @@ public class CameraBehavior : MonoBehaviour {
 		float growth = projectedGrowthRate();
 		//camera.orthographicSize = Mathf.Lerp (camera.orthographicSize, camera.orthographicSize*growth, Time.deltaTime*ease);
 		camera.orthographicSize = camera.orthographicSize * growth;
+		zoom = true;
 	}
 	
 	// determines how much the camera needs to grow by to keep up with the velocity of the  object
