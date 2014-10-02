@@ -71,7 +71,6 @@ public class CameraBehavior : MonoBehaviour {
 	// Update is called once per frame
 	void LateUpdate () 
 	{
-		
 		moveCamera (1f);
 		
 		if(camera.orthographicSize != vertExtent && !isScrolling)
@@ -92,6 +91,7 @@ public class CameraBehavior : MonoBehaviour {
 		}
 
 		deltaPosition = camera.transform.position - lastPos;
+		Debug.Log ("Camera " + camera.transform.position + " " + lastPos);
 		
 		lastPos = camera.transform.position;
 		

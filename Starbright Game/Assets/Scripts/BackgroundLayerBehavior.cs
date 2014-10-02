@@ -57,14 +57,14 @@ public class BackgroundLayerBehavior : MonoBehaviour {
 			initCameraScale = cam.orthographicSize;
 		}
 
-		Debug.Log (transform.localScale);
+		//Debug.Log (transform.localScale);
 
 	}
 
 	Vector3 getTarget(float speedFactor)
 	{
 		Vector3 deltaPos = camera.getDeltaPosition();
-	
+		Debug.Log (camera.getDeltaPosition());
 		return new Vector3(transform.position.x + (deltaPos.x * speedFactor), transform.position.y + (deltaPos.y * speedFactor), transform.position.z);
 
 	}
