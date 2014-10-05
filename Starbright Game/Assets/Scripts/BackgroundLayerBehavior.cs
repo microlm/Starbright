@@ -47,7 +47,7 @@ public class BackgroundLayerBehavior : MonoBehaviour {
 
 			scale = new Vector3 (transform.localScale.x + scaling, transform.localScale.y + scaling, transform.localScale.z);
 			transform.position = getZoomOffset ((1f-factor) * scale.x/transform.localScale.x); 
-			//Debug.Log (transform.position);
+			Debug.Log (transform.position);
 			transform.localScale = scale;
 			initCameraScale = cam.orthographicSize;
 			zoom = true;
