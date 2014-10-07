@@ -28,6 +28,15 @@ public class Body : MonoBehaviour {
 		return mass;
 	}
 
+	public Vector3 Position {
+		get { return gameObject.transform.position; }
+		set {
+			//set value and lock z
+			float z = gameObject.transform.position.z;
+			gameObject.transform.position = new Vector3(value.x, value.y, z);
+		}
+	}
+
 	// Use this for initialization
 	void Start () {
 		velocity = initialVel;
@@ -91,9 +100,8 @@ public class Body : MonoBehaviour {
 			velocity *= .95f;
 
 		//move
-		gameObject.transform.position = new Vector3 (gameObject.transform.position.x + velocity.x,
-		                                             gameObject.transform.position.y + velocity.y, 
-		                                             gameObject.transform.position.z);
+		Position += new Vector3(velocity.x, velocity.y, 0);
+
 		//correct size
 		gameObject.transform.localScale = Vector3.Lerp (gameObject.transform.localScale, maxScale / 20 * mass, Time.deltaTime);
 		collider2D.transform.localScale = cMaxScale / 20 * mass;

@@ -28,7 +28,11 @@ public class SpaceBody : MonoBehaviour {
 
 	public Vector3 Position {
 		get { return gameObject.transform.position; }
-		set { gameObject.transform.position = value; }
+		set {
+			//set value and lock z
+			float z = gameObject.transform.position.z;
+			gameObject.transform.position = new Vector3(value.x, value.y, z);
+		}
 	}
 
 	public float Mass {
