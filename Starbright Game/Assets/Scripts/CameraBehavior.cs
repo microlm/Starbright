@@ -91,9 +91,7 @@ public class CameraBehavior : MonoBehaviour {
 		}
 
 		deltaPosition = camera.transform.position - lastPos;
-		Vector3 d = new Vector3(camera.transform.position.x - lastPos.x, camera.transform.position.y - lastPos.y, camera.transform.position.z);
-		Debug.Log ("Camera " + camera.transform.position + " " + lastPos + " " + deltaPosition + " " + d);
-		
+
 		lastPos = camera.transform.position;
 		
 	}
