@@ -1,211 +1,244 @@
 using System;
 using System.Collections.Generic;
-namespace AssemblyCSharp
+public class AsteroidQuadTree
 {
-	public class AsteroidQuadTree
+	private AsteroidQuadTree[] children = new AsteroidQuadTree[4];
+	private float x;
+	private float y;
+	private float width;
+	private float height;
+	
+	private bool terminal;
+	
+	private bool hasAsteroid;
+	private float astX;
+	private float astY;
+	private float astSize;
+	private float maxSize;
+	
+	public AsteroidQuadTree (float leftX, float topY, float boundWidth, float boundHeight, float maxAstSize)
 	{
-		private AsteroidQuadTree[] children = new AsteroidQuadTree[4];
-		private float x;
-		private float y;
-		private float width;
-		private float height;
+		x = leftX;
+		y = topY;
+		width = boundWidth;
+		height = boundHeight;
+		maxSize = maxAstSize;
 		
-		private bool terminal;
-		
-		private bool hasAsteroid;
-		private float astX;
-		private float astY;
-		private float astSize;
-		
-		public AsteroidQuadTree (float leftX, float topY, float boundWidth, float boundHeight)
+		terminal = true;
+		hasAsteroid = false;
+	}
+	
+	public bool HasChild(int num)
+	{
+		return children[num] != null;
+	}
+	
+	public AsteroidQuadTree GetChild(int num)
+	{
+		return children[num];
+	}
+	
+	public AsteroidQuadTree AddChild(int num)
+	{
+		if(HasChild(num))
 		{
-			x = leftX;
-			y = topY;
-			width = boundWidth;
-			height = boundHeight;
-			
-			terminal = true;
-			
-			hasAsteroid = false;
-		}
-		
-		public bool HasChild(int num)
-		{
-			return children[num] != null;
-		}
-		
-		public AsteroidQuadTree GetChild(int num)
-		{
-			return children[num];
-		}
-		
-		public AsteroidQuadTree AddChild(int num)
-		{
-			if(HasChild(num))
-			{
-				return this;
-			}
-			
-			AsteroidQuadTree child;
-			
-			switch(num)
-			{
-			case 0:
-				child = new AsteroidQuadTree(x, y, width / 2, height / 2);
-				break;
-			case 1:
-				child = new AsteroidQuadTree(x + width / 2, y, width / 2, height / 2);
-				break;
-			case 2:
-				child = new AsteroidQuadTree(x, y + height / 2, width / 2, height / 2);
-				break;
-			case 3:
-				child = new AsteroidQuadTree(x + width / 2, y + height / 2, width / 2, height / 2);
-				break;
-			default:
-				child = null;
-				break;
-			}
-			
-			children[num] = child;
-			terminal = false;
 			return this;
 		}
 		
-		public bool IsTerminal
+		AsteroidQuadTree child;
+		
+		switch(num)
 		{
-			get { return terminal; }
+		case 0:
+			child = new AsteroidQuadTree(x, y, width / 2, height / 2, maxSize);
+			break;
+		case 1:
+			child = new AsteroidQuadTree(x + width / 2, y, width / 2, height / 2, maxSize);
+			break;
+		case 2:
+			child = new AsteroidQuadTree(x, y + height / 2, width / 2, height / 2, maxSize);
+			break;
+		case 3:
+			child = new AsteroidQuadTree(x + width / 2, y + height / 2, width / 2, height / 2, maxSize);
+			break;
+		default:
+			child = null;
+			break;
 		}
 		
-		public bool HasAsteroid
+		children[num] = child;
+		terminal = false;
+		return this;
+	}
+	
+	public bool IsTerminal
+	{
+		get { return terminal; }
+	}
+	
+	public bool HasAsteroid
+	{
+		get { return hasAsteroid; }
+	}
+	
+	public int PickChild (float pointX, float pointY)
+	{
+		bool isLeft = pointX < x + width / 2;
+		bool isTop = pointY < y + height / 2;
+		if(isTop)
 		{
-			get { return hasAsteroid; }
-		}
-		
-		public int PickChild (float pointX, float pointY)
-		{
-			bool isLeft = pointX < x + width / 2;
-			bool isTop = pointY < y + height / 2;
-			if(isTop)
+			if(isLeft)
 			{
-				if(isLeft)
-				{
-					return 0;
-				}
-				else
-				{
-					return 1;
-				}
+				return 0;
 			}
 			else
 			{
-				if(isLeft)
-				{
-					return 2;
-				}
-				else
-				{
-					return 3;
-				}
+				return 1;
 			}
 		}
-		
-		public AsteroidQuadTree AddAsteroid(float asteroidX, float asteroidY, float asteroidSize)
+		else
 		{
-			if(!isInBounds(x, width, y, height, asteroidX, asteroidY))
+			if(isLeft)
 			{
-				return this;
+				return 2;
 			}
-			if(IsTerminal && !HasAsteroid) 
+			else
 			{
-				hasAsteroid = true;
-				astX = asteroidX;
-				astY = asteroidY;
-				astSize = asteroidSize;
-				return this;
+				return 3;
 			}
-			int child = PickChild(asteroidX, asteroidY);
-			AddChild(child);
-			children[child].AddAsteroid(asteroidX, asteroidY, asteroidSize);
-			if(HasAsteroid)
-			{
-				child = PickChild(astX, astY);
-				AddChild(child);
-				children[child].AddAsteroid(astX, astY, asteroidSize);
-			}
-			return this;
 		}
-		
-		public List<float[]> SearchWithinBounds(float leftX, float topY, float boundWidth, float boundHeight)
+	}
+
+	public bool AddAsteroid(float asteroidX, float asteroidY, float asteroidSize)
+	{
+		if(Body.radiusFromMass(asteroidSize) > maxSize)
 		{
-			List<float[]> output = new List<float[]>();
-			
-			if(HasAsteroid)
-			{
-				output.Add(new float[]{astX, astY, astSize});
-				return output;
-			}
-			
-			if(HasChild(0) && doesIntersect(x, y, width / 2, height / 2, leftX, topY, boundWidth, boundHeight))
-			{
-				output.AddRange(children[0].SearchWithinBounds(leftX, topY, boundWidth, boundHeight));
-			}
-			if(HasChild(1) && doesIntersect(x + width / 2, y, width / 2, height / 2, leftX, topY, boundWidth, boundHeight))
-			{
-				output.AddRange(children[1].SearchWithinBounds(leftX, topY, boundWidth, boundHeight));
-			}
-			if(HasChild(2) && doesIntersect(x, y + height / 2, width / 2, height / 2, leftX, topY, boundWidth, boundHeight))
-			{
-				output.AddRange(children[2].SearchWithinBounds(leftX, topY, boundWidth, boundHeight));
-			}
-			if(HasChild(3) && doesIntersect(x + width / 2, y + height / 2, width / 2, height / 2, leftX, topY, boundWidth, boundHeight))
-			{
-				output.AddRange(children[3].SearchWithinBounds(leftX, topY, boundWidth, boundHeight));
-			} 
-			return output;
+			return true;
 		}
-		
-		public List<float[]> ToList()
+		float range = Body.radiusFromMass(asteroidSize) + maxSize;
+		foreach(float[] a in SearchWithinBounds(asteroidX - range, asteroidY - range, range * 2, range * 2))
 		{
-			List<float[]> output = new List<float[]>();
-			if (hasAsteroid) 
+			if(doesIntersect(new float[]{asteroidX, asteroidY, asteroidSize}, a))
 			{
-				output.Add(new float[]{astX, astY, astSize});
+				return false;
 			}
-			for(int i = 0; i < 4; i++)
-			{
-				if(HasChild(i))
-				{
-					output.AddRange(children[i].ToList());
-				}
-			}
-			return output;
 		}
-		
-		private static bool isInBounds(float start, float length, float point)
+		return AddAsteroidHelper(asteroidX, asteroidY, asteroidSize);
+	}
+
+	public bool AddAsteroidHelper(float asteroidX, float asteroidY, float asteroidSize)
+	{
+		if(!isInBounds(x, y, width, height, asteroidX, asteroidY))
 		{
-			return (point >= start) && (point < start + length);
-		}
-		
-		private static bool isInBounds(float leftX, float topY, float boundWidth, float boundHeight, float pointX, float pointY)
-		{
-			return isInBounds(leftX, boundWidth, pointX) && isInBounds(topY, boundHeight, pointY);
-		}
-		
-		private static bool doesIntersect(float leftX, float topY, float boundWidth, float boundHeight, float rectX, float rectY, float rectWidth, float rectHeight)
-		{
-			if ((isInBounds (leftX, boundWidth, rectX) || isInBounds (leftX, boundWidth, rectX + rectWidth)) &&
-			    (isInBounds (topY, boundHeight, rectY) || isInBounds (topY, boundHeight, rectY + rectHeight)))
-			{
-				return true;
-			}
-			if ((isInBounds (rectX, rectWidth, leftX) || isInBounds (rectX, rectWidth, leftX + boundWidth)) &&
-			    (isInBounds (rectY, rectHeight, topY) || isInBounds (rectY, rectHeight, topY + boundHeight)))
-			{
-				return true;
-			}
 			return false;
 		}
+		if(IsTerminal && !HasAsteroid) 
+		{
+			hasAsteroid = true;
+			astX = asteroidX;
+			astY = asteroidY;
+			astSize = asteroidSize;
+			return true;
+		}
+		int child = PickChild(asteroidX, asteroidY);
+		AddChild(child);
+		children[child].AddAsteroidHelper(asteroidX, asteroidY, asteroidSize);
+		if(HasAsteroid)
+		{
+			child = PickChild(astX, astY);
+			AddChild(child);
+			children[child].AddAsteroidHelper(astX, astY, asteroidSize);
+			hasAsteroid = false;
+		}
+		return true;
+	}
+
+	public AsteroidQuadTree AddList(List<float[]> asteroids)
+	{
+		foreach(float[] a in asteroids)
+		{
+			if(a.Length == 3)
+			{
+				AddAsteroid(a[0], a[1], a[2]);
+			}
+		}
+		return this;
+	}
+	
+	public List<float[]> SearchWithinBounds(float leftX, float topY, float boundWidth, float boundHeight)
+	{
+		List<float[]> output = new List<float[]>();
+		
+		if(HasAsteroid)
+		{
+			output.Add(new float[]{astX, astY, astSize});
+			return output;
+		}
+		
+		if(HasChild(0) && doesIntersect(x, y, width / 2, height / 2, leftX, topY, boundWidth, boundHeight))
+		{
+			output.AddRange(children[0].SearchWithinBounds(leftX, topY, boundWidth, boundHeight));
+		}
+		if(HasChild(1) && doesIntersect(x + width / 2, y, width / 2, height / 2, leftX, topY, boundWidth, boundHeight))
+		{
+			output.AddRange(children[1].SearchWithinBounds(leftX, topY, boundWidth, boundHeight));
+		}
+		if(HasChild(2) && doesIntersect(x, y + height / 2, width / 2, height / 2, leftX, topY, boundWidth, boundHeight))
+		{
+			output.AddRange(children[2].SearchWithinBounds(leftX, topY, boundWidth, boundHeight));
+		}
+		if(HasChild(3) && doesIntersect(x + width / 2, y + height / 2, width / 2, height / 2, leftX, topY, boundWidth, boundHeight))
+		{
+			output.AddRange(children[3].SearchWithinBounds(leftX, topY, boundWidth, boundHeight));
+		} 
+		return output;
+	}
+	
+	public List<float[]> ToList()
+	{
+		List<float[]> output = new List<float[]>();
+		if (hasAsteroid) 
+		{
+			output.Add(new float[]{astX, astY, astSize});
+		}
+		for(int i = 0; i < 4; i++)
+		{
+			if(HasChild(i))
+			{
+				output.AddRange(children[i].ToList());
+			}
+		}
+		return output;
+	}
+	
+	private static bool isInBounds(float start, float length, float point)
+	{
+		return (point >= start) && (point < start + length);
+	}
+	
+	private static bool isInBounds(float leftX, float topY, float boundWidth, float boundHeight, float pointX, float pointY)
+	{
+		return isInBounds(leftX, boundWidth, pointX) && isInBounds(topY, boundHeight, pointY);
+	}
+	
+	private static bool doesIntersect(float leftX, float topY, float boundWidth, float boundHeight, float rectX, float rectY, float rectWidth, float rectHeight)
+	{
+		if ((isInBounds (leftX, boundWidth, rectX) || isInBounds (leftX, boundWidth, rectX + rectWidth)) &&
+		    (isInBounds (topY, boundHeight, rectY) || isInBounds (topY, boundHeight, rectY + rectHeight)))
+		{
+			return true;
+		}
+		if ((isInBounds (rectX, rectWidth, leftX) || isInBounds (rectX, rectWidth, leftX + boundWidth)) &&
+		    (isInBounds (rectY, rectHeight, topY) || isInBounds (rectY, rectHeight, topY + boundHeight)))
+		{
+			return true;
+		}
+		return false;
+	}
+
+	private static bool doesIntersect(float[] a, float[] b)
+	{
+		return Math.Sqrt((a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1])) < Body.radiusFromMass(a[2]) + Body.radiusFromMass(b[2]);
 	}
 }
 

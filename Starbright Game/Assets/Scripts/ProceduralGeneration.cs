@@ -32,7 +32,7 @@ public class ProceduralGeneration
 	                               float genSpacingRange, float minAsteroidSize, float asteroidSizeRange,
 	                               Gradient sizeDistribution)
 	{
-		List<float[]> asteroids = new List<float[]>();
+		AsteroidQuadTree asteroids = new AsteroidQuadTree(0, 0, areaWidth, areaHeight, minAsteroidSize + asteroidSizeRange);
 
 		//Generate number of seed asteroids
 		int minSeeds = (int)(areaWidth * areaHeight * minDensity);
@@ -51,9 +51,9 @@ public class ProceduralGeneration
 
 			//Grow further generations out from the seed asteroid
 			List<float[]> group = growSeed (seedX, seedY, seedSize, genChance, minGenSize, genSizeRange, minGenSpacing, genSpacingRange, minAsteroidSize, asteroidSizeRange, sizeDistribution);
-			asteroids.AddRange(group);
+			asteroids.AddList(group);
 		}
-		return asteroids.ToArray();
+		return asteroids.ToList().ToArray();
 	}
 
 	//Recursively build a cluster from a seed point
