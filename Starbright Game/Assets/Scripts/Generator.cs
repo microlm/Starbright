@@ -5,8 +5,9 @@ public class Generator : MonoBehaviour {
 	
 	public static Generator instance;
 
+	//public ObjectPool pool;
+
 	public GameObject asteroidPrefab;
-	
 	public float areaWidth;
 	public float areaHeight;
 	public float minDensity;
@@ -26,12 +27,13 @@ public class Generator : MonoBehaviour {
 		if(instance == null)
 		{
 			instance = this;
+
+			generate(30, 1);
+			//generate(40, 3);
 		}
-		generate(30, 1);
-		generate(40, 3);
 	}
 
-	public void generate(float depth, float size, float density)
+	public void generate(float depth, float size)
 	{
 		float[][] asteroids = ProceduralGeneration.generate(areaWidth, areaHeight, minDensity / size, densityRange / size, genChance, minGenSize, genSizeRange, minGenSpacing,
 		                                                    genSpacingRange, minAsteroidSize * size, asteroidSizeRange * size, sizeDistribution);
