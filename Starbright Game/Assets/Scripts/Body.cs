@@ -21,6 +21,7 @@ public class Body : MonoBehaviour {
 
 	ColorOption colorOpt;
 	GameObject camera;
+	ScoreManager score;
 
 	private static float radius = 1f;
 
@@ -49,6 +50,7 @@ public class Body : MonoBehaviour {
 
 		pc = GameObject.Find("PC");
 		camera = GameObject.Find ("Main Camera");
+		score = GameObject.Find ("ScoreObject").GetComponent<ScoreManager> ();
 	}
 
 	public void Hit(Body b)
@@ -63,6 +65,7 @@ public class Body : MonoBehaviour {
 				}
 				float massLost = mass * velocity.magnitude;
 				GetComponent<Explosion>().Explode(massLost, mass, velocity);
+				score.addScore();
 				GameObject.Destroy(b.gameObject);
 			}
 			else
