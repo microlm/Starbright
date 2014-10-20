@@ -10,54 +10,52 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-namespace AssemblyCSharp
+
+public class ObjectPool : MonoBehaviour
 {
-	public class ObjectPool : MonoBehaviour
+	public GameObject asteroidPrefab;
+
+	private List<GameObject> pool;
+	private List<Boolean> isFree;
+	private int nextFree;
+
+	void Start()
 	{
-		private static ObjectPool instance;
-		public GameObject asteroidPrefab;
+		pool = new List<GameObject>();
+		isFree = new List<Boolean>();
+		nextFree = 0;
+	}
 
-		private List<GameObject> pool;
-		private List<Boolean> isFree;
-		private int nextFree;
-
-		public ObjectPool()
+	public int addBody(float x, float y, float depth, float mass)
+	{
+		while(nextFree < isFree.Count && !isFree[nextFree]) nextFree++;
+		if(nextFree == pool.Count)
 		{
-			if(instance == null)
-			{
-				instance = this;
-			}
-			pool = new List<GameObject>();
-			isFree = new List<Boolean>();
-			nextFree = 0;
-		}
-
-		public int addBody(float x, float y, float depth, float mass)
-		{
-			while(!isFree[nextFree] && nextFree < isFree.Count) nextFree++;
-			if(nextFree == pool.Count)
-			{
-				GameObject asteroid = (GameObject)Instantiate(asteroidPrefab, new Vector3(x, y, depth), Quaternion.identity);
-				Body asteroidScript = asteroid.GetComponent<Body>();
-				asteroidScript.mass = mass;
-				pool.Add(asteroid);
-				isFree.Add(false);
-				return nextFree;
-			}
-			GameObject a = pool[nextFree];
-			a.SetActive(true);
-			a.rigidbody2D.transform.position = new Vector3(x, y, depth);
-			Body aScript = a.GetComponent<Body>();
-			aScript.mass = mass;
-			isFree[nextFree] = false;
+			GameObject asteroid = (GameObject)Instantiate(asteroidPrefab, new Vector3(x, y, depth), Quaternion.identity);
+			Body asteroidScript = asteroid.GetComponent<Body>();
+			asteroidScript.mass = mass;
+			pool.Add(asteroid);
+			isFree.Add(false);
 			return nextFree;
 		}
+		GameObject a = pool[nextFree];
+		a.rigidbody2D.transform.position = new Vector3(x, y, depth);
+		Body aScript = a.GetComponent<Body>();
+		aScript.mass = mass;
+		a.SetActive(true);
+		isFree[nextFree] = false;
+		return nextFree;
+	}
 
-		public void removeBody(int index)
-		{
-			pool[index].SetActive(false);
-			isFree[index] = true;
-		}
+	public GameObject getBody(int index)
+	{
+		return pool[index];
+	}
+
+	public void removeBody(int index)
+	{
+		pool[index].SetActive(false);
+		isFree[index] = true;
 	}
 }
 
