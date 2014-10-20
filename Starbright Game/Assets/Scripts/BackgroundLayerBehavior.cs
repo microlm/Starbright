@@ -65,7 +65,7 @@ public class BackgroundLayerBehavior : MonoBehaviour {
 		 * zoom and create a zooming parallax effect.
 		 * ---------------------------------------------*/
 
-		if(Mathf.Abs(cam.orthographicSize - initCameraScale) > 0.01f)
+		if(Mathf.Abs(cam.orthographicSize - initCameraScale) > 0.005f)
 		{
 			float cameraScale = cam.orthographicSize/initCameraScale;
 
@@ -78,7 +78,7 @@ public class BackgroundLayerBehavior : MonoBehaviour {
 			initCameraScale = cam.orthographicSize;
 
 		}
-		else if(Mathf.Abs (cam.orthographicSize - initCameraScale) <= 0.01f)
+		else if(Mathf.Abs (cam.orthographicSize - initCameraScale) <= 0.005f)
 		{
 			/*--------------------------------------------------
 			 * Because of the small fluctuations in the

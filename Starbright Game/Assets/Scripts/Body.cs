@@ -13,6 +13,7 @@ public class Body : MonoBehaviour {
 	public float mass;
 	public Vector2 initialVel;
 	private float maxSpeed = .15f;
+	private float minSpeed = 0.05f;
 
 	private Vector3 maxScale;
 	private Vector3 cMaxScale;
@@ -102,6 +103,10 @@ public class Body : MonoBehaviour {
 		while (velocity.magnitude > mass*maxSpeed)
 			velocity *= .95f;
 
+		while(velocity.magnitude < mass*minSpeed)
+		{
+			velocity *= 1.05f;
+		}
 		//move
 		Position += new Vector3(velocity.x, velocity.y, 0);
 
