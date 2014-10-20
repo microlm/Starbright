@@ -3,6 +3,8 @@ using System.Collections;
 
 public class PlayerCharacter : MonoBehaviour {
 
+	public static PlayerCharacter instance;
+
 	public float maxMass;
 
 	private bool isOrbiting;
@@ -31,6 +33,7 @@ public class PlayerCharacter : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		instance = this;
 		isOrbiting = false;
 		isColliding = true;
 
