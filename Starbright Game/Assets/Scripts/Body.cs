@@ -54,7 +54,7 @@ public class Body : MonoBehaviour {
 				}
 				float massLost = mass * velocity.magnitude;
 				GetComponent<Explosion>().Explode(massLost, mass, velocity);
-				GameObject.Destroy(b.gameObject);
+				b.gameObject.SetActive(false);
 			}
 			else
 			{
