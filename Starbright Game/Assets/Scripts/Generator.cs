@@ -46,7 +46,7 @@ public class Generator : MonoBehaviour {
 				// Where initial generation happens
 				//
 				////////////////////////////////////
-				chunks.Add(posHash(xOff, yOff), generate(30, 1, xOff, yOff));
+				chunks.Add(posHash(xOff, yOff, 30), generate(30, 1, xOff, yOff));
 
 			}
 		}
@@ -70,8 +70,8 @@ public class Generator : MonoBehaviour {
 					// Where further generation happens (POSITIVE X)
 					//
 					////////////////////////////////////
-					destroyChunk(-1 * genRadius + xCenter, yOff);
-					chunks.Add(posHash(genRadius + xCenter, yOff), generate(30, 1, genRadius + xCenter, yOff));
+					destroyChunk(-1 * genRadius + xCenter, yOff, 30);
+					chunks.Add(posHash(genRadius + xCenter, yOff, 30), generate(30, 1, genRadius + xCenter, yOff));
 				}
 				else
 				{
@@ -80,8 +80,8 @@ public class Generator : MonoBehaviour {
 					// Where further generation happens (NEGATIVE X)
 					//
 					////////////////////////////////////
-					destroyChunk(genRadius + xCenter - areaWidth, yOff);
-					chunks.Add(posHash(-1 * genRadius + xCenter - areaWidth, yOff), generate(30, 1, -1 * genRadius + xCenter - areaWidth, yOff));
+					destroyChunk(genRadius + xCenter - areaWidth, yOff, 30);
+					chunks.Add(posHash(-1 * genRadius + xCenter - areaWidth, yOff, 30), generate(30, 1, -1 * genRadius + xCenter - areaWidth, yOff));
 				}
 			}
 			xCenter += areaWidth * signX;
@@ -102,8 +102,8 @@ public class Generator : MonoBehaviour {
 					// Where further generation happens (POSITIVE Y)
 					//
 					////////////////////////////////////
-					destroyChunk(xOff, -1 * genRadius + yCenter);
-					chunks.Add(posHash(xOff, genRadius + yCenter), generate(30, 1, xOff, genRadius + yCenter));
+					destroyChunk(xOff, -1 * genRadius + yCenter, 30);
+					chunks.Add(posHash(xOff, genRadius + yCenter, 30), generate(30, 1, xOff, genRadius + yCenter));
 				}
 				else
 				{
@@ -112,8 +112,8 @@ public class Generator : MonoBehaviour {
 					// Where further generation happens (NEGATIVE Y)
 					//
 					////////////////////////////////////
-					destroyChunk(xOff, genRadius + yCenter - areaHeight);
-					chunks.Add(posHash(xOff, -1 * genRadius + yCenter - areaHeight), generate(30, 1, xOff, -1 * genRadius + yCenter - areaHeight));
+					destroyChunk(xOff, genRadius + yCenter - areaHeight, 30);
+					chunks.Add(posHash(xOff, -1 * genRadius + yCenter - areaHeight, 30), generate(30, 1, xOff, -1 * genRadius + yCenter - areaHeight));
 				}
 			}
 			yCenter += areaWidth * signY;
@@ -153,18 +153,18 @@ public class Generator : MonoBehaviour {
 		return ids.ToArray();
 	}
 
-	public void destroyChunk(float xOff, float yOff)
+	public void destroyChunk(float xOff, float yOff, float depth)
 	{
-		int[] chunk = chunks[posHash(xOff, yOff)];
+		int[] chunk = chunks[posHash(xOff, yOff, depth)];
 		foreach(int id in chunk)
 		{
 			pool.removeBody(id);
 		}
-		chunks.Remove(posHash(xOff, yOff));
+		chunks.Remove(posHash(xOff, yOff, depth));
 	}
 	
-	public float posHash(float xOff, float yOff)
+	public float posHash(float xOff, float yOff, float depth)
 	{
-		return yOff * genRadius * 512f + xOff;
+		return yOff * genRadius * 512f + xOff + depth / 256f;
 	}
 }
