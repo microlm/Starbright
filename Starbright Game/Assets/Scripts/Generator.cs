@@ -137,10 +137,6 @@ public class Generator : MonoBehaviour {
 		{
 			{
 				ids.Add(pool.addBody(a[0] + xOff, a[1] + yOff, depth, a[2]));
-				GameObject asteroid = (GameObject)Instantiate(asteroidPrefab, new Vector3(a[0] - (areaWidth / 2), a[1] - (areaHeight / 2), depth), Quaternion.identity);
-				Body asteroidScript = asteroid.GetComponent<Body>();
-		
-				asteroidScript.mass = a[2];
 
 				/*if(depth > 30)
 				{
