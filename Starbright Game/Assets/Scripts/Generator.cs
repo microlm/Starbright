@@ -27,10 +27,15 @@ public class Generator : MonoBehaviour {
 	private Dictionary<float, int[]> chunks;
 	private float xCenter;
 	private float yCenter;
-	
-	// Use this for initialization
+
+	private GameObject backgroundLayer;
+	private GameObject foregroundLayer;
+
 	void Start () 
 	{	
+		backgroundLayer = GameObject.Find ("Background Planets");
+		foregroundLayer = GameObject.Find ("Foreground Planets");
+
 		if(instance == null)
 		{
 			instance = this;
@@ -113,6 +118,20 @@ public class Generator : MonoBehaviour {
 		{
 			{
 				ids.Add(pool.addBody(a[0] + xOff, a[1] + yOff, depth, a[2]));
+				GameObject asteroid = (GameObject)Instantiate(asteroidPrefab, new Vector3(a[0] - (areaWidth / 2), a[1] - (areaHeight / 2), depth), Quaternion.identity);
+				Body asteroidScript = asteroid.GetComponent<Body>();
+				asteroidScript.mass = a[2];
+
+				if(depth > 30)
+				{
+					asteroid.transform.parent = backgroundLayer.transform;
+					asteroid.rigidbody2D.collider2D.enabled = false;
+				}
+				else
+				{
+					asteroid.transform.parent = foregroundLayer.transform;
+					asteroid.rigidbody2D.collider2D.enabled = true;
+				}
 			}
 		}
 		return ids.ToArray();

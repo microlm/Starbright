@@ -12,15 +12,20 @@ public class PlayerCharacter : MonoBehaviour {
 	private Body body; //body that it's orbiting
 
 	public bool inBounds = true;
-	
+
+	private Vector3 lastPosition;
+	private Vector3 deltaPosition;
 	GameObject camera;
 
 	public float MaxMass () {
 		return maxMass;
 	}
 
-	public float Mass () {
-		return GetComponent<Body> ().Mass ();
+	public float Mass {
+		get 
+		{
+			return GetComponent<Body> ().Mass;
+		}
 	}
 
 	public bool IsOrbiting() {
@@ -37,6 +42,7 @@ public class PlayerCharacter : MonoBehaviour {
 		isOrbiting = false;
 		isColliding = true;
 
+		lastPosition = transform.position;
 		camera = GameObject.Find ("Main Camera");
 	}
 	
@@ -51,6 +57,7 @@ public class PlayerCharacter : MonoBehaviour {
 			isColliding = !isColliding;
 		}
 
+		deltaPosition = transform.position - lastPosition;
 		//Turn these off when you're not using them!
 		//Debug.Log(GetComponent<Body>().getVelocity().magnitude * 10f);
 	}
@@ -77,6 +84,11 @@ public class PlayerCharacter : MonoBehaviour {
 			BroadcastMessage ("Hit", c.gameObject.GetComponent<Body> ());
 			isColliding = true;
 		}
+	}
+
+	public Vector3 getDeltaPosition()
+	{
+		return deltaPosition;
 	}
 
 }
