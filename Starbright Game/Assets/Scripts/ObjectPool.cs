@@ -16,26 +16,23 @@ public class ObjectPool : MonoBehaviour
 	public GameObject asteroidPrefab;
 
 	private List<GameObject> pool;
-	private List<Boolean> isFree;
 	private int nextFree;
 
 	void Start()
 	{
 		pool = new List<GameObject>();
-		isFree = new List<Boolean>();
 		nextFree = 0;
 	}
 
 	public int addBody(float x, float y, float depth, float mass)
 	{
-		while(nextFree < isFree.Count && !isFree[nextFree]) nextFree++;
+		while(nextFree < pool.Count && !pool[nextFree].activeSelf) nextFree++;
 		if(nextFree == pool.Count)
 		{
 			GameObject asteroid = (GameObject)Instantiate(asteroidPrefab, new Vector3(x, y, depth), Quaternion.identity);
 			Body asteroidScript = asteroid.GetComponent<Body>();
 			asteroidScript.mass = mass;
 			pool.Add(asteroid);
-			isFree.Add(false);
 			return nextFree;
 		}
 		GameObject a = pool[nextFree];
@@ -43,7 +40,6 @@ public class ObjectPool : MonoBehaviour
 		Body aScript = a.GetComponent<Body>();
 		aScript.mass = mass;
 		a.SetActive(true);
-		isFree[nextFree] = false;
 		return nextFree;
 	}
 
@@ -55,7 +51,6 @@ public class ObjectPool : MonoBehaviour
 	public void removeBody(int index)
 	{
 		pool[index].SetActive(false);
-		isFree[index] = true;
 	}
 }
 
