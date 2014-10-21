@@ -24,7 +24,7 @@ public class PlayerCharacter : MonoBehaviour {
 	public float Mass {
 		get 
 		{
-			return GetComponent<Body> ().Mass;
+			return GetComponent<Body> ().Mass();
 		}
 	}
 

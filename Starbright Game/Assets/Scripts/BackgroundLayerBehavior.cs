@@ -31,6 +31,7 @@ public class BackgroundLayerBehavior : MonoBehaviour {
 		 * approaches 1--that is it approaches the target
 		 * size--the parallaxing should decrease.
 		 * ---------------------------------------------*/
+		targetMass = 50;
 		pc = player.GetComponent<PlayerCharacter>();
 		camera = cam.GetComponent<CameraBehavior>();
 		factor = player.GetComponent<Body>().mass / targetMass;
@@ -52,7 +53,7 @@ public class BackgroundLayerBehavior : MonoBehaviour {
 
 			// grabs the distance by which the background layer
 			// should be offset to create a parallaxing effect
-
+	
 			Vector3 target  = getTarget (1f - factor);
 			transform.position = target;
 		}
