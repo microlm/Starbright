@@ -1,11 +1,9 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 public class Generator : MonoBehaviour {
 	
-	public static Generator instance;
-
 	//public ObjectPool pool;
 
 	public GameObject asteroidPrefab;
@@ -36,10 +34,6 @@ public class Generator : MonoBehaviour {
 		backgroundLayer = GameObject.Find ("Background Planets");
 		foregroundLayer = GameObject.Find ("Foreground Planets");
 
-		if(instance == null)
-		{
-			instance = this;
-		}
 		chunks = new Dictionary<float, int[]>();
 		xCenter = 0;
 		yCenter = 0;
@@ -148,7 +142,7 @@ public class Generator : MonoBehaviour {
 		
 				asteroidScript.mass = a[2];
 
-				if(depth > 30)
+				/*if(depth > 30)
 				{
 					asteroid.transform.parent = backgroundLayer.transform;
 					asteroid.rigidbody2D.collider2D.enabled = false;
@@ -157,7 +151,7 @@ public class Generator : MonoBehaviour {
 				{
 					asteroid.transform.parent = foregroundLayer.transform;
 					asteroid.rigidbody2D.collider2D.enabled = true;
-				}
+				}*/
 			}
 		}
 		return ids.ToArray();
