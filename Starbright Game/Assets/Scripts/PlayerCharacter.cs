@@ -19,8 +19,11 @@ public class PlayerCharacter : MonoBehaviour {
 		return maxMass;
 	}
 
-	public float Mass () {
-		return GetComponent<Body> ().Mass ();
+	public float Mass {
+		get 
+		{
+			return GetComponent<Body> ().Mass;
+		}
 	}
 
 	public bool IsOrbiting() {

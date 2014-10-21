@@ -26,8 +26,11 @@ public class Body : MonoBehaviour {
 
 	private static float radius = 1f;
 
-	public float Mass () {
-		return mass;
+	public float Mass {
+		get 
+		{
+			return mass;
+		}
 	}
 
 	public Vector3 Position {
