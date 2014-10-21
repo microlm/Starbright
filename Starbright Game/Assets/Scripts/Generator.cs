@@ -47,7 +47,11 @@ public class Generator : MonoBehaviour {
 		{
 			for(float xOff = -1 * genRadius; xOff < genRadius; xOff += areaWidth)
 			{
-				Debug.Log(xOff + ", " + yOff);
+				////////////////////////////////////
+				//
+				// Where initial generation happens
+				//
+				////////////////////////////////////
 				chunks.Add(posHash(xOff, yOff), generate(30, 1, xOff, yOff));
 			}
 		}
@@ -66,13 +70,23 @@ public class Generator : MonoBehaviour {
 			{
 				if(signX > 0)
 				{
+					////////////////////////////////////
+					//
+					// Where further generation happens (POSITIVE X)
+					//
+					////////////////////////////////////
 					destroyChunk(-1 * genRadius + xCenter, yOff);
-					generate(30, 1, genRadius + xCenter, yOff);
+					chunks.Add(posHash(genRadius + xCenter, yOff), generate(30, 1, genRadius + xCenter, yOff));
 				}
 				else
 				{
+					////////////////////////////////////
+					//
+					// Where further generation happens (NEGATIVE X)
+					//
+					////////////////////////////////////
 					destroyChunk(genRadius + xCenter - areaWidth, yOff);
-					generate(30, 1, -1 * genRadius + xCenter - areaWidth, yOff);
+					chunks.Add(posHash(-1 * genRadius + xCenter - areaWidth, yOff), generate(30, 1, -1 * genRadius + xCenter - areaWidth, yOff));
 				}
 			}
 			xCenter += areaWidth * signX;
@@ -88,13 +102,23 @@ public class Generator : MonoBehaviour {
 			{
 				if(signY > 0)
 				{
+					////////////////////////////////////
+					//
+					// Where further generation happens (POSITIVE Y)
+					//
+					////////////////////////////////////
 					destroyChunk(xOff, -1 * genRadius + yCenter);
-					generate(30, 1, xOff, genRadius + yCenter);
+					chunks.Add(posHash(xOff, genRadius + yCenter), generate(30, 1, xOff, genRadius + yCenter));
 				}
 				else
 				{
+					////////////////////////////////////
+					//
+					// Where further generation happens (NEGATIVE Y)
+					//
+					////////////////////////////////////
 					destroyChunk(xOff, genRadius + yCenter - areaHeight);
-					generate(30, 1, xOff, -1 * genRadius + yCenter - areaHeight);
+					chunks.Add(posHash(xOff, -1 * genRadius + yCenter - areaHeight), generate(30, 1, xOff, -1 * genRadius + yCenter - areaHeight));
 				}
 			}
 			yCenter += areaWidth * signY;
