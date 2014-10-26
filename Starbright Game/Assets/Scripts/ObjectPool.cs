@@ -7,16 +7,21 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class ObjectPool : MonoBehaviour
 {
 	public GameObject asteroidPrefab;
+	public GameObject asteroidPrefab2;
+	public GameObject asteroidPrefab3;
+	public GameObject asteroidPrefab4;
+	public GameObject asteroidPrefab5;
 
 	private List<GameObject> pool;
 	private List<Boolean> isFree;
+	private GameObject[] prefabs;
 
 	void Awake()
 	{
@@ -26,7 +31,7 @@ public class ObjectPool : MonoBehaviour
 
 	void Start()
 	{
-
+		prefabs = new GameObject[5] {asteroidPrefab, asteroidPrefab2, asteroidPrefab3, asteroidPrefab4, asteroidPrefab5};
 	}
 
 	void Update()
@@ -40,7 +45,7 @@ public class ObjectPool : MonoBehaviour
 		while(nextFree < isFree.Count && !(isFree[nextFree] || !pool[nextFree].activeSelf)) nextFree++;
 		if(nextFree == pool.Count)
 		{
-			GameObject asteroid = (GameObject)Instantiate(asteroidPrefab, new Vector3(x, y, depth), Quaternion.identity);
+			GameObject asteroid = (GameObject)Instantiate(pickAPrefab(prefabs), new Vector3(x, y, depth), Quaternion.identity);
 			Body asteroidScript = asteroid.GetComponent<Body>();
 			asteroidScript.mass = mass;
 			pool.Add(asteroid);
@@ -65,6 +70,12 @@ public class ObjectPool : MonoBehaviour
 	{
 		pool[index].SetActive(false);
 		isFree[index] = true;
+	}
+
+	private GameObject pickAPrefab(GameObject[] objs) {
+		int num = objs.Length;
+		int pick = Mathf.FloorToInt(UnityEngine.Random.Range (0, num));
+		return objs[pick];
 	}
 }
 
