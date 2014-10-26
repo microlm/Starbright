@@ -17,14 +17,27 @@ public class PlayerCharacter : MonoBehaviour {
 	private Vector3 deltaPosition;
 	GameObject camera;
 
-	public float MaxMass () {
-		return maxMass;
+	public float MaxMass 
+	{
+		get
+		{
+			return maxMass;
+		}
 	}
 
-	public float Mass {
+	public float Mass 
+	{
 		get 
 		{
-			return GetComponent<Body> ().Mass();
+			return BodyComponent.Mass;
+		}
+	}
+
+	public Body BodyComponent
+	{
+		get
+		{
+			return GetComponent<Body>();
 		}
 	}
 

@@ -26,13 +26,22 @@ public class Body : MonoBehaviour {
 	
 	private static float radius = 1f;
 	
-	public float Mass () {
-		return mass;
+	public float Mass 
+	{
+		get 
+		{
+			return mass;
+		}
 	}
 	
-	public Vector3 Position {
-		get { return gameObject.transform.position; }
-		set {
+	public Vector3 Position 
+	{
+		get 
+		{ 
+			return gameObject.transform.position; 
+		}
+		set 
+		{
 			//set value and lock z
 			float z = gameObject.transform.position.z;
 			gameObject.transform.position = new Vector3(value.x, value.y, z);
@@ -66,7 +75,7 @@ public class Body : MonoBehaviour {
 			}
 			float massLost = mass * velocity.magnitude;
 			GetComponent<Explosion>().Explode(massLost, mass, velocity);
-			score.addScore();
+			score.addScore(Mathf.FloorToInt(b.Mass));
 			b.gameObject.SetActive(false);
 		}
 		else
@@ -107,6 +116,7 @@ public class Body : MonoBehaviour {
 		//{
 		//velocity *= 1.05f;
 		//}
+
 		//move
 		Position += new Vector3(velocity.x, velocity.y, 0);
 		
@@ -140,7 +150,6 @@ public class Body : MonoBehaviour {
 	}
 	
 	//return current radius of body based on mass and initial width of texture
-	
 	public static float radiusFromMass(float mass) {
 		return mass/10 * radius;
 	}
