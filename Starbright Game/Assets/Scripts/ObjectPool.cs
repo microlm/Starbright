@@ -27,11 +27,12 @@ public class ObjectPool : MonoBehaviour
 	{
 		pool = new List<GameObject>();
 		isFree = new List<Boolean>();
+		prefabs = new GameObject[5] {asteroidPrefab, asteroidPrefab2, asteroidPrefab3, asteroidPrefab4, asteroidPrefab5};
 	}
 
 	void Start()
 	{
-		prefabs = new GameObject[5] {asteroidPrefab, asteroidPrefab2, asteroidPrefab3, asteroidPrefab4, asteroidPrefab5};
+		// Don't put things here - other classes need to use this class during start, so things need to be set up using Awake()
 	}
 
 	void Update()
@@ -72,7 +73,13 @@ public class ObjectPool : MonoBehaviour
 		isFree[index] = true;
 	}
 
-	private GameObject pickAPrefab(GameObject[] objs) {
+	public void drain()
+	{
+		for(int i = 0; i < pool.Count; i++) removeBody(i);
+	}
+
+	private GameObject pickAPrefab(GameObject[] objs)
+	{
 		int num = objs.Length;
 		int pick = Mathf.FloorToInt(UnityEngine.Random.Range (0, num));
 		return objs[pick];
