@@ -112,10 +112,13 @@ public class Generator : MonoBehaviour {
 					// Where further generation happens (NEGATIVE Y)
 					//
 					////////////////////////////////////
+
 					destroyChunk(xOff, genRadius + yCenter - areaHeight, 30);
 					chunks.Add(posHash(xOff, -1 * genRadius + yCenter - areaHeight, 30), generate(30, 1, xOff, -1 * genRadius + yCenter - areaHeight));
+					generate (40, 10, xOff, -1 * genRadius + yCenter - areaHeight);
 				}
 			}
+
 			yCenter += areaWidth * signY;
 			yDist = loc.y - yCenter;
 			absYDist = Mathf.Abs(yDist);
@@ -140,6 +143,7 @@ public class Generator : MonoBehaviour {
 
 				/*if(depth > 30)
 				{
+					Debug.Log ("Howdy");
 					asteroid.transform.parent = backgroundLayer.transform;
 					asteroid.rigidbody2D.collider2D.enabled = false;
 				}

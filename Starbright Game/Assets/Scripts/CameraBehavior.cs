@@ -85,7 +85,8 @@ public class CameraBehavior : MonoBehaviour {
 			maxX = (mapX + horzExtent) * border;
 			minY = (mapY - vertExtent) * border;
 			maxY = (mapY + vertExtent) * border;
-			
+
+
 			previousSize = camera.orthographicSize;
 
 		}
