@@ -137,6 +137,7 @@ public class Generator : MonoBehaviour {
 					backgroundChunks.Add(posHash(xOff, -1 * genRadius + yCenter - areaHeight), generate(false, 2, xOff, -1 * genRadius + yCenter - areaHeight));
 				}
 			}
+
 			yCenter += areaWidth * signY;
 			yDist = loc.y - yCenter;
 			absYDist = Mathf.Abs(yDist);
