@@ -77,7 +77,7 @@ public class CameraBehavior : MonoBehaviour {
 		{
 			vertExtent = camera.orthographicSize/gameScale;
 			horzExtent = vertExtent * Screen.width / Screen.height;
-			
+			Debug.Log (Screen.width + " " + Screen.height);
 			mapX = camera.transform.position.x;
 			mapY = camera.transform.position.y;
 			
@@ -156,7 +156,11 @@ public class CameraBehavior : MonoBehaviour {
 		
 		Vector2 pos = player.transform.position;
 		float radius = player.renderer.bounds.size.x/2f;
-		if((pos.x + radius < maxX && pos.x - radius > minX) && (pos.y + radius < maxY && pos.y - radius > minY))
+	
+		Vector3 maxPos = camera.WorldToViewportPoint(player.transform.position + player.renderer.bounds.size/2f);
+		Vector3 minPos = camera.WorldToViewportPoint(player.transform.position - player.renderer.bounds.size/2f);
+
+		if((maxPos.x < 0.9f && minPos.x > 0.1f) && (maxPos.y < 0.9f && minPos.y > 0.1f))
 		{
 			outShow = true;
 			return true;
@@ -191,16 +195,24 @@ public class CameraBehavior : MonoBehaviour {
 		
 		projectedX = 0;
 		projectedY = 0;
-		
-		if(player.transform.position.x + player.renderer.bounds.size.x/2f > maxX || player.transform.position.x - player.renderer.bounds.size.x/2f < minX)
+
+		Vector3 maxPos = camera.WorldToViewportPoint(player.transform.position + player.renderer.bounds.size/2f);
+		Vector3 minPos = camera.WorldToViewportPoint(player.transform.position - player.renderer.bounds.size/2f);
+
+		if(maxPos.x > 0.9f || minPos.x < 0.1f)
 		{
 			projectedX = Mathf.Abs (vel.x);
 		}
-		
-		if(player.transform.position.y + player.renderer.bounds.size.y/2f > maxY || player.transform.position.y - player.renderer.bounds.size.y/2f < minY)
+
+		if(maxPos.y > 0.9f || minPos.y < 0.1f)
 		{
 			projectedY = Mathf.Abs (vel.y);
 		}
+		
+		/*if(player.transform.position.y + player.renderer.bounds.size.y/2f > maxY || player.transform.position.y - player.renderer.bounds.size.y/2f < minY)
+		{
+			projectedY = Mathf.Abs (vel.y);
+		}*/
 		
 		if(projectedX > projectedY)
 		{

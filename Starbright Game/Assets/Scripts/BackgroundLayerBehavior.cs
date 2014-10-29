@@ -31,7 +31,7 @@ public class BackgroundLayerBehavior : MonoBehaviour {
 		 * approaches 1--that is it approaches the target
 		 * size--the parallaxing should decrease.
 		 * ---------------------------------------------*/
-		targetMass = 50;
+		targetMass = 10;
 		pc = player.GetComponent<PlayerCharacter>();
 		camera = cam.GetComponent<CameraBehavior>();
 		factor = player.GetComponent<Body>().mass / targetMass;
@@ -73,7 +73,11 @@ public class BackgroundLayerBehavior : MonoBehaviour {
 			float fac = targetMass - player.GetComponent<Body>().mass;
 			float scaling = ((cameraScale-1f)*(fac/targetMass)) ;
 			scale = new Vector3 (transform.localScale.x + scaling, transform.localScale.y + scaling, transform.localScale.z);
-			transform.position = getZoomOffset ((1f-factor) * scale.x/transform.localScale.x); 
+			Debug.Log (transform.localScale.x + " scale " + scale.x + " scaling " + scaling);
+			if(cam.orthographicSize > initCameraScale)
+			{
+				transform.position = getZoomOffset ((1f-factor) * scale.x/transform.localScale.x); 
+			}
 
 			transform.localScale = scale;
 			initCameraScale = cam.orthographicSize;

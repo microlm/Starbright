@@ -187,4 +187,12 @@ public class Generator : MonoBehaviour {
 	{
 		return yOff * genRadius * 512f + xOff;
 	}
+
+	public void LayerUp()
+	{
+		ObjectPool tempPool = foregroundPool;
+		foregroundPool = backgroundPool;
+		backgroundPool = tempPool;
+		backgroundPool.drain();
+	}
 }
