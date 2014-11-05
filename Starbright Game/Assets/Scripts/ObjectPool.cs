@@ -18,16 +18,24 @@ public class ObjectPool : MonoBehaviour
 	public GameObject asteroidPrefab3;
 	public GameObject asteroidPrefab4;
 	public GameObject asteroidPrefab5;
+	public GameObject farAsteroidPrefab;
+	public GameObject farAsteroidPrefab2;
+	public GameObject farAsteroidPrefab3;
+	public GameObject farAsteroidPrefab4;
+	public GameObject farAsteroidPrefab5;
+
 
 	private List<GameObject> pool;
 	private List<Boolean> isFree;
 	private GameObject[] prefabs;
+	private GameObject[] farPrefabs;
 
 	void Awake()
 	{
 		pool = new List<GameObject>();
 		isFree = new List<Boolean>();
 		prefabs = new GameObject[5] {asteroidPrefab, asteroidPrefab2, asteroidPrefab3, asteroidPrefab4, asteroidPrefab5};
+		farPrefabs = new GameObject[5] {farAsteroidPrefab, farAsteroidPrefab2, farAsteroidPrefab3, farAsteroidPrefab4, farAsteroidPrefab5};
 	}
 
 	void Start()
@@ -40,13 +48,22 @@ public class ObjectPool : MonoBehaviour
 		Debug.Log(pool.Count);
 	}
 
-	public int addBody(float x, float y, float depth, float mass)
+	public int addBody(float x, float y, float depth, float mass, bool isFar)
 	{
 		int nextFree = 0;
 		while(nextFree < isFree.Count && !(isFree[nextFree] || !pool[nextFree].activeSelf)) nextFree++;
 		if(nextFree == pool.Count)
 		{
-			GameObject asteroid = (GameObject)Instantiate(pickAPrefab(prefabs), new Vector3(x, y, depth), Quaternion.identity);
+			GameObject asteroid;
+			if(!isFar)
+			{
+				asteroid = (GameObject)Instantiate(pickAPrefab(prefabs), new Vector3(x, y, depth), Quaternion.identity);
+			}
+			else
+			{
+				asteroid = (GameObject)Instantiate(pickAPrefab(farPrefabs), new Vector3(x, y, depth), Quaternion.identity);
+			}
+
 			Body asteroidScript = asteroid.GetComponent<Body>();
 			asteroidScript.mass = mass;
 			pool.Add(asteroid);
@@ -82,7 +99,26 @@ public class ObjectPool : MonoBehaviour
 	{
 		int num = objs.Length;
 		int pick = Mathf.FloorToInt(UnityEngine.Random.Range (0, num));
+		Debug.Log (pick);
 		return objs[pick];
+	}
+
+	public void setPoolLayer(int layer)
+	{
+		for(int i = 0; i < pool.Count; i++) 
+			pool[i].layer = layer;
+	}
+
+	public void setParent(GameObject parent)
+	{
+		for(int i = 0; i < pool.Count; i++) 
+			pool[i].transform.parent = parent.transform;
+	}
+
+	public void setEnableCollisions(bool enable)
+	{
+		for(int i = 0; i < pool.Count; i++)
+			pool[i].rigidbody2D.collider2D.enabled = enable;
 	}
 }
 

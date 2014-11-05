@@ -3,6 +3,7 @@ using System.Collections;
 
 public class BackgroundCameraBehavior : CameraBehavior{
 
+	public Camera main;
 	// Update is called once per frame
 	void LateUpdate () 
 	{

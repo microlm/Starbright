@@ -17,6 +17,8 @@ public class PlayerCharacter : MonoBehaviour {
 	private Vector3 deltaPosition;
 	GameObject camera;
 
+	private float targetMass;
+
 	public float MaxMass 
 	{
 		get
@@ -57,6 +59,8 @@ public class PlayerCharacter : MonoBehaviour {
 
 		lastPosition = transform.position;
 		camera = GameObject.Find ("Main Camera");
+
+		targetMass = 10f;
 	}
 	
 	// Update is called once per frame
@@ -71,6 +75,15 @@ public class PlayerCharacter : MonoBehaviour {
 		}
 
 		deltaPosition = transform.position - lastPosition;
+
+		Debug.Log (Mass + " " + targetMass);
+		if(Mass > targetMass)
+		{
+			Debug.Log ("Why");
+			isOrbiting = false;
+			Generator.instance.GetComponent<Generator>().LayerUp ();
+			targetMass = targetMass * (targetMass/2f);
+		}
 		//Turn these off when you're not using them!
 		//Debug.Log(GetComponent<Body>().getVelocity().magnitude * 10f);
 	}
@@ -103,5 +116,7 @@ public class PlayerCharacter : MonoBehaviour {
 	{
 		return deltaPosition;
 	}
+
+
 
 }

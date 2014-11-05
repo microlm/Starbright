@@ -30,7 +30,7 @@ public class Generator : MonoBehaviour {
 	private Dictionary<float, int[]> backgroundChunks;
 	private float xCenter;
 	private float yCenter;
-	
+
 	public GameObject foregroundLayer;
 	public GameObject backgroundLayer;
 
@@ -55,7 +55,7 @@ public class Generator : MonoBehaviour {
 				//
 				////////////////////////////////////
 				foregroundChunks.Add(posHash(xOff, yOff), generate(true, 1, xOff, yOff));
-				backgroundChunks.Add(posHash(xOff, yOff), generate(false, 2, xOff, yOff));		
+				backgroundChunks.Add(posHash(xOff, yOff), generate(false, 2, xOff, yOff));	
 			}
 		}
 	}
@@ -72,6 +72,7 @@ public class Generator : MonoBehaviour {
 		float xDist = loc.x - xCenter;
 		float absXDist = Mathf.Abs(xDist);
 		float signX = xDist / absXDist;
+
 		while(absXDist > areaWidth)
 		{
 			for(float yOff = -1 * genRadius + yCenter; yOff < genRadius + yCenter; yOff += areaHeight)
@@ -154,16 +155,19 @@ public class Generator : MonoBehaviour {
 		{
 			if(isForeground)
 			{
-				int id = foregroundPool.addBody(a[0] + xOff, a[1] + yOff, foregroundDepth, a[2]);
+				int id = foregroundPool.addBody(a[0] + xOff, a[1] + yOff, foregroundDepth, a[2], false);
 				GameObject asteroid = foregroundPool.getBody(id);
 				asteroid.transform.parent = foregroundLayer.transform;
+				asteroid.layer = foregroundLayer.layer;
 				ids.Add(id);
 			}
 			else
 			{
-				int id = backgroundPool.addBody(a[0] + xOff, a[1] + yOff, backgroundDepth, a[2]);
+				int id = backgroundPool.addBody(a[0] + xOff, a[1] + yOff, backgroundDepth, a[2], true);
 				GameObject asteroid = backgroundPool.getBody(id);
+
 				asteroid.transform.parent = backgroundLayer.transform;
+				asteroid.layer = backgroundLayer.layer;
 				asteroid.rigidbody2D.collider2D.enabled = false;
 				ids.Add(id);
 			}
@@ -194,5 +198,13 @@ public class Generator : MonoBehaviour {
 		foregroundPool = backgroundPool;
 		backgroundPool = tempPool;
 		backgroundPool.drain();
+		Debug.Log ("drained");
+		foregroundPool.setPoolLayer(foregroundLayer.layer);
+		foregroundPool.setParent (foregroundLayer);
+		backgroundPool.setPoolLayer(backgroundLayer.layer);
+		backgroundPool.setParent (backgroundLayer);
+		backgroundPool.setEnableCollisions(false);
+		foregroundPool.setEnableCollisions(true);
+		Debug.Log ("brought forward");
 	}
 }

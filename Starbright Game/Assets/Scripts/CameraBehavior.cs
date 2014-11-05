@@ -25,7 +25,7 @@ public class CameraBehavior : MonoBehaviour {
 	protected float minX, minY, maxX, maxY;
 	protected float mapX=100.0f;
 	protected float mapY = 100.0f;
-	protected float border = 0.85f;
+	protected float border = 0.8f;
 	
 	protected float vertExtent, horzExtent;
 
@@ -160,7 +160,7 @@ public class CameraBehavior : MonoBehaviour {
 		Vector3 maxPos = camera.WorldToViewportPoint(player.transform.position + player.renderer.bounds.size/2f);
 		Vector3 minPos = camera.WorldToViewportPoint(player.transform.position - player.renderer.bounds.size/2f);
 
-		if((maxPos.x < 0.9f && minPos.x > 0.1f) && (maxPos.y < 0.9f && minPos.y > 0.1f))
+		if((maxPos.x < border && minPos.x > 1 - border) && (maxPos.y < border && minPos.y > 1 - border))
 		{
 			outShow = true;
 			return true;
@@ -191,28 +191,30 @@ public class CameraBehavior : MonoBehaviour {
 	{
 		float projectedX, projectedY, projected, growth;
 		float newArea, oldArea;
-		Vector2 vel = player.GetComponent<Body>().getVelocity ();
-		
+		Vector2 v = player.GetComponent<Body>().getVelocity ();
+		Vector3 vel = new Vector3(v.x, v.y, 0);
 		projectedX = 0;
 		projectedY = 0;
 
 		Vector3 maxPos = camera.WorldToViewportPoint(player.transform.position + player.renderer.bounds.size/2f);
 		Vector3 minPos = camera.WorldToViewportPoint(player.transform.position - player.renderer.bounds.size/2f);
 
-		if(maxPos.x > 0.9f || minPos.x < 0.1f)
+		growth = 0;
+
+		if(maxPos.x > border || minPos.x < (1 - border))
 		{
 			projectedX = Mathf.Abs (vel.x);
 		}
 
-		if(maxPos.y > 0.9f || minPos.y < 0.1f)
+		if(maxPos.y > border || minPos.y < (1 - border))
 		{
 			projectedY = Mathf.Abs (vel.y);
 		}
 		
-		/*if(player.transform.position.y + player.renderer.bounds.size.y/2f > maxY || player.transform.position.y - player.renderer.bounds.size.y/2f < minY)
+		if(player.transform.position.y + player.renderer.bounds.size.y/2f > maxY || player.transform.position.y - player.renderer.bounds.size.y/2f < minY)
 		{
 			projectedY = Mathf.Abs (vel.y);
-		}*/
+		}
 		
 		if(projectedX > projectedY)
 		{

@@ -111,11 +111,14 @@ public class Body : MonoBehaviour {
 		//check speed
 		while (velocity.magnitude > mass*maxSpeed)
 			velocity *= .95f;
-		
-		//while(velocity.magnitude < mass*minSpeed)
-		//{
-		//velocity *= 1.05f;
-		//}
+
+		/*if(velocity.magnitude > 0)
+		{
+			while(velocity.magnitude < mass*minSpeed)
+			{
+				velocity *= 1.05f;
+			}
+		}*/
 
 		//move
 		Position += new Vector3(velocity.x, velocity.y, 0);
