@@ -129,7 +129,7 @@ public class Body : MonoBehaviour {
 		
 		//correct size
 		gameObject.transform.localScale = Vector3.Lerp (gameObject.transform.localScale, maxScale / 20 * mass, Time.deltaTime);
-		collider2D.transform.localScale = cMaxScale / 20 * mass;
+		collider2D.transform.localScale = cMaxScale / 6 * mass;
 		
 		//update color
 		GetComponent<SpriteRenderer>().color = colorOpt.assignColor(mass);
