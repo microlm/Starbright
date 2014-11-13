@@ -23,9 +23,7 @@ public class Body : MonoBehaviour {
 	ColorOption colorOpt;
 	GameObject camera;
 	ScoreManager score;
-	
-	private static float radius = 0.4f;
-	
+		
 	public float Mass 
 	{
 		get 
@@ -143,11 +141,6 @@ public class Body : MonoBehaviour {
 	public Vector2 getVelocity()
 	{
 		return velocity;
-	}
-	
-	//return current radius of body based on mass and initial width of texture
-	public static float radiusFromMass(float mass) {
-		return radius / 20 * mass ;
 	}
 	
 	public Vector2 setExitVelocity(Body b)
