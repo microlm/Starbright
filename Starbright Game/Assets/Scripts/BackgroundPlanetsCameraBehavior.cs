@@ -12,7 +12,7 @@ public class BackgroundPlanetsCameraBehavior : MonoBehaviour {
 	private Vector3 deltaPosition;
 
 
-	private int targetMass;
+	private float targetMass;
 	// Use this for initialization
 	void Start () {
 
@@ -21,7 +21,7 @@ public class BackgroundPlanetsCameraBehavior : MonoBehaviour {
 
 		camera.transform.position = previousPosition;
 		camera.orthographicSize = previousCamSize;
-		targetMass = 10;
+		targetMass = 40f;
 	}
 	
 	// Update is called once per frame

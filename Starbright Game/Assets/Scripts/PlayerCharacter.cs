@@ -60,7 +60,7 @@ public class PlayerCharacter : MonoBehaviour {
 		lastPosition = transform.position;
 		camera = GameObject.Find ("Main Camera");
 
-		targetMass = 10f;
+		targetMass = 40f;
 	}
 	
 	// Update is called once per frame
@@ -76,10 +76,9 @@ public class PlayerCharacter : MonoBehaviour {
 
 		deltaPosition = transform.position - lastPosition;
 
-		Debug.Log (Mass + " " + targetMass);
+	
 		if(Mass > targetMass)
 		{
-			Debug.Log ("Why");
 			isOrbiting = false;
 			Generator.instance.GetComponent<Generator>().LayerUp ();
 			targetMass = targetMass * (targetMass/2f);
@@ -105,6 +104,8 @@ public class PlayerCharacter : MonoBehaviour {
 	}
 
 	void OnCollisionEnter2D(Collision2D c) {
+		Debug.Log (c.gameObject.transform.position + " THERE WAS A COLLISION");
+		Debug.Log (c.GetType());
 		if(!isColliding)
 		{
 			BroadcastMessage ("Hit", c.gameObject.GetComponent<Body> ());

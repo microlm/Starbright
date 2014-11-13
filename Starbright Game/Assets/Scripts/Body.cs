@@ -13,7 +13,7 @@ public class Body : MonoBehaviour {
 	public float mass;
 	public Vector2 initialVel;
 	private float maxSpeed = .15f;
-	private float minSpeed = 0.05f;
+	private float minSpeed = 0.005f;
 	
 	private Vector3 maxScale;
 	private Vector3 cMaxScale;
@@ -65,6 +65,7 @@ public class Body : MonoBehaviour {
 	
 	public void Hit(Body b)
 	{
+		Debug.Log ("hiiit");
 		if (mass >= b.mass) 
 		{
 			mass += growth * b.mass;
@@ -112,13 +113,16 @@ public class Body : MonoBehaviour {
 		while (velocity.magnitude > mass*maxSpeed)
 			velocity *= .95f;
 
-		/*if(velocity.magnitude > 0)
+		if(velocity.magnitude > 0 && mass > 0f)
 		{
+			//Debug.Log (velocity.magnitude + " " + mass + " " + mass*minSpeed);
 			while(velocity.magnitude < mass*minSpeed)
 			{
+				//Debug.Log (velocity.magnitude + " " + mass*minSpeed);
+
 				velocity *= 1.05f;
 			}
-		}*/
+		}
 
 		//move
 		Position += new Vector3(velocity.x, velocity.y, 0);

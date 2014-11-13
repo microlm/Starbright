@@ -6,7 +6,7 @@ public class CameraBehavior : MonoBehaviour {
 	public GameObject player;
 	protected PlayerCharacter pc;
 	public float ease = .15f; //camera movement adjustment speed
-	protected float scalingRate = .05f; //speed of scale
+	protected float scalingRate = 0.1f; //speed of scale
 	public float gameScale = 1f; //scale of game to window size, lower number, bigger objects
 	public Color backgroundColor = new Color (.05f, .1f, .15f, 1f); //overrides default
 	public bool zoom;
@@ -77,7 +77,6 @@ public class CameraBehavior : MonoBehaviour {
 		{
 			vertExtent = camera.orthographicSize/gameScale;
 			horzExtent = vertExtent * Screen.width / Screen.height;
-			Debug.Log (Screen.width + " " + Screen.height);
 			mapX = camera.transform.position.x;
 			mapY = camera.transform.position.y;
 			
@@ -131,9 +130,8 @@ public class CameraBehavior : MonoBehaviour {
 				previousSize = camera.orthographicSize;
 				float currentMass = player.GetComponent<Body>().mass;
 				camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, 
-				                                     initialSize * (currentMass/initialMass) * (1 - (scalingRate * (currentMass-initialMass))), 
+				                                     initialSize * (currentMass/initialMass) * (1-((currentMass-initialMass))/currentMass), 
 				                                     Time.deltaTime * ease);
-				
 			}
 			
 		}

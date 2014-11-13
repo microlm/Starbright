@@ -45,7 +45,7 @@ public class ObjectPool : MonoBehaviour
 
 	void Update()
 	{
-		Debug.Log(pool.Count);
+		//Debug.Log(pool.Count);
 	}
 
 	public int addBody(float x, float y, float depth, float mass, bool isFar)
@@ -99,7 +99,7 @@ public class ObjectPool : MonoBehaviour
 	{
 		int num = objs.Length;
 		int pick = Mathf.FloorToInt(UnityEngine.Random.Range (0, num));
-		Debug.Log (pick);
+		//Debug.Log (pick);
 		return objs[pick];
 	}
 

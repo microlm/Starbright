@@ -73,7 +73,6 @@ public class BackgroundLayerBehavior : MonoBehaviour {
 			float fac = targetMass - player.GetComponent<Body>().mass;
 			float scaling = ((cameraScale-1f)*(fac/targetMass)) ;
 			scale = new Vector3 (transform.localScale.x + scaling, transform.localScale.y + scaling, transform.localScale.z);
-			Debug.Log (transform.localScale.x + " scale " + scale.x + " scaling " + scaling);
 			if(cam.orthographicSize > initCameraScale)
 			{
 				transform.position = getZoomOffset ((1f-factor) * scale.x/transform.localScale.x); 
