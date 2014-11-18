@@ -111,11 +111,11 @@ public class AsteroidQuadTree
 
 	public bool AddAsteroid(float asteroidX, float asteroidY, float asteroidSize)
 	{
-		if(Body.radiusFromMass(asteroidSize) > maxSize)
+		if(Generator.instance.radiusFromMass(asteroidSize) > maxSize)
 		{
-			return true;
+			return false;
 		}
-		float range = Body.radiusFromMass(asteroidSize) + maxSize;
+		float range = Generator.instance.radiusFromMass(asteroidSize) + maxSize;
 		foreach(float[] a in SearchWithinBounds(asteroidX - range, asteroidY - range, range * 2, range * 2))
 		{
 			if(doesIntersect(new float[]{asteroidX, asteroidY, asteroidSize}, a))
@@ -238,7 +238,7 @@ public class AsteroidQuadTree
 
 	private static bool doesIntersect(float[] a, float[] b)
 	{
-		return Math.Sqrt((a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1])) < Body.radiusFromMass(a[2]) + Body.radiusFromMass(b[2]);
+		return Math.Sqrt((a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1])) < Generator.instance.radiusFromMass(a[2]) + Generator.instance.radiusFromMass(b[2]);
 	}
 }
 

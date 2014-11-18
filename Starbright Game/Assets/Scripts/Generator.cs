@@ -6,7 +6,9 @@ public class Generator : MonoBehaviour {
 	
 	public static Generator instance;
 
-	public GameObject asteroidPrefab;
+	public GameObject sampleAsteroid;
+	private Body sampleBody;
+
 	public float areaWidth;
 	public float areaHeight;
 	public float minDensity;
@@ -40,6 +42,7 @@ public class Generator : MonoBehaviour {
 		{
 			instance = this;
 		}
+		sampleBody = sampleAsteroid.GetComponent<Body>();
 
 		foregroundChunks = new Dictionary<float, int[]>();
 		backgroundChunks = new Dictionary<float, int[]>();
@@ -190,6 +193,13 @@ public class Generator : MonoBehaviour {
 	public float posHash(float xOff, float yOff)
 	{
 		return yOff * genRadius * 512f + xOff;
+	}
+
+
+	public float radiusFromMass(float mass)
+	{
+		sampleBody.mass = mass;
+		return sampleAsteroid.renderer.bounds.size.x;
 	}
 
 	/*------------------------------------------
