@@ -147,7 +147,7 @@ public class Body : MonoBehaviour {
 	
 	//return current radius of body based on mass and initial width of texture
 	public static float radiusFromMass(float mass) {
-		return radius / 20 * mass ;
+		return radius / 6 * mass ;
 	}
 	
 	public Vector2 setExitVelocity(Body b)

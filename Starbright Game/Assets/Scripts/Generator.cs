@@ -192,19 +192,33 @@ public class Generator : MonoBehaviour {
 		return yOff * genRadius * 512f + xOff;
 	}
 
+	/*------------------------------------------
+	 * Causes the background layer of planets
+	 * to be moved into the foreground layer.
+	 * Empties background pool into foreground
+	 * pool and foreground object pool into 
+	 * background object pool.
+	 * -----------------------------------------*/
+
 	public void LayerUp()
 	{
+		// switch object pools
 		ObjectPool tempPool = foregroundPool;
 		foregroundPool = backgroundPool;
 		backgroundPool = tempPool;
 		backgroundPool.drain();
-		Debug.Log ("drained");
+
+		//switch layers on objects
 		foregroundPool.setPoolLayer(foregroundLayer.layer);
 		foregroundPool.setParent (foregroundLayer);
+
 		backgroundPool.setPoolLayer(backgroundLayer.layer);
 		backgroundPool.setParent (backgroundLayer);
+
+		// enable collisions for new foreground planets
+		// and disable for background planets
+
 		backgroundPool.setEnableCollisions(false);
 		foregroundPool.setEnableCollisions(true);
-		Debug.Log ("brought forward");
 	}
 }
