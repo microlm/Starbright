@@ -12,10 +12,12 @@ public class PlayerCharacter : MonoBehaviour {
 	private Body body; //body that it's orbiting
 
 	public bool inBounds = true;
+	bool flashed = false;
 
 	private Vector3 lastPosition;
 	private Vector3 deltaPosition;
 	GameObject camera;
+	GameObject backgroundCamera;
 
 	private float targetMass;
 
@@ -59,8 +61,8 @@ public class PlayerCharacter : MonoBehaviour {
 
 		lastPosition = transform.position;
 		camera = GameObject.Find ("Main Camera");
-
-		targetMass = 40f;
+		backgroundCamera = GameObject.Find ("Background Planets Camera");
+		targetMass = 7f;
 	}
 	
 	// Update is called once per frame
@@ -81,8 +83,13 @@ public class PlayerCharacter : MonoBehaviour {
 		{
 			isOrbiting = false;
 			Generator.instance.GetComponent<Generator>().LayerUp ();
+
+			transform.position = backgroundCamera.transform.position;
+			camera.transform.position = transform.position;
+
 			targetMass = targetMass * (targetMass/2f);
 		}
+
 		//Turn these off when you're not using them!
 		//Debug.Log(GetComponent<Body>().getVelocity().magnitude * 10f);
 	}
@@ -104,8 +111,6 @@ public class PlayerCharacter : MonoBehaviour {
 	}
 
 	void OnCollisionEnter2D(Collision2D c) {
-		Debug.Log (c.gameObject.transform.position + " THERE WAS A COLLISION");
-		Debug.Log (c.GetType());
 		if(!isColliding)
 		{
 			BroadcastMessage ("Hit", c.gameObject.GetComponent<Body> ());
@@ -117,7 +122,6 @@ public class PlayerCharacter : MonoBehaviour {
 	{
 		return deltaPosition;
 	}
-
 
 
 }

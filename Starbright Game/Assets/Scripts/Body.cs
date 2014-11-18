@@ -143,6 +143,12 @@ public class Body : MonoBehaviour {
 		return velocity;
 	}
 	
+/*
+	//return current radius of body based on mass and initial width of texture
+	public static float radiusFromMass(float mass) {
+		return radius / 6 * mass ;
+	}*/
+
 	public Vector2 setExitVelocity(Body b)
 	{
 		Vector2 unitNormal = new Vector2(transform.position.x - b.transform.position.x, transform.position.y - b.transform.position.y);

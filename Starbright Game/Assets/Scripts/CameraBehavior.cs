@@ -19,9 +19,7 @@ public class CameraBehavior : MonoBehaviour {
 	protected float previousSize;
 	
 	protected Vector3 screenCenter;
-	
-	protected Vector3 deltaPosition;
-	protected Vector3 lastPos;
+
 	protected float minX, minY, maxX, maxY;
 	protected float mapX=100.0f;
 	protected float mapY = 100.0f;
@@ -63,7 +61,6 @@ public class CameraBehavior : MonoBehaviour {
 		maxY = (mapY + vertExtent) * border;
 
 		pc = player.GetComponent<PlayerCharacter>();
-		lastPos = camera.transform.position;
 		cameraDepth = camera.transform.position.z;
 		
 	}
@@ -71,8 +68,10 @@ public class CameraBehavior : MonoBehaviour {
 	// Update is called once per frame
 	void LateUpdate () 
 	{
+		// move the camera
 		moveCamera (1f);
-		
+
+		// if the camera zoom has changed, then adjust border calculations
 		if(camera.orthographicSize != vertExtent && !isScrolling)
 		{
 			vertExtent = camera.orthographicSize/gameScale;
@@ -89,15 +88,12 @@ public class CameraBehavior : MonoBehaviour {
 			previousSize = camera.orthographicSize;
 
 		}
-
-		deltaPosition = camera.transform.position - lastPos;
-
-		lastPos = camera.transform.position;
 		
 	}
 
 	protected void moveCamera(float speedFactor)
 	{
+		// if camera is not orbiting 
 		if (!pc.IsOrbiting()) 
 		{
 			
@@ -155,6 +151,7 @@ public class CameraBehavior : MonoBehaviour {
 		Vector2 pos = player.transform.position;
 		float radius = player.renderer.bounds.size.x/2f;
 	
+		// location relative to camera view port, boundaries at 0 and 1 values
 		Vector3 maxPos = camera.WorldToViewportPoint(player.transform.position + player.renderer.bounds.size/2f);
 		Vector3 minPos = camera.WorldToViewportPoint(player.transform.position - player.renderer.bounds.size/2f);
 
@@ -263,9 +260,4 @@ public class CameraBehavior : MonoBehaviour {
 		}
 	}
 
-	public Vector3 getDeltaPosition()
-	{
-		return deltaPosition;
-	}
-	
 }
