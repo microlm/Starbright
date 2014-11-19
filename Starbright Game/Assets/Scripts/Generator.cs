@@ -42,8 +42,6 @@ public class Generator : MonoBehaviour {
 		{
 			instance = this;
 		}
-		sampleBody = sampleAsteroid.GetComponent<Body>();
-
 		foregroundChunks = new Dictionary<float, int[]>();
 		backgroundChunks = new Dictionary<float, int[]>();
 		xCenter = 0;
@@ -198,8 +196,7 @@ public class Generator : MonoBehaviour {
 
 	public float radiusFromMass(float mass)
 	{
-		sampleBody.mass = mass;
-		return sampleAsteroid.renderer.bounds.size.x;
+		return mass * 0.08f;
 	}
 
 	/*------------------------------------------
