@@ -18,10 +18,12 @@ public class PlayerCharacter : MonoBehaviour {
 	private Vector3 deltaPosition;
 	GameObject camera;
 	GameObject backgroundCamera;
+
 	FlashBehavior flash;
 	private float targetMass;
 
 	bool disabled = false;
+
 
 	public float MaxMass 
 	{
@@ -36,6 +38,11 @@ public class PlayerCharacter : MonoBehaviour {
 		get 
 		{
 			return BodyComponent.Mass;
+		}
+		set
+		{
+			BodyComponent.Mass = value;
+			Debug.Log("Artificially changing mass...");
 		}
 	}
 
@@ -64,8 +71,10 @@ public class PlayerCharacter : MonoBehaviour {
 		lastPosition = transform.position;
 		camera = GameObject.Find ("Main Camera");
 		backgroundCamera = GameObject.Find ("Background Planets Camera");
+
 		flash = GameObject.Find ("Flash").GetComponent<FlashBehavior>();
-		targetMass = 5.2f;
+		targetMass = 20f;
+
 	}
 	
 	// Update is called once per frame
@@ -81,33 +90,10 @@ public class PlayerCharacter : MonoBehaviour {
 
 		deltaPosition = transform.position - lastPosition;
 
-	
 		if(Mass > targetMass)
 		{
 			isOrbiting = false;
-
-			if(!flash.getFlash () && !disabled)
-			{
-				flash.Flash();
-				Generator.instance.GetComponent<Generator>().LayerUp ();
-				
-				transform.position = backgroundCamera.transform.position;
-				camera.transform.position = transform.position;
-			}
-
-			if(flash.getFlash () && !disabled)
-			{
-				disabled = true;
-				GameObject.Find ("Trail").GetComponent<TrailRenderer>().enabled = false;
-				GetComponent<Body>().enabled = false;
-			}
-
-			if(!flash.getFlash ())
-			{
-				GameObject.Find ("Trail").GetComponent<TrailRenderer>().enabled = true;
-				GetComponent<Body>().enabled = true;
-				targetMass = targetMass * (targetMass/2f);
-			}
+			LevelUp();
 
 		}
 		else if(disabled)
@@ -149,5 +135,32 @@ public class PlayerCharacter : MonoBehaviour {
 		return deltaPosition;
 	}
 
+	public void LevelUp()
+	{
 
+		if(!flash.getFlash () && !disabled)
+		{
+			flash.Flash();
+			Generator.instance.GetComponent<Generator>().LayerUp ();
+			
+			transform.position = backgroundCamera.transform.position;
+			camera.transform.position = transform.position;
+		}
+		
+		if(flash.getFlash () && !disabled)
+		{
+			disabled = true;
+			GameObject.Find ("Trail").GetComponent<TrailRenderer>().enabled = false;
+			GetComponent<Body>().enabled = false;
+		}
+		
+		if(!flash.getFlash ())
+		{
+			GameObject.Find ("Trail").GetComponent<TrailRenderer>().enabled = true;
+			GetComponent<Body>().enabled = true;
+			targetMass = targetMass * (targetMass/2f);
+		}
+		isOrbiting = false;
+	
+	}
 }

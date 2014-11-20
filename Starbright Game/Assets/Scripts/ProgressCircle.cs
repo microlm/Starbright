@@ -4,15 +4,16 @@ using System.Collections;
 public class ProgressCircle : MonoBehaviour {
 
 	public PlayerCharacter pc;
-	public int targetSize;
 
+	private float targetSize;
 	private Vector3 maxScale;
 
 	// Use this for initialization
 	void Start () {
 		maxScale = transform.localScale;
+		targetSize = 7f;
 
-		transform.localScale = maxScale / 20 * targetSize;
+		Scale ();
 	}
 	
 	// Update is called once per frame
@@ -23,8 +24,32 @@ public class ProgressCircle : MonoBehaviour {
 		//rotate
 		transform.Rotate(0, 0, Time.deltaTime * 50f);
 
+		//update if goal size is reached
 		if (pc.Mass >= targetSize) {
-			Debug.Log ("YAY");
+			LevelUp();
 		}
+
+		if (Input.GetKeyDown(KeyCode.LeftShift)) {
+			pc.Mass = targetSize;
+			LevelUp();
+			Debug.Log ("Increase level...");
+		}
+	}
+
+	void LevelUp()
+	{
+		pc.LevelUp();
+		targetSize *= 2.5f;
+		Scale ();
+	}
+
+	public float TargetSize
+	{
+		get { return targetSize; }
+	}
+
+	void Scale()
+	{
+		transform.localScale = maxScale / 20 * targetSize;
 	}
 }

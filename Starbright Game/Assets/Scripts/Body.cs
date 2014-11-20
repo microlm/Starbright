@@ -30,6 +30,10 @@ public class Body : MonoBehaviour {
 		{
 			return mass;
 		}
+		set
+		{
+			mass = value;
+		}
 	}
 	
 	public Vector3 Position 
