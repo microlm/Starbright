@@ -19,8 +19,6 @@ public class PlayerCharacter : MonoBehaviour {
 	GameObject camera;
 	GameObject backgroundCamera;
 
-	private float targetMass;
-
 	public float MaxMass 
 	{
 		get
@@ -34,6 +32,11 @@ public class PlayerCharacter : MonoBehaviour {
 		get 
 		{
 			return BodyComponent.Mass;
+		}
+		set
+		{
+			BodyComponent.Mass = value;
+			Debug.Log("Artificially changing mass...");
 		}
 	}
 
@@ -62,7 +65,6 @@ public class PlayerCharacter : MonoBehaviour {
 		lastPosition = transform.position;
 		camera = GameObject.Find ("Main Camera");
 		backgroundCamera = GameObject.Find ("Background Planets Camera");
-		targetMass = 7f;
 	}
 	
 	// Update is called once per frame
@@ -77,18 +79,6 @@ public class PlayerCharacter : MonoBehaviour {
 		}
 
 		deltaPosition = transform.position - lastPosition;
-
-	
-		if(Mass > targetMass)
-		{
-			isOrbiting = false;
-			Generator.instance.GetComponent<Generator>().LayerUp ();
-
-			transform.position = backgroundCamera.transform.position;
-			camera.transform.position = transform.position;
-
-			targetMass = targetMass * (targetMass/2f);
-		}
 
 		//Turn these off when you're not using them!
 		//Debug.Log(GetComponent<Body>().getVelocity().magnitude * 10f);
@@ -123,5 +113,12 @@ public class PlayerCharacter : MonoBehaviour {
 		return deltaPosition;
 	}
 
-
+	public void LevelUp()
+	{
+		isOrbiting = false;
+		Generator.instance.GetComponent<Generator>().LayerUp ();
+		
+		transform.position = backgroundCamera.transform.position;
+		camera.transform.position = transform.position;
+	}
 }
