@@ -17,7 +17,7 @@ public class Body : MonoBehaviour {
 	
 	private Vector3 maxScale;
 	private Vector3 cMaxScale;
-	
+
 	GameObject pc;
 	
 	ColorOption colorOpt;
@@ -63,7 +63,6 @@ public class Body : MonoBehaviour {
 	
 	public void Hit(Body b)
 	{
-		Debug.Log ("hiiit");
 		if (mass >= b.mass) 
 		{
 			mass += growth * b.mass;
@@ -80,13 +79,15 @@ public class Body : MonoBehaviour {
 		else
 		{
 			if (mass > 1.5) {
+
 				float massLost = mass * velocity.magnitude;
 				mass -= massLost;
 				//velocity = elasticity * -velocity;
 				velocity = setExitVelocity(b);
 				GetComponent<Explosion>().Explode(massLost, mass, velocity);
+
 				pc.BroadcastMessage ("StopOrbit");
-				
+									
 				float dim = Mathf.Pow (b.gameObject.renderer.bounds.size.x/2f, 0.5f);
 				Vector3 bPos = b.transform.position;
 				float bodyMass = b.mass;
@@ -167,5 +168,6 @@ public class Body : MonoBehaviour {
 		
 		return finalNormal + finalTangent;
 	}
-	
+
+
 }

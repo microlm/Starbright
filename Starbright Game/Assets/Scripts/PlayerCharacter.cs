@@ -18,8 +18,10 @@ public class PlayerCharacter : MonoBehaviour {
 	private Vector3 deltaPosition;
 	GameObject camera;
 	GameObject backgroundCamera;
-
+	FlashBehavior flash;
 	private float targetMass;
+
+	bool disabled = false;
 
 	public float MaxMass 
 	{
@@ -62,7 +64,8 @@ public class PlayerCharacter : MonoBehaviour {
 		lastPosition = transform.position;
 		camera = GameObject.Find ("Main Camera");
 		backgroundCamera = GameObject.Find ("Background Planets Camera");
-		targetMass = 7f;
+		flash = GameObject.Find ("Flash").GetComponent<FlashBehavior>();
+		targetMass = 5.2f;
 	}
 	
 	// Update is called once per frame
@@ -82,12 +85,34 @@ public class PlayerCharacter : MonoBehaviour {
 		if(Mass > targetMass)
 		{
 			isOrbiting = false;
-			Generator.instance.GetComponent<Generator>().LayerUp ();
 
-			transform.position = backgroundCamera.transform.position;
-			camera.transform.position = transform.position;
+			if(!flash.getFlash () && !disabled)
+			{
+				flash.Flash();
+				Generator.instance.GetComponent<Generator>().LayerUp ();
+				
+				transform.position = backgroundCamera.transform.position;
+				camera.transform.position = transform.position;
+			}
 
-			targetMass = targetMass * (targetMass/2f);
+			if(flash.getFlash () && !disabled)
+			{
+				disabled = true;
+				GameObject.Find ("Trail").GetComponent<TrailRenderer>().enabled = false;
+				GetComponent<Body>().enabled = false;
+			}
+
+			if(!flash.getFlash ())
+			{
+				GameObject.Find ("Trail").GetComponent<TrailRenderer>().enabled = true;
+				GetComponent<Body>().enabled = true;
+				targetMass = targetMass * (targetMass/2f);
+			}
+
+		}
+		else if(disabled)
+		{
+			disabled = false;
 		}
 
 		//Turn these off when you're not using them!
@@ -117,6 +142,7 @@ public class PlayerCharacter : MonoBehaviour {
 			isColliding = true;
 		}
 	}
+
 
 	public Vector3 getDeltaPosition()
 	{
