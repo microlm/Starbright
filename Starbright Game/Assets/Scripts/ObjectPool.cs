@@ -63,7 +63,6 @@ public class ObjectPool : MonoBehaviour
 			{
 				asteroid = (GameObject)Instantiate(pickAPrefab(farPrefabs), new Vector3(x, y, depth), Quaternion.identity);
 			}
-
 			Body asteroidScript = asteroid.GetComponent<Body>();
 			asteroidScript.mass = mass;
 			pool.Add(asteroid);
@@ -72,6 +71,16 @@ public class ObjectPool : MonoBehaviour
 		}
 		GameObject a = pool[nextFree];
 		a.rigidbody2D.transform.position = new Vector3(x, y, depth);
+		SpriteRenderer renderer;
+		if(!isFar)
+		{
+			renderer = pickAPrefab(prefabs).GetComponent<SpriteRenderer>();
+		}
+		else
+		{
+			renderer = pickAPrefab(farPrefabs).GetComponent<SpriteRenderer>();
+		}
+		a.GetComponent<SpriteRenderer>().sprite = renderer.sprite;
 		Body aScript = a.GetComponent<Body>();
 		aScript.mass = mass;
 		a.SetActive(true);

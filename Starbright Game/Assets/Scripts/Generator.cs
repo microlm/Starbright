@@ -166,7 +166,6 @@ public class Generator : MonoBehaviour {
 			{
 				int id = backgroundPool.addBody(a[0] + xOff, a[1] + yOff, backgroundDepth, a[2], true);
 				GameObject asteroid = backgroundPool.getBody(id);
-
 				asteroid.transform.parent = backgroundLayer.transform;
 				asteroid.layer = backgroundLayer.layer;
 				asteroid.rigidbody2D.collider2D.enabled = false;
@@ -227,5 +226,15 @@ public class Generator : MonoBehaviour {
 
 		backgroundPool.setEnableCollisions(false);
 		foregroundPool.setEnableCollisions(true);
+
+		foregroundChunks = backgroundChunks;
+		backgroundChunks = new Dictionary<float, int[]>();
+		for(float yOff = -1 * genRadius + yCenter ; yOff < genRadius + yCenter; yOff += areaHeight)
+		{
+			for(float xOff = -1 * genRadius + xCenter; xOff < genRadius + xCenter; xOff += areaWidth)
+			{
+				backgroundChunks.Add(posHash(xOff, yOff), generate(false, 3, xOff, yOff));	
+			}
+		}	
 	}
 }
