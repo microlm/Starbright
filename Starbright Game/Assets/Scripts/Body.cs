@@ -109,6 +109,13 @@ public class Body : MonoBehaviour {
 		
 		velocity += (G * mass * dist / Mathf.Pow (dist, orbitalStrength) * r);
 	}
+
+	public void Gravitiate(BlackHole b, float modifier = 1f) {
+		float dist = Vector2.Distance (b.Position, gameObject.transform.position);
+		Vector2 r = b.Position - gameObject.transform.position;
+		
+		velocity += (G * mass * dist * modifier / Mathf.Pow (dist, orbitalStrength) * r);
+	}
 	
 	// Update is called once per frame
 	void Update () {
