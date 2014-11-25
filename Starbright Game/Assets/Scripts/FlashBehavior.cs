@@ -3,12 +3,19 @@ using System.Collections;
 
 public class FlashBehavior : MonoBehaviour {
 
-	private bool flashed = false;
-	private float alpha = 0f;
-	private float localScale = 0f;
+	public AnimationCurve opacity;
+	public AnimationCurve size;
+	float timer;
+	float initSize;
+
+	private bool whiteFlashed = false;
+	private bool blackFlashed = false;
+
 	SpriteRenderer sprite;
-	private bool fade = false;
+
 	private float screenSize;
+	private float scale;
+
 	// Use this for initialization
 	void Start () {
 
@@ -20,60 +27,44 @@ public class FlashBehavior : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
-		if (flashed)
+		if (whiteFlashed)
 		{
-			if(!fade)
+			sprite.color = new Color (sprite.color.r, sprite.color.g, sprite.color.b, opacity.Evaluate (timer));
+			scale = size.Evaluate (timer) * screenSize;
+			sprite.transform.localScale = new Vector3(scale, scale, scale);
+			
+			timer += Time.deltaTime;
+
+			if(timer >= (opacity[opacity.length - 1].time - 0.01) && timer >= (size[size.length-1].time - 0.01))
 			{
-				Debug.Log ("localScale1 " + localScale);
-
-				if(alpha < 1f)
-				{
-					sprite.color = new Color(1f, 1f, 1f, alpha);
-					alpha += 0.02f;
-				}
-
-				if(localScale <= screenSize)
-				{
-					localScale += 0.8f;
-					transform.localScale = new Vector3(localScale, localScale, localScale);
-				}
-
-				if(alpha >= 1f && localScale > screenSize)
-				{
-					fade = true;
-				}
+				whiteFlashed = false;
 			}
 
-			if(fade)
+		}
+
+		if(blackFlashed)
+		{
+			sprite.color = new Color (0f, 0f, 0f, opacity.Evaluate (timer));
+			scale = size.Evaluate (timer) * screenSize;
+			sprite.transform.localScale = new Vector3(scale, scale, scale);
+			
+			timer += Time.deltaTime;
+			
+			if(timer >= (opacity[opacity.length - 1].time - 0.01) && timer >= (size[size.length-1].time - 0.01))
 			{
-				Debug.Log ("localScale2 " + localScale + " " + alpha);
-
-				if(alpha >= 0f && localScale > 0f)
-				{
-					localScale -= screenSize/6f;
-					alpha -= 1f/6f;
-					transform.localScale = new Vector3(localScale, localScale, localScale);
-					sprite.color = new Color(1f, 1f, 1f, alpha);
-				}
-
-				else
-				{
-					transform.localScale = new Vector3(0f, 0f, 0f);
-					sprite.color = new Color(1f, 1f, 1f, alpha);
-					flashed = false;
-					fade = false;
-				}
+				Debug.Log ("off you fiend");
+				blackFlashed = false;
 			}
 		}
 	}
 
-	public void Flash()
+	public void whiteFlash()
 	{
 		transform.position = GameObject.Find ("Background Planets Camera").transform.position;
-		flashed = true;
+		whiteFlashed = true;
 		float screenHeight = Camera.main.orthographicSize * 2f;
 		float screenWidth = screenHeight / Screen.height * Screen.width;
-
+		timer = 0f;
 		if(screenHeight > screenWidth)
 		{
 			screenSize = (screenHeight/(sprite.sprite.bounds.size.y))*2f;
@@ -83,16 +74,44 @@ public class FlashBehavior : MonoBehaviour {
 			screenSize = (screenWidth/(sprite.sprite.bounds.size.x))*2f;
 		}
 	}
-	
 
-	public void setFlash(bool f)
+	public void blackFlash()
 	{
-		Debug.Log ("SET FLASH");
-		flashed = f;
+		transform.position = GameObject.Find ("Main Camera").transform.position;
+		blackFlashed = true;
+		timer = 0f;
+		float screenHeight = Camera.main.orthographicSize * 2f;
+		float screenWidth = screenHeight / Screen.height * Screen.width;
+		
+		if(screenHeight > screenWidth)
+		{
+			screenSize = (screenHeight/(sprite.sprite.bounds.size.y))*2f;
+		}
+		else
+		{
+			screenSize = (screenWidth/(sprite.sprite.bounds.size.x))*2f;
+		}
+
 	}
 
-	public bool getFlash()
+	public void setWhiteFlash(bool f)
 	{
-		return flashed;
+		Debug.Log ("SET FLASH");
+		whiteFlashed = f;
+	}
+
+	public bool getWhiteFlash()
+	{
+		return whiteFlashed;
+	}
+
+	public void setBlackFlash(bool f)
+	{
+		blackFlashed = true;
+	}
+
+	public bool getBlackFlash()
+	{
+		return blackFlashed;
 	}
 }

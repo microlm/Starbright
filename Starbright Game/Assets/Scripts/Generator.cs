@@ -228,4 +228,27 @@ public class Generator : MonoBehaviour {
 		backgroundPool.setEnableCollisions(false);
 		foregroundPool.setEnableCollisions(true);
 	}
+
+	public void LayerDown()
+	{
+
+		// switch object pools
+		ObjectPool tempPool = foregroundPool;
+		foregroundPool = backgroundPool;
+		backgroundPool = tempPool;
+		foregroundPool.drain();
+		
+		//switch layers on objects
+		backgroundPool.setPoolLayer(backgroundLayer.layer);
+		backgroundPool.setParent (backgroundLayer);
+		
+		foregroundPool.setPoolLayer(foregroundLayer.layer);
+		foregroundPool.setParent (foregroundLayer);
+		
+		// enable collisions for new foreground planets
+		// and disable for background planets
+		
+		backgroundPool.setEnableCollisions(false);
+		foregroundPool.setEnableCollisions(true);
+	}
 }
