@@ -173,7 +173,7 @@ public class CameraBehavior : MonoBehaviour {
 	{
 		xratio = center.x/((maxX-minX)*border);
 		yratio = center.y/((maxY-minY)*border);
-		Vector2 velocity = player.GetComponent<Body>().getVelocity ();
+		Vector2 velocity = player.GetComponent<Body>().Velocity;
 		
 		float growth = projectedGrowthRate();
 		//camera.orthographicSize = Mathf.Lerp (camera.orthographicSize, camera.orthographicSize*growth, Time.deltaTime*ease);
@@ -186,7 +186,7 @@ public class CameraBehavior : MonoBehaviour {
 	{
 		float projectedX, projectedY, projected, growth;
 		float newArea, oldArea;
-		Vector2 v = player.GetComponent<Body>().getVelocity ();
+		Vector2 v = player.GetComponent<Body>().Velocity;
 		Vector3 vel = new Vector3(v.x, v.y, 0);
 		projectedX = 0;
 		projectedY = 0;

@@ -50,6 +50,15 @@ public class Body : MonoBehaviour {
 		}
 	}
 
+	public Vector2 Velocity
+	{
+
+		get
+		{
+			return velocity;
+		}
+	}
+
 	public Color GlowColor 
 	{
 		get 
