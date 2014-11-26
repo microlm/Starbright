@@ -43,7 +43,6 @@ public class PlayerCharacter : MonoBehaviour {
 		set
 		{
 			BodyComponent.Mass = value;
-			Debug.Log("Artificially changing mass...");
 		}
 	}
 
@@ -55,16 +54,19 @@ public class PlayerCharacter : MonoBehaviour {
 		}
 	}
 
-	public bool IsOrbiting() {
+	public bool IsOrbiting() 
+	{
 		return isOrbiting;
 	}
 
-	public bool IsColliding() {
+	public bool IsColliding() 
+	{
 		return isColliding;
 	}
 
 	// Use this for initialization
-	void Start () {
+	void Start () 
+	{
 		instance = this;
 		isOrbiting = false;
 		isColliding = true;
@@ -80,8 +82,8 @@ public class PlayerCharacter : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-
+	void Update () 
+	{
 		if (isOrbiting) {
 			GetComponent<Body>().Gravitiate (body);
 		}
@@ -96,13 +98,11 @@ public class PlayerCharacter : MonoBehaviour {
 		{
 			isOrbiting = false;
 			LevelUp();
-
 		}
 
 		else if(Mass < downMass)
 		{
 			isOrbiting = false;
-			Debug.Log ("boooo");
 			LevelDown();
 		}
 
@@ -110,9 +110,6 @@ public class PlayerCharacter : MonoBehaviour {
 		{
 			disabled = false;
 		}
-
-		//Turn these off when you're not using them!
-		//Debug.Log(GetComponent<Body>().getVelocity().magnitude * 10f);
 	}
 
 	void Orbit (Body b) {
@@ -138,8 +135,7 @@ public class PlayerCharacter : MonoBehaviour {
 			isColliding = true;
 		}
 	}
-
-
+	
 	public Vector3 getDeltaPosition()
 	{
 		return deltaPosition;
@@ -147,7 +143,6 @@ public class PlayerCharacter : MonoBehaviour {
 
 	public void LevelUp()
 	{
-
 		if(!flash.getWhiteFlash () && !disabled)
 		{
 			flash.whiteFlash();
@@ -159,7 +154,6 @@ public class PlayerCharacter : MonoBehaviour {
 		
 		if(flash.getWhiteFlash () && !disabled)
 		{
-			Debug.Log ("howdy howdy");
 			disabled = true;
 			GameObject.Find ("Trail").GetComponent<TrailRenderer>().enabled = false;
 			GetComponent<Body>().enabled = false;
@@ -170,10 +164,8 @@ public class PlayerCharacter : MonoBehaviour {
 			GameObject.Find ("Trail").GetComponent<TrailRenderer>().enabled = true;
 			GetComponent<Body>().enabled = true;
 			targetMass = targetMass * (targetMass/2f);
-			Debug.Log ("Howdyyyyyy");
 		}
 		isOrbiting = false;
-	
 	}
 
 	public void LevelDown()

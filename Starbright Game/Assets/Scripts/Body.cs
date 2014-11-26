@@ -49,7 +49,19 @@ public class Body : MonoBehaviour {
 			gameObject.transform.position = new Vector3(value.x, value.y, z);
 		}
 	}
-	
+
+	public Color GlowColor 
+	{
+		get 
+		{ 
+			return gameObject.GetComponentsInChildren<SpriteRenderer> () [1].color; 
+		}
+		set 
+		{ 
+			gameObject.GetComponentsInChildren<SpriteRenderer> () [1].color = value; 
+		}
+	}
+
 	// Use this for initialization
 	void Start () {
 		velocity = initialVel;
@@ -63,6 +75,43 @@ public class Body : MonoBehaviour {
 		pc = GameObject.Find("PC");
 		camera = GameObject.Find ("Main Camera");
 		score = GameObject.Find ("ScoreObject").GetComponent<ScoreManager> ();
+	}
+
+	// Update is called once per frame
+	void Update () {
+		//check speed
+		while (velocity.magnitude > mass*maxSpeed)
+			velocity *= .95f;
+		
+		//move
+		Position += new Vector3(velocity.x * Time.deltaTime * 100, velocity.y * Time.deltaTime * 100, 0);
+		
+		//correct size
+		gameObject.transform.localScale = Vector3.Lerp (gameObject.transform.localScale, maxScale / 20 * mass, Time.deltaTime);
+		collider2D.transform.localScale = cMaxScale / 20 * mass;
+		
+		//update color
+		GetComponent<SpriteRenderer>().color = colorOpt.assignColor(mass);
+		
+	}
+	
+	void OnMouseDown () 
+	{
+		//playor orbits this body
+		pc.BroadcastMessage ("Orbit", this);
+		SetGlowOpacity(0.8f);
+	}
+	
+	void OnMouseUp() 
+	{
+		//player stops orbiting this body
+		pc.BroadcastMessage ("StopOrbit", this);
+		SetGlowOpacity(0.5f);
+	}
+
+	void SetGlowOpacity(float value) 
+	{
+		GlowColor = Color.Lerp (Color.white, Color.clear, 1f - value);
 	}
 	
 	public void Hit(Body b)
@@ -116,50 +165,6 @@ public class Body : MonoBehaviour {
 		
 		velocity += (G * mass * dist * modifier / Mathf.Pow (dist, orbitalStrength) * r);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		//check speed
-		while (velocity.magnitude > mass*maxSpeed)
-			velocity *= .95f;
-
-		//move
-		Position += new Vector3(velocity.x, velocity.y, 0);
-		
-		//correct size
-		gameObject.transform.localScale = Vector3.Lerp (gameObject.transform.localScale, maxScale / 20 * mass, Time.deltaTime);
-		collider2D.transform.localScale = cMaxScale / 20 * mass;
-		
-		//update color
-		GetComponent<SpriteRenderer>().color = colorOpt.assignColor(mass);
-		
-	}
-	
-	void OnMouseDown () {
-		pc.BroadcastMessage ("Orbit", this);
-	}
-	
-	void OnMouseUp() {
-		pc.BroadcastMessage ("StopOrbit", this);
-	}
-	
-	
-	void Stop()
-	{
-		velocity.x = 0f;
-		velocity.y = 0f;
-	}
-	
-	public Vector2 getVelocity()
-	{
-		return velocity;
-	}
-	
-/*
-	//return current radius of body based on mass and initial width of texture
-	public static float radiusFromMass(float mass) {
-		return radius / 6 * mass ;
-	}*/
 
 	public Vector2 setExitVelocity(Body b)
 	{
@@ -179,6 +184,4 @@ public class Body : MonoBehaviour {
 		
 		return finalNormal + finalTangent;
 	}
-
-
 }
