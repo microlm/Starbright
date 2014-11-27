@@ -135,8 +135,9 @@ public class Body : MonoBehaviour {
 			}
 			float massLost = mass * velocity.magnitude;
 			GetComponent<Explosion>().Explode(massLost, mass, velocity);
-			score.addScore(Mathf.FloorToInt(b.Mass));
 			b.gameObject.SetActive(false);
+
+			score.AddScore(Mathf.FloorToInt(b.Mass));
 		}
 		else
 		{
@@ -153,6 +154,8 @@ public class Body : MonoBehaviour {
 				float dim = Mathf.Pow (b.gameObject.renderer.bounds.size.x/2f, 0.5f);
 				Vector3 bPos = b.transform.position;
 				float bodyMass = b.mass;
+
+				score.ResetMultiplier();
 				
 				//GameObject.Destroy(b.gameObject);
 				//Smash.generateAsteroids(bPos.x, bPos.y, mass, bodyMass, dim);
