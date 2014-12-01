@@ -76,7 +76,6 @@ public class PlayerCharacter : MonoBehaviour {
 		backgroundCamera = GameObject.Find ("Background Planets Camera");
 
 		flash = GameObject.Find ("Flash").GetComponent<FlashBehavior>();
-		targetMass = 10f;
 		downMass = 4;
 
 	}
@@ -94,13 +93,7 @@ public class PlayerCharacter : MonoBehaviour {
 
 		deltaPosition = transform.position - lastPosition;
 
-		if(Mass > targetMass)
-		{
-			isOrbiting = false;
-			LevelUp();
-		}
-
-		else if(Mass < downMass)
+		if(Mass < downMass)
 		{
 			isOrbiting = false;
 			LevelDown();
