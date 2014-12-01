@@ -5,8 +5,6 @@ public class ScoreManager : MonoBehaviour {
 
 	//prefab for text that pops up when collecting body
 	public GameObject scoreIndicator;
-	public GameObject multiplierBar;
-	public GameObject player;
 	public float multiplierTimeLimit;
 	public float multiplierCap;
 
@@ -14,10 +12,12 @@ public class ScoreManager : MonoBehaviour {
 	private static int score;
 	private float time;
 	private int multiplier;
+	private static ScoreManager instance;
 
 	// Use this for initialization
 	void Start () 
 	{
+		instance = this;
 		score = 0;
 		time = 0f;
 		multiplier = 1;
@@ -44,6 +44,14 @@ public class ScoreManager : MonoBehaviour {
 		guiText.text = Score.ToString();
 	}
 
+	public static ScoreManager Instance
+	{
+		get 
+		{
+			return instance;
+		}
+	}
+
 	public int Score 
 	{
 		get 
@@ -60,6 +68,25 @@ public class ScoreManager : MonoBehaviour {
 		}
 	}
 
+	/** Time remaining for multiplier to be active */
+	public float MultiplierTime
+	{
+		get
+		{
+			return time;
+		}
+	}
+
+	/** Total time that the multiplier will be active */
+	public float MultiplierTimeLimit
+	{
+		get 
+		{
+			return multiplierTimeLimit; 
+		}
+	}
+
+	/** Removes multiplier bonus */
 	public void ResetMultiplier()
 	{
 		multiplier = 1;
@@ -81,7 +108,7 @@ public class ScoreManager : MonoBehaviour {
 		if (multiplier > 1)
 			scoreText += " x " + multiplier.ToString();
 		popUp.guiText.text = scoreText;
-		popUp.guiText.pixelOffset = Camera.main.WorldToScreenPoint (player.transform.position);
+		popUp.guiText.pixelOffset = Camera.main.WorldToScreenPoint (PlayerCharacter.instance.transform.position);
 		Destroy(popUp, 3);
 	}
 }
