@@ -108,7 +108,6 @@ public class ObjectPool : MonoBehaviour
 	{
 		int num = objs.Length;
 		int pick = Mathf.FloorToInt(UnityEngine.Random.Range (0, num));
-		//Debug.Log (pick);
 		return objs[pick];
 	}
 
@@ -129,5 +128,17 @@ public class ObjectPool : MonoBehaviour
 		for(int i = 0; i < pool.Count; i++)
 			pool[i].rigidbody2D.collider2D.enabled = enable;
 	}
+
+	public void setEnabledChildren(bool enabled)
+	{
+		for (int i=0; i < pool.Count; i++)
+		{
+			foreach(Transform child in pool[i].transform)
+			{
+				child.gameObject.SetActive (enabled);
+			}
+		}
+	}
+	
 }
 

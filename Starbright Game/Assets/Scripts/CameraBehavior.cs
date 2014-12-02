@@ -23,14 +23,12 @@ public class CameraBehavior : MonoBehaviour {
 	protected float minX, minY, maxX, maxY;
 	protected float mapX=100.0f;
 	protected float mapY = 100.0f;
-	protected float border = 0.8f;
+	protected float border = 0.85f;
 	
 	protected float vertExtent, horzExtent;
 
 	protected Vector3 center;
 	protected float xratio, yratio;
-
-	protected bool outShow;
 
 	protected float cameraDepth;
 	
@@ -157,13 +155,7 @@ public class CameraBehavior : MonoBehaviour {
 
 		if((maxPos.x < border && minPos.x > 1 - border) && (maxPos.y < border && minPos.y > 1 - border))
 		{
-			outShow = true;
 			return true;
-		}
-
-		if(outShow)
-		{
-			outShow = false;
 		}
 
 		return false;
@@ -190,25 +182,34 @@ public class CameraBehavior : MonoBehaviour {
 		Vector3 vel = new Vector3(v.x, v.y, 0);
 		projectedX = 0;
 		projectedY = 0;
-
+		
 		Vector3 maxPos = camera.WorldToViewportPoint(player.transform.position + player.renderer.bounds.size/2f);
 		Vector3 minPos = camera.WorldToViewportPoint(player.transform.position - player.renderer.bounds.size/2f);
-
+		
 		growth = 0;
-
+		
 		if(maxPos.x > border || minPos.x < (1 - border))
 		{
-			projectedX = Mathf.Abs (vel.x);
-		}
-
-		if(maxPos.y > border || minPos.y < (1 - border))
-		{
-			projectedY = Mathf.Abs (vel.y);
+			if(maxPos.x > border)
+			{
+				projectedX = (maxPos.x - border) * (maxX - minX);
+			}
+			else
+			{
+				projectedX = ((1 - border) - minPos.x) * (maxX - minX);
+			}
 		}
 		
-		if(player.transform.position.y + player.renderer.bounds.size.y/2f > maxY || player.transform.position.y - player.renderer.bounds.size.y/2f < minY)
+		if(maxPos.y > border || minPos.y < (1 - border))
 		{
-			projectedY = Mathf.Abs (vel.y);
+			if(maxPos.y > border)
+			{
+				projectedY = (maxPos.y - border) * (maxY - minY);
+			}
+			else
+			{
+				projectedY = ((1 - border) - minPos.y) * (maxY - minY);
+			}
 		}
 		
 		if(projectedX > projectedY)

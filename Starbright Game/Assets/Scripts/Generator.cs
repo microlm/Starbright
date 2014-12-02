@@ -231,6 +231,8 @@ public class Generator : MonoBehaviour {
 			ObjectPool tempPool = foregroundPool;
 			foregroundPool = backgroundPool;
 			backgroundPool = tempPool;
+			backgroundPool.setEnabledChildren(false);
+			foregroundPool.setEnabledChildren(true);
 			backgroundPool.drain();
 
 			//switch layers on objects
