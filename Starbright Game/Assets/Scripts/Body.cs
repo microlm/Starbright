@@ -59,15 +59,11 @@ public class Body : MonoBehaviour {
 		}
 	}
 
-	public Color GlowColor 
+	public Glow GlowChild
 	{
 		get 
 		{ 
-			return gameObject.GetComponentsInChildren<SpriteRenderer> () [1].color; 
-		}
-		set 
-		{ 
-			gameObject.GetComponentsInChildren<SpriteRenderer> () [1].color = value; 
+			return gameObject.GetComponentsInChildren<Glow>()[0]; 
 		}
 	}
 
@@ -108,21 +104,16 @@ public class Body : MonoBehaviour {
 	{
 		//playor orbits this body
 		pc.BroadcastMessage ("Orbit", this);
-		SetGlowOpacity(0.8f);
+		GlowChild.GlowColor = Glow.BrightWhite;
 	}
 	
 	void OnMouseUp() 
 	{
 		//player stops orbiting this body
 		pc.BroadcastMessage ("StopOrbit", this);
-		SetGlowOpacity(0.5f);
+		GlowChild.GlowColor = Glow.DimWhite;
 	}
 
-	void SetGlowOpacity(float value) 
-	{
-		GlowColor = Color.Lerp (Color.white, Color.clear, 1f - value);
-	}
-	
 	public void Hit(Body b)
 	{
 		if (mass >= b.mass) 
