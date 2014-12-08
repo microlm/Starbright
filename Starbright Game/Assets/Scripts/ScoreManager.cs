@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class ScoreManager : MonoBehaviour {
@@ -41,7 +42,7 @@ public class ScoreManager : MonoBehaviour {
 	//updates the GUI
 	private void updateScore() 
 	{
-		guiText.text = Score.ToString();
+		Text = Score.ToString();
 	}
 
 	public static ScoreManager Instance
@@ -49,6 +50,13 @@ public class ScoreManager : MonoBehaviour {
 		get 
 		{
 			return instance;
+		}
+	}
+
+	private string Text {
+		set 
+		{ 
+			GetComponent<Text>().text = value; 
 		}
 	}
 

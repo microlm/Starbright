@@ -22,7 +22,6 @@ public class Body : MonoBehaviour {
 	
 	ColorOption colorOpt;
 	GameObject camera;
-	ScoreManager score;
 		
 	public float Mass 
 	{
@@ -79,7 +78,6 @@ public class Body : MonoBehaviour {
 		
 		pc = GameObject.Find("PC");
 		camera = GameObject.Find ("Main Camera");
-		score = GameObject.Find ("ScoreObject").GetComponent<ScoreManager> ();
 	}
 
 	// Update is called once per frame
@@ -128,7 +126,7 @@ public class Body : MonoBehaviour {
 			GetComponent<Explosion>().Explode(massLost, mass, velocity);
 			b.gameObject.SetActive(false);
 
-			score.AddScore(Mathf.FloorToInt(b.Mass));
+			ScoreManager.Instance.AddScore(Mathf.FloorToInt(b.Mass));
 		}
 		else
 		{
@@ -146,10 +144,7 @@ public class Body : MonoBehaviour {
 				Vector3 bPos = b.transform.position;
 				float bodyMass = b.mass;
 
-				score.ResetMultiplier();
-				
-				//GameObject.Destroy(b.gameObject);
-				//Smash.generateAsteroids(bPos.x, bPos.y, mass, bodyMass, dim);
+				ScoreManager.Instance.ResetMultiplier();
 			}
 		}
 		
