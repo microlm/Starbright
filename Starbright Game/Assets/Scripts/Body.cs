@@ -5,7 +5,8 @@ public class Body : MonoBehaviour {
 	
 	public static float elasticity = 0.3f;
 	public static float orbitalStrength = 2f;
-	
+
+	public bool playerCharacter;
 	private float G = .0001f;
 	private float growth = .1f;
 	
@@ -82,19 +83,23 @@ public class Body : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		//check speed
-		while (velocity.magnitude > mass*maxSpeed)
-			velocity *= .95f;
-		
-		//move
-		Position += new Vector3(velocity.x * Time.deltaTime * 100, velocity.y * Time.deltaTime * 100, 0);
-		
-		//correct size
-		gameObject.transform.localScale = Vector3.Lerp (gameObject.transform.localScale, maxScale / 20 * mass, Time.deltaTime);
-		collider2D.transform.localScale = cMaxScale / 20 * mass;
-		
-		//update color
-		GetComponent<SpriteRenderer>().color = colorOpt.assignColor(mass);
+
+		if(playerCharacter)
+		{
+			//check speed
+			while (velocity.magnitude > mass*maxSpeed)
+				velocity *= .95f;
+			
+			//move
+			Position += new Vector3(velocity.x * Time.deltaTime * 100, velocity.y * Time.deltaTime * 100, 0);
+			
+			//correct size
+			gameObject.transform.localScale = Vector3.Lerp (gameObject.transform.localScale, maxScale / 20 * mass, Time.deltaTime);
+			collider2D.transform.localScale = cMaxScale / 20 * mass;
+			
+			//update color
+			GetComponent<SpriteRenderer>().color = colorOpt.assignColor(mass);
+		}
 		
 	}
 	

@@ -232,6 +232,7 @@ public class Generator : MonoBehaviour {
 			foregroundPool = backgroundPool;
 			backgroundPool = tempPool;
 			backgroundPool.setEnabledChildren(false);
+			foregroundPool.removePCOverlap(GameObject.Find ("PC").GetComponent<CircleCollider2D>());
 			foregroundPool.setEnabledChildren(true);
 			backgroundPool.drain();
 
@@ -244,6 +245,8 @@ public class Generator : MonoBehaviour {
 
 			// enable collisions for new foreground planets
 			// and disable for background planets
+
+			foregroundPool.setForegroundImage();
 
 			backgroundPool.setEnableCollisions(false);
 			foregroundPool.setEnableCollisions(true);

@@ -13,12 +13,12 @@ using System;
 
 public class ObjectPool : MonoBehaviour
 {
-	public GameObject asteroidPrefab;
+	public GameObject asteroidPrefab1;
 	public GameObject asteroidPrefab2;
 	public GameObject asteroidPrefab3;
 	public GameObject asteroidPrefab4;
 	public GameObject asteroidPrefab5;
-	public GameObject farAsteroidPrefab;
+	public GameObject farAsteroidPrefab1;
 	public GameObject farAsteroidPrefab2;
 	public GameObject farAsteroidPrefab3;
 	public GameObject farAsteroidPrefab4;
@@ -34,8 +34,8 @@ public class ObjectPool : MonoBehaviour
 	{
 		pool = new List<GameObject>();
 		isFree = new List<Boolean>();
-		prefabs = new GameObject[5] {asteroidPrefab, asteroidPrefab2, asteroidPrefab3, asteroidPrefab4, asteroidPrefab5};
-		farPrefabs = new GameObject[5] {farAsteroidPrefab, farAsteroidPrefab2, farAsteroidPrefab3, farAsteroidPrefab4, farAsteroidPrefab5};
+		prefabs = new GameObject[5] {asteroidPrefab1, asteroidPrefab2, asteroidPrefab3, asteroidPrefab4, asteroidPrefab5};
+		farPrefabs = new GameObject[5] {farAsteroidPrefab1, farAsteroidPrefab2, farAsteroidPrefab3, farAsteroidPrefab4, farAsteroidPrefab5};
 	}
 
 	void Start()
@@ -138,6 +138,34 @@ public class ObjectPool : MonoBehaviour
 				child.gameObject.SetActive (enabled);
 			}
 		}
+	}
+
+	public void setForegroundImage()
+	{
+		for(int i=0; i < pool.Count; i++)
+		{
+			string name = pool[i].name;
+			int x = Int32.Parse(name[name.Length - 8] +"");
+
+			pool[i].GetComponent<SpriteRenderer>().sprite = prefabs[x - 1].GetComponent<SpriteRenderer>().sprite;
+		}
+	}
+	/*---------------------------------------------
+	 * Used during layering up/down only! Removes
+	 * objects which overlap with the player 
+	 * character.
+	 * --------------------------------------------*/
+	public void removePCOverlap(CircleCollider2D pc)
+	{
+		Debug.Log("Get rid of shit");
+		for(int i = 0; i < pool.Count; i++)
+		{
+			if(pc.bounds.Intersects(pool[i].GetComponent<CircleCollider2D>().bounds))
+			{
+				removeBody(i);
+			}
+		}
+
 	}
 	
 }

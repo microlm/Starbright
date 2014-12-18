@@ -77,7 +77,7 @@ public class PlayerCharacter : MonoBehaviour {
 
 		flash = GameObject.Find ("Flash").GetComponent<FlashBehavior>();
 		downMass = 4;
-
+		targetMass = GameObject.Find ("Progress Bubble").GetComponent<ProgressCircle>().TargetSize;
 	}
 	
 	// Update is called once per frame
@@ -92,8 +92,14 @@ public class PlayerCharacter : MonoBehaviour {
 		}
 
 		deltaPosition = transform.position - lastPosition;
-
-		if(Mass < downMass)
+		Debug.Log (Mass + " " + targetMass);
+		if(Mass >= targetMass)
+		{
+			isOrbiting = false;
+			Debug.Log ("LEVELING UP");
+			LevelUp ();
+		}
+		else if(Mass < downMass)
 		{
 			isOrbiting = false;
 			LevelDown();
@@ -139,28 +145,26 @@ public class PlayerCharacter : MonoBehaviour {
 		if(!flash.getWhiteFlash () && !disabled)
 		{
 			flash.whiteFlash();
-			Generator.instance.GetComponent<Generator>().LayerUp ();
-			
-			transform.position = backgroundCamera.transform.position;
-			camera.transform.position = transform.position;
-		}
-		
-		if(flash.getWhiteFlash () && !disabled)
-		{
+
 			disabled = true;
 			GameObject.Find ("Trail").GetComponent<TrailRenderer>().enabled = false;
 			GetComponent<Body>().enabled = false;
+			Generator.instance.GetComponent<Generator>().LayerUp ();
+			transform.position = backgroundCamera.transform.position;
+			camera.transform.position = transform.position;
 		}
+	
 		
-		if(!flash.getWhiteFlash ())
+		if(!flash.getWhiteFlash () && disabled)
 		{
 			GameObject.Find ("Trail").GetComponent<TrailRenderer>().enabled = true;
+			targetMass = GameObject.Find ("Progress Bubble").GetComponent<ProgressCircle>().TargetSize;
 			GetComponent<Body>().enabled = true;
-			targetMass = targetMass * (targetMass/2f);
+			disabled = false;
 		}
 		isOrbiting = false;
 	}
-
+	
 	public void LevelDown()
 	{
 		

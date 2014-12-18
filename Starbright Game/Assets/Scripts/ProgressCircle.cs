@@ -33,14 +33,12 @@ public class ProgressCircle : MonoBehaviour {
 
 		if (Input.GetKeyDown(KeyCode.LeftShift)) {
 			PlayerCharacter.instance.Mass = targetSize;
-			LevelUp();
-			Debug.Log ("Increase level...");
+			LevelUp ();
 		}
 	}
 
 	void LevelUp()
 	{
-		PlayerCharacter.instance.LevelUp();
 		targetSize *= incrementSize;
 		Scale ();
 	}
@@ -54,4 +52,5 @@ public class ProgressCircle : MonoBehaviour {
 	{
 		transform.localScale = maxScale / 20 * targetSize;
 	}
+	
 }

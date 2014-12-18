@@ -37,6 +37,7 @@ public class FlashBehavior : MonoBehaviour {
 
 			if(timer >= (opacity[opacity.length - 1].time - 0.01) && timer >= (size[size.length-1].time - 0.01))
 			{
+				Debug.Log ("HOWDY HOWDY");
 				whiteFlashed = false;
 			}
 
@@ -52,7 +53,6 @@ public class FlashBehavior : MonoBehaviour {
 			
 			if(timer >= (opacity[opacity.length - 1].time - 0.01) && timer >= (size[size.length-1].time - 0.01))
 			{
-				Debug.Log ("off you fiend");
 				blackFlashed = false;
 			}
 		}
@@ -96,7 +96,6 @@ public class FlashBehavior : MonoBehaviour {
 
 	public void setWhiteFlash(bool f)
 	{
-		Debug.Log ("SET FLASH");
 		whiteFlashed = f;
 	}
 
