@@ -48,7 +48,7 @@ public class ObjectPool : MonoBehaviour
 		//Debug.Log(pool.Count);
 	}
 
-	public int addBody(float x, float y, float depth, float mass, bool isFar)
+	public int addBody(float x, float y, float depth, float mass, bool isFar, bool isBlackHole)
 	{
 		int nextFree = 0;
 		while(nextFree < isFree.Count && !(isFree[nextFree] || !pool[nextFree].activeSelf)) nextFree++;

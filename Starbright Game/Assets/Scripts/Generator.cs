@@ -36,12 +36,15 @@ public class Generator : MonoBehaviour {
 	public GameObject foregroundLayer;
 	public GameObject backgroundLayer;
 
+	private System.Random rand;
+
 	void Start () 
 	{	
 		if(instance == null)
 		{
 			instance = this;
 		}
+		rand = new System.Random();
 		foregroundChunks = new Dictionary<float, int[]>();
 		backgroundChunks = new Dictionary<float, int[]>();
 		xCenter = 0;
@@ -173,12 +176,15 @@ public class Generator : MonoBehaviour {
 		float[][] asteroids = ProceduralGeneration.generate(areaWidth, areaHeight, minDensity / size, densityRange / size, genChance, minGenSize, genSizeRange, minGenSpacing,
 		                                                    genSpacingRange, minAsteroidSize * size, asteroidSizeRange * size, sizeDistribution);
 		List<int> ids = new List<int>();
-		
+		float bhChance = blackHoleChance.Evaluate (((float)currentLayer) / ((float)(currentLayer + 1)));
+		bool isBlackHole = false;
+
 		foreach(float[] a in asteroids)
 		{
+			isBlackHole = rand.NextDouble() < bhChance;
 			if(isForeground)
 			{
-				int id = foregroundPool.addBody(a[0] + xOff, a[1] + yOff, foregroundDepth, a[2], false);
+				int id = foregroundPool.addBody(a[0] + xOff, a[1] + yOff, foregroundDepth, a[2], false, isBlackHole);
 				GameObject asteroid = foregroundPool.getBody(id);
 				asteroid.transform.parent = foregroundLayer.transform;
 				asteroid.layer = foregroundLayer.layer;
@@ -186,7 +192,7 @@ public class Generator : MonoBehaviour {
 			}
 			else
 			{
-				int id = backgroundPool.addBody(a[0] + xOff, a[1] + yOff, backgroundDepth, a[2], true);
+				int id = backgroundPool.addBody(a[0] + xOff, a[1] + yOff, backgroundDepth, a[2], true, isBlackHole);
 				GameObject asteroid = backgroundPool.getBody(id);
 				asteroid.transform.parent = backgroundLayer.transform;
 				asteroid.layer = backgroundLayer.layer;
