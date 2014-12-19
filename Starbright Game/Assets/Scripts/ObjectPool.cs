@@ -146,10 +146,22 @@ public class ObjectPool : MonoBehaviour
 		{
 			string name = pool[i].name;
 			int x = Int32.Parse(name[name.Length - 8] +"");
-
+			Debug.Log(name);
 			pool[i].GetComponent<SpriteRenderer>().sprite = prefabs[x - 1].GetComponent<SpriteRenderer>().sprite;
 		}
 	}
+
+	public void setBackgroundImage()
+	{
+		for(int i=0; i < pool.Count; i++)
+		{
+			string name = pool[i].name;
+			int x = Int32.Parse(name[name.Length - 12] +"");
+			
+			pool[i].GetComponent<SpriteRenderer>().sprite = farPrefabs[x - 1].GetComponent<SpriteRenderer>().sprite;
+		}
+	}
+
 	/*---------------------------------------------
 	 * Used during layering up/down only! Removes
 	 * objects which overlap with the player 

@@ -30,7 +30,7 @@ public class ProceduralGeneration
 	public static float[][] generate(float areaWidth, float areaHeight, float minDensity, float densityRange,
 	                               double genChance, int minGenSize, int genSizeRange, float minGenSpacing,
 	                               float genSpacingRange, float minAsteroidSize, float asteroidSizeRange,
-	                               Gradient sizeDistribution)
+	                               AnimationCurve sizeDistribution)
 	{
 		AsteroidQuadTree asteroids = new AsteroidQuadTree(0, 0, areaWidth, areaHeight, minAsteroidSize + asteroidSizeRange);
 
@@ -47,7 +47,7 @@ public class ProceduralGeneration
 
 
 			//Pick a size for the asteroid
-            float seedSize = minAsteroidSize + (1 - sizeDistribution.Evaluate((float)rand.NextDouble()).grayscale) * asteroidSizeRange;
+            float seedSize = minAsteroidSize + (sizeDistribution.Evaluate((float)rand.NextDouble())) * asteroidSizeRange;
 
 			//Grow further generations out from the seed asteroid
 			List<float[]> group = growSeed (seedX, seedY, seedSize, genChance, minGenSize, genSizeRange, minGenSpacing, genSpacingRange, minAsteroidSize, asteroidSizeRange, sizeDistribution);
@@ -59,7 +59,7 @@ public class ProceduralGeneration
 	//Recursively build a cluster from a seed point
 	public static List<float[]> growSeed(float x, float y, float size, double genChance, int minGenSize,
                                    int genSizeRange, float minGenSpacing, float genSpacingRange,
-                                   float minAsteroidSize, float asteroidSizeRange, Gradient sizeDistribution)
+                                   float minAsteroidSize, float asteroidSizeRange, AnimationCurve sizeDistribution)
 	{
 		List<float[]> asteroids = new List<float[]>();
 
@@ -87,7 +87,7 @@ public class ProceduralGeneration
 			float nextY = y + distance * (float)Math.Sin(angle);
 
 			//Add the child asteroid
-			float nextSize = minAsteroidSize + (1 - sizeDistribution.Evaluate((float)(1 - rand.NextDouble())).grayscale) * asteroidSizeRange;
+			float nextSize = minAsteroidSize + (sizeDistribution.Evaluate((float)(1 - rand.NextDouble()))) * asteroidSizeRange;
 
 			//Use the child asteroid as a new seed, possibly producing its own children
 			asteroids.AddRange(growSeed(nextX, nextY, nextSize, genChance, minGenSize, genSizeRange, minGenSpacing, genSpacingRange, minAsteroidSize, asteroidSizeRange, sizeDistribution));

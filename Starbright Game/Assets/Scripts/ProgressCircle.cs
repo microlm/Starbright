@@ -3,18 +3,26 @@ using System.Collections;
 
 public class ProgressCircle : MonoBehaviour {
 
+	public static ProgressCircle instance;
 	public float initialTargetSize;
 	public float incrementSize;
 	public float rotationSpeed;
 
 	private float targetSize;
 	private Vector3 maxScale;
+	private int currentLayer;
+
+	void Awake () {
+		if (instance == null) {
+			instance = this;
+		}
+		currentLayer = 1;
+	}
 
 	// Use this for initialization
 	void Start () {
 		maxScale = transform.localScale;
 		targetSize = initialTargetSize;
-
 		Scale ();
 	}
 	
@@ -39,8 +47,14 @@ public class ProgressCircle : MonoBehaviour {
 
 	void LevelUp()
 	{
-		targetSize *= incrementSize;
+		currentLayer++;
+		targetSize = initialTargetSize * sizeMultiplierFromLayer(currentLayer);
 		Scale ();
+	}
+
+	void Scale()
+	{
+		transform.localScale = maxScale / 20 * targetSize;
 	}
 
 	public float TargetSize
@@ -48,9 +62,15 @@ public class ProgressCircle : MonoBehaviour {
 		get { return targetSize; }
 	}
 
-	void Scale()
+	public int CurrentLayer
 	{
-		transform.localScale = maxScale / 20 * targetSize;
+		get { return currentLayer; }
 	}
-	
+
+	public static float sizeMultiplierFromLayer(int layer)
+	{
+		if (layer <= 1)
+			return 1;
+		return Mathf.Pow (instance.incrementSize, layer - 1);
+	}
 }

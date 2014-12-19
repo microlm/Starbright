@@ -6,9 +6,6 @@ public class Generator : MonoBehaviour {
 	
 	public static Generator instance;
 
-	public GameObject sampleAsteroid;
-	private Body sampleBody;
-
 	public float areaWidth;
 	public float areaHeight;
 	public float minDensity;
@@ -20,8 +17,9 @@ public class Generator : MonoBehaviour {
 	public float genSpacingRange;
 	public float minAsteroidSize;
 	public float asteroidSizeRange;
-	public Gradient sizeDistribution;
+	public AnimationCurve sizeDistribution;
 	public float genRadius;
+	public AnimationCurve blackHoleChance;
 
 	public bool genBg;
 
@@ -57,10 +55,10 @@ public class Generator : MonoBehaviour {
 				// Where initial generation happens
 				//
 				////////////////////////////////////
-				foregroundChunks.Add(posHash(xOff, yOff), generate(true, 1, xOff, yOff));
+				foregroundChunks.Add(posHash(xOff, yOff), generate(true, xOff, yOff));
 				if(genBg)
 				{
-					backgroundChunks.Add(posHash(xOff, yOff), generate(false, 2, xOff, yOff));
+					backgroundChunks.Add(posHash(xOff, yOff), generate(false, xOff, yOff));
 				}
 			}
 		}
@@ -91,11 +89,11 @@ public class Generator : MonoBehaviour {
 					//
 					////////////////////////////////////
 					destroyChunk(-1 * genRadius + xCenter, yOff, true);
-					foregroundChunks.Add(posHash(genRadius + xCenter, yOff), generate(true, 1, genRadius + xCenter, yOff));
+					foregroundChunks.Add(posHash(genRadius + xCenter, yOff), generate(true, genRadius + xCenter, yOff));
 					if(genBg)
 					{
 						destroyChunk(-1 * genRadius + xCenter, yOff, false);
-						backgroundChunks.Add(posHash(genRadius + xCenter, yOff), generate(false, 2, genRadius + xCenter, yOff));
+						backgroundChunks.Add(posHash(genRadius + xCenter, yOff), generate(false, genRadius + xCenter, yOff));
 					}
 				}
 				else
@@ -106,11 +104,11 @@ public class Generator : MonoBehaviour {
 					//
 					////////////////////////////////////
 					destroyChunk(genRadius + xCenter - areaWidth, yOff, true);
-					foregroundChunks.Add(posHash(-1 * genRadius + xCenter - areaWidth, yOff), generate(true, 1, -1 * genRadius + xCenter - areaWidth, yOff));
+					foregroundChunks.Add(posHash(-1 * genRadius + xCenter - areaWidth, yOff), generate(true, -1 * genRadius + xCenter - areaWidth, yOff));
 					if(genBg)
 					{
 						destroyChunk(genRadius + xCenter - areaWidth, yOff, false);
-						backgroundChunks.Add(posHash(-1 * genRadius + xCenter - areaWidth, yOff), generate(false, 2, -1 * genRadius + xCenter - areaWidth, yOff));
+						backgroundChunks.Add(posHash(-1 * genRadius + xCenter - areaWidth, yOff), generate(false, -1 * genRadius + xCenter - areaWidth, yOff));
 					}
 				}
 			}
@@ -133,11 +131,11 @@ public class Generator : MonoBehaviour {
 					//
 					////////////////////////////////////
 					destroyChunk(xOff, -1 * genRadius + yCenter, true);
-					foregroundChunks.Add(posHash(xOff, genRadius + yCenter), generate(true, 1, xOff, genRadius + yCenter));
+					foregroundChunks.Add(posHash(xOff, genRadius + yCenter), generate(true, xOff, genRadius + yCenter));
 					if(genBg)
 					{
 						destroyChunk(xOff, -1 * genRadius + yCenter, false);
-						backgroundChunks.Add(posHash(xOff, genRadius + yCenter), generate(false, 2, xOff, genRadius + yCenter));
+						backgroundChunks.Add(posHash(xOff, genRadius + yCenter), generate(false, xOff, genRadius + yCenter));
 					}
 				}
 				else
@@ -148,11 +146,11 @@ public class Generator : MonoBehaviour {
 					//
 					////////////////////////////////////
 					destroyChunk(xOff, genRadius + yCenter - areaHeight, true);
-					foregroundChunks.Add(posHash(xOff, -1 * genRadius + yCenter - areaHeight), generate(true, 1, xOff, -1 * genRadius + yCenter - areaHeight));
+					foregroundChunks.Add(posHash(xOff, -1 * genRadius + yCenter - areaHeight), generate(true, xOff, -1 * genRadius + yCenter - areaHeight));
 					if(genBg)
 					{
 						destroyChunk(xOff, genRadius + yCenter - areaHeight, false);
-						backgroundChunks.Add(posHash(xOff, -1 * genRadius + yCenter - areaHeight), generate(false, 2, xOff, -1 * genRadius + yCenter - areaHeight));
+						backgroundChunks.Add(posHash(xOff, -1 * genRadius + yCenter - areaHeight), generate(false, xOff, -1 * genRadius + yCenter - areaHeight));
 					}
 				}
 			}
@@ -163,8 +161,15 @@ public class Generator : MonoBehaviour {
 		}
 	}
 
-	public int[] generate(bool isForeground, float size, float xOff, float yOff)
+	public int[] generate(bool isForeground, float xOff, float yOff)
 	{		
+		int currentLayer = ProgressCircle.instance.CurrentLayer;
+		if (!isForeground)
+		{
+			currentLayer++;
+		}
+		float size = ProgressCircle.sizeMultiplierFromLayer(currentLayer);
+
 		float[][] asteroids = ProceduralGeneration.generate(areaWidth, areaHeight, minDensity / size, densityRange / size, genChance, minGenSize, genSizeRange, minGenSpacing,
 		                                                    genSpacingRange, minAsteroidSize * size, asteroidSizeRange * size, sizeDistribution);
 		List<int> ids = new List<int>();
@@ -257,7 +262,7 @@ public class Generator : MonoBehaviour {
 			{
 				for(float xOff = -1 * genRadius + xCenter; xOff < genRadius + xCenter; xOff += areaWidth)
 				{
-					backgroundChunks.Add(posHash(xOff, yOff), generate(false, 3, xOff, yOff));	
+					backgroundChunks.Add(posHash(xOff, yOff), generate(false, xOff, yOff));	
 				}
 			}
 		}
@@ -269,7 +274,7 @@ public class Generator : MonoBehaviour {
 			{
 				for(float xOff = -1 * genRadius + xCenter; xOff < genRadius + xCenter; xOff += areaWidth)
 				{
-					foregroundChunks.Add(posHash(xOff, yOff), generate(true, 2, xOff, yOff));	
+					foregroundChunks.Add(posHash(xOff, yOff), generate(true, xOff, yOff));	
 				}
 			}
 		}
@@ -277,24 +282,53 @@ public class Generator : MonoBehaviour {
 
 	public void LayerDown()
 	{
-
-		// switch object pools
-		ObjectPool tempPool = foregroundPool;
-		foregroundPool = backgroundPool;
-		backgroundPool = tempPool;
-		foregroundPool.drain();
-		
-		//switch layers on objects
-		backgroundPool.setPoolLayer(backgroundLayer.layer);
-		backgroundPool.setParent (backgroundLayer);
-		
-		foregroundPool.setPoolLayer(foregroundLayer.layer);
-		foregroundPool.setParent (foregroundLayer);
-		
-		// enable collisions for new foreground planets
-		// and disable for background planets
-		
-		backgroundPool.setEnableCollisions(false);
-		foregroundPool.setEnableCollisions(true);
+		if(genBg)
+		{
+			// switch object pools
+			ObjectPool tempPool = foregroundPool;
+			foregroundPool = backgroundPool;
+			backgroundPool = tempPool;
+			backgroundPool.setEnabledChildren(false);
+			foregroundPool.setEnabledChildren(true);
+			foregroundPool.drain();
+			
+			//switch layers on objects
+			foregroundPool.setPoolLayer(foregroundLayer.layer);
+			foregroundPool.setParent (foregroundLayer);
+			
+			backgroundPool.setPoolLayer(backgroundLayer.layer);
+			backgroundPool.setParent (backgroundLayer);
+			
+			// enable collisions for new foreground planets
+			// and disable for background planets
+			
+			foregroundPool.setForegroundImage();
+			
+			backgroundPool.setEnableCollisions(false);
+			foregroundPool.setEnableCollisions(true);
+			
+			backgroundChunks = foregroundChunks;
+			foregroundChunks = new Dictionary<float, int[]>();
+			for(float yOff = -1 * genRadius + yCenter ; yOff < genRadius + yCenter; yOff += areaHeight)
+			{
+				for(float xOff = -1 * genRadius + xCenter; xOff < genRadius + xCenter; xOff += areaWidth)
+				{
+					foregroundChunks.Add(posHash(xOff, yOff), generate(false, xOff, yOff));	
+				}
+			}
+			foregroundPool.removePCOverlap(GameObject.Find ("PC").GetComponent<CircleCollider2D>());
+		}
+		else
+		{
+			foregroundPool.drain();
+			foregroundChunks = new Dictionary<float, int[]>();
+			for(float yOff = -1 * genRadius + yCenter ; yOff < genRadius + yCenter; yOff += areaHeight)
+			{
+				for(float xOff = -1 * genRadius + xCenter; xOff < genRadius + xCenter; xOff += areaWidth)
+				{
+					foregroundChunks.Add(posHash(xOff, yOff), generate(true, xOff, yOff));	
+				}
+			}
+		}
 	}
 }

@@ -92,7 +92,7 @@ public class PlayerCharacter : MonoBehaviour {
 		}
 
 		deltaPosition = transform.position - lastPosition;
-		Debug.Log (Mass + " " + targetMass);
+		//Debug.Log (Mass + " " + targetMass);
 		if(Mass >= targetMass)
 		{
 			isOrbiting = false;
