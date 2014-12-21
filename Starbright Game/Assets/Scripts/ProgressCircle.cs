@@ -6,7 +6,6 @@ public class ProgressCircle : MonoBehaviour {
 	public static ProgressCircle instance;
 	public float initialTargetSize;
 	public float incrementSize;
-	public float rotationSpeed;
 
 	private float targetSize;
 	private Vector3 maxScale;
@@ -30,9 +29,6 @@ public class ProgressCircle : MonoBehaviour {
 	void Update () {
 		//follow player
 		transform.position = PlayerCharacter.instance.transform.position;
-
-		//rotate
-		transform.Rotate(0, 0, Time.deltaTime * rotationSpeed);
 
 		//update if goal size is reached
 		if (PlayerCharacter.instance.Mass >= targetSize) {
