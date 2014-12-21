@@ -3,7 +3,7 @@ using System.Collections;
 
 public class BlackHole : MonoBehaviour {
 	
-	public float gravityDampening;
+	public float gravityDampening = 1f;
 
 	// Use this for initialization
 	void Start () {
