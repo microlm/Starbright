@@ -3,6 +3,8 @@ using System.Collections;
 
 public class CameraBehavior : MonoBehaviour {
 	
+	public static CameraBehavior instance;
+
 	public GameObject player;
 	protected PlayerCharacter pc;
 	public float ease = .15f; //camera movement adjustment speed
@@ -10,6 +12,13 @@ public class CameraBehavior : MonoBehaviour {
 	public float gameScale = 1f; //scale of game to window size, lower number, bigger objects
 	public Color backgroundColor = new Color (.05f, .1f, .15f, 1f); //overrides default
 	public bool zoom;
+
+	//shake stuff
+	public bool CameraShake; //turn on/off camera shake
+	public float MaxShakeTime;	//Max shake time
+	public float MaxShakeAmount; //max shake movement
+	private float shakeTime; // shakes if shake time >0
+	private float shakeAmount;
 	
 	protected Vector3 scrollingTarget; //when player swipes, new postion that we should follow
 	protected bool isScrolling; // whether player is swiping to move camera
@@ -31,9 +40,19 @@ public class CameraBehavior : MonoBehaviour {
 	protected float xratio, yratio;
 
 	protected float cameraDepth;
-	
+
+	public static CameraBehavior Instance
+	{
+		get 
+		{
+			return instance;
+		}
+	}
+
 	// Use this for initialization
 	void Start () {
+		instance = this;
+
 		//set bg color
 		camera.backgroundColor = backgroundColor;
 		
@@ -60,9 +79,10 @@ public class CameraBehavior : MonoBehaviour {
 
 		pc = player.GetComponent<PlayerCharacter>();
 		cameraDepth = camera.transform.position.z;
-		
+
+		shakeTime = 0f;
 	}
-	
+
 	// Update is called once per frame
 	void LateUpdate () 
 	{
@@ -86,7 +106,12 @@ public class CameraBehavior : MonoBehaviour {
 			previousSize = camera.orthographicSize;
 
 		}
-		
+
+		if (shakeTime > 0)
+		{
+			ShakeCameraMovement();
+			shakeTime -= Time.deltaTime;
+		}
 	}
 
 	protected void moveCamera(float speedFactor)
@@ -261,4 +286,40 @@ public class CameraBehavior : MonoBehaviour {
 		}
 	}
 
+	/** Shakes the camera if cameraShake is turned on in the unity 
+	 * inspector, scaled by percentStrength (default is 100%) */
+	public void Shake(float percentStrength = 1f) {
+		if (CameraShake) 
+		{
+			shakeTime = MaxShakeTime;
+			shakeAmount = MaxShakeAmount * percentStrength;
+		}
+	}
+
+	private void ShakeCameraMovement()
+	{
+		if (shakeAmount > 0) 
+		{
+			//decrease shake amount by setting it to ratio of time to maxtime
+			shakeAmount *= (shakeTime / MaxShakeTime);
+		}
+
+		float x = camera.transform.position.x + PositiveOrNegative() * shakeAmount * UnityEngine.Random.Range(0f, 1f);
+		float y = camera.transform.position.x + PositiveOrNegative() * shakeAmount * UnityEngine.Random.Range(0f, 1f);
+
+		Vector3 shakePosition = new Vector3 (x, y, camera.transform.position.z);
+		camera.transform.position = Vector3.Lerp(camera.transform.position, shakePosition, Time.deltaTime);
+		camera.transform.position = new Vector3(camera.transform.position.x, camera.transform.position.y, cameraDepth);
+	}
+
+	private int PositiveOrNegative()
+	{
+		//there is probably a better way to do this but 
+		//I just want it dine quick
+
+		int temp = UnityEngine.Random.Range(0, 2);
+		if (temp == 0)
+			return -1;
+		return 1;
+	}
 }

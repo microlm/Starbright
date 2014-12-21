@@ -135,6 +135,8 @@ public class Body : MonoBehaviour {
 		}
 		else
 		{
+			CameraBehavior.Instance.Shake(Velocity.magnitude / maxSpeed * 5f);
+
 			if (mass > 1.5) {
 
 				float massLost = mass * velocity.magnitude;
