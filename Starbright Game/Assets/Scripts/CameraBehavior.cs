@@ -89,6 +89,19 @@ public class CameraBehavior : MonoBehaviour {
 		// move the camera
 		moveCamera (1f);
 
+		// if shaking
+		if (shakeTime > 0)
+		{
+			ShakeCameraMovement();
+			shakeTime -= Time.deltaTime;
+		}
+		//if shaking has just ended
+		else if (shakeTime < 0) 
+		{
+			CameraReturn ();
+			shakeTime = 0f; 
+		}
+
 		// if the camera zoom has changed, then adjust border calculations
 		if(camera.orthographicSize != vertExtent && !isScrolling)
 		{
@@ -105,12 +118,6 @@ public class CameraBehavior : MonoBehaviour {
 
 			previousSize = camera.orthographicSize;
 
-		}
-
-		if (shakeTime > 0)
-		{
-			ShakeCameraMovement();
-			shakeTime -= Time.deltaTime;
 		}
 	}
 
@@ -300,16 +307,17 @@ public class CameraBehavior : MonoBehaviour {
 	{
 		if (shakeAmount > 0) 
 		{
-			//decrease shake amount by setting it to ratio of time to maxtime
-			shakeAmount *= (shakeTime / MaxShakeTime);
+			//decrease shake amount over time
+			shakeAmount -= MaxShakeAmount / (shakeTime / MaxShakeTime);
 		}
 
-		float x = camera.transform.position.x + PositiveOrNegative() * shakeAmount * UnityEngine.Random.Range(0f, 1f);
-		float y = camera.transform.position.x + PositiveOrNegative() * shakeAmount * UnityEngine.Random.Range(0f, 1f);
+		//random position 
+		float x = transform.position.x + PositiveOrNegative() * shakeAmount * UnityEngine.Random.Range(0f, 1f);
+		float y = transform.position.y + PositiveOrNegative() * shakeAmount * UnityEngine.Random.Range(0f, 1f);
 
-		Vector3 shakePosition = new Vector3 (x, y, camera.transform.position.z);
-		camera.transform.position = Vector3.Lerp(camera.transform.position, shakePosition, Time.deltaTime);
-		camera.transform.position = new Vector3(camera.transform.position.x, camera.transform.position.y, cameraDepth);
+		Vector3 shakePosition = new Vector3 (x, y, transform.position.z);
+		camera.transform.position = Vector3.Lerp(transform.position, shakePosition, Time.deltaTime);
+		camera.transform.position = new Vector3(transform.position.x, transform.position.y, cameraDepth);
 	}
 
 	private int PositiveOrNegative()
