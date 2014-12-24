@@ -54,6 +54,10 @@ public class ProgressCircle : MonoBehaviour {
 		{
 			Warning ();
 		}
+		else 
+		{
+			ResetColor();
+		}
 	}
 
 	void LevelUp()
