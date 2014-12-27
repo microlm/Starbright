@@ -210,22 +210,34 @@ public class ObjectPool : MonoBehaviour
 	 * objects which overlap with the player 
 	 * character.
 	 * --------------------------------------------*/
-	public void removePCOverlap(CircleCollider2D pc)
+	public void removePCOverlap(Bounds pc)
 	{
 		for(int i = 0; i < pool.Count; i++)
 		{
-			if(pc.bounds.Intersects(pool[i].GetComponent<CircleCollider2D>().bounds))
+			Debug.Log(pc + " " + pool[i].GetComponent<SpriteRenderer>().bounds);
+			if(circlesIntersect(pc, pool[i].GetComponent<SpriteRenderer>().bounds))
 			{
+				Debug.Log ("OOOOUT OF HERE");
 				removeBody(i);
 			}
 		}
 		for (int i = 0; i < blackHolePool.Count; i++)
 		{
-			if (pc.bounds.Intersects(blackHolePool[i].GetComponent<CircleCollider2D>().bounds))
+			if (circlesIntersect(pc, blackHolePool[i].GetComponent<CircleCollider2D>().bounds))
 			{
 				removeBody((i + 1) * -1);
 			}
 		}
+	}
+
+	bool circlesIntersect(Bounds a, Bounds b)
+	{
+		double distanceX = a.center.x - b.center.x;
+		double distanceY = a.center.y - b.center.y;
+		
+		double magnitude = Math.Sqrt(distanceX * distanceX + distanceY * distanceY);
+	
+		return magnitude < a.extents.x + b.extents.x;
 	}
 }
 

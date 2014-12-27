@@ -23,6 +23,7 @@ public class ScoreManager : MonoBehaviour {
 		time = 0f;
 		multiplier = 1;
 		updateScore ();
+		DontDestroyOnLoad (instance);
 	}
 	
 	// Update is called once per frame

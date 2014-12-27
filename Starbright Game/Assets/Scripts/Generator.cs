@@ -249,8 +249,8 @@ public class Generator : MonoBehaviour {
 			foregroundPool = backgroundPool;
 			backgroundPool = tempPool;
 			backgroundPool.setEnabledChildren(false);
-			foregroundPool.removePCOverlap(GameObject.Find ("PC").GetComponent<CircleCollider2D>());
 			foregroundPool.setEnabledChildren(true);
+
 			backgroundPool.drain();
 
 			//switch layers on objects
@@ -264,6 +264,8 @@ public class Generator : MonoBehaviour {
 			// and disable for background planets
 
 			foregroundPool.setForegroundImage();
+
+			foregroundPool.removePCOverlap(GameObject.Find ("PC").GetComponent<SpriteRenderer>().bounds);
 
 			backgroundPool.setEnableCollisions(false);
 			foregroundPool.setEnableCollisions(true);
@@ -328,7 +330,7 @@ public class Generator : MonoBehaviour {
 					foregroundChunks.Add(posHash(xOff, yOff), generate(false, xOff, yOff));	
 				}
 			}
-			foregroundPool.removePCOverlap(GameObject.Find ("PC").GetComponent<CircleCollider2D>());
+			foregroundPool.removePCOverlap(GameObject.Find ("PC").GetComponent<CircleCollider2D>().bounds);
 		}
 		else
 		{

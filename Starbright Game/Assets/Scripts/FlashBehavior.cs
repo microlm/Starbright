@@ -10,6 +10,8 @@ public class FlashBehavior : MonoBehaviour {
 
 	private bool whiteFlashed = false;
 	private bool blackFlashed = false;
+	private bool blackOut = false;
+	public bool blackFinished = false;
 
 	SpriteRenderer sprite;
 
@@ -37,7 +39,6 @@ public class FlashBehavior : MonoBehaviour {
 
 			if(timer >= (opacity[opacity.length - 1].time - 0.01) && timer >= (size[size.length-1].time - 0.01))
 			{
-				Debug.Log ("HOWDY HOWDY");
 				whiteFlashed = false;
 			}
 
@@ -54,6 +55,17 @@ public class FlashBehavior : MonoBehaviour {
 			if(timer >= (opacity[opacity.length - 1].time - 0.01) && timer >= (size[size.length-1].time - 0.01))
 			{
 				blackFlashed = false;
+			}
+		}
+
+		if(blackOut)
+		{
+			sprite.color = new Color (0f, 0f, 0f, opacity.Evaluate (timer));
+			timer += Time.deltaTime;
+			if(timer >= (opacity[opacity.length - 1].time/2f))
+			{
+				blackOut = false;
+				blackFinished = true;
 			}
 		}
 	}
@@ -94,6 +106,26 @@ public class FlashBehavior : MonoBehaviour {
 
 	}
 
+	public void blackScreen()
+	{
+		transform.position = GameObject.Find ("Main Camera").transform.position;
+		blackOut = true;
+		timer = 0f;
+		float screenHeight = Camera.main.orthographicSize * 2f;
+		float screenWidth = screenHeight / Screen.height * Screen.width;
+		
+		if(screenHeight > screenWidth)
+		{
+			screenSize = (screenHeight/(sprite.sprite.bounds.size.y))*2f;
+		}
+		else
+		{
+			screenSize = (screenWidth/(sprite.sprite.bounds.size.x))*2f;
+		}
+
+		sprite.transform.localScale = new Vector3(screenSize, screenSize, 0f);
+	}
+
 	public void setWhiteFlash(bool f)
 	{
 		whiteFlashed = f;
@@ -113,4 +145,5 @@ public class FlashBehavior : MonoBehaviour {
 	{
 		return blackFlashed;
 	}
+	
 }

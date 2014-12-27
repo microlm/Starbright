@@ -155,11 +155,9 @@ public class CameraBehavior : MonoBehaviour {
 				
 				previousSize = camera.orthographicSize;
 				float currentMass = player.GetComponent<Body>().mass;
-				camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, 
-				                                     initialSize * (currentMass/initialMass) * (1-((currentMass-initialMass))/currentMass), 
-				                                     Time.deltaTime * ease);
+				camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, initialSize * (player.GetComponent<Body>().mass/initialMass), Time.deltaTime * ease);
 			}
-			
+		
 		}
 		else
 		{
@@ -266,7 +264,6 @@ public class CameraBehavior : MonoBehaviour {
 	{
 		transform.position = Vector3.Lerp (transform.position, player.transform.position, ease * Time.deltaTime);
 		camera.orthographicSize = Mathf.Lerp (camera.orthographicSize, initialSize * (player.GetComponent<Body>().mass/initialMass), Time.deltaTime * ease);
-		
 	}
 	
 	public void Scroll(Vector3 scrollAmt)

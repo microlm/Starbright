@@ -10,6 +10,8 @@ public class PlayerCharacter : MonoBehaviour {
 	private bool isOrbiting;
 	private bool isColliding;
 	private Body body; //body that it's orbiting
+	private Body playerBody;
+	private bool gameOver;
 
 	public bool inBounds = true;
 	bool flashed = false;
@@ -78,35 +80,53 @@ public class PlayerCharacter : MonoBehaviour {
 		flash = GameObject.Find ("Flash").GetComponent<FlashBehavior>();
 		downMass = 4;
 		targetMass = ProgressCircle.instance.TargetSize; 
+		playerBody = GetComponent<Body>();
+
+		DontDestroyOnLoad (this);
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
-		if (isOrbiting) {
-			GetComponent<Body>().Gravitiate (body);
-		}
-
-		if(isColliding) {
-			isColliding = !isColliding;
-		}
-
-		deltaPosition = transform.position - lastPosition;
-
-		if(Mass >= targetMass)
+		if(!gameOver)
 		{
-			isOrbiting = false;
-			LevelUp ();
-		}
-		else if(Mass < downMass)
-		{
-			isOrbiting = false;
-			LevelDown();
-		}
+			if (isOrbiting) {
+				GetComponent<Body>().Gravitiate (body);
+			}
 
-		else if(disabled)
+			if(isColliding) {
+				isColliding = !isColliding;
+			}
+
+			deltaPosition = transform.position - lastPosition;
+
+			if(Mass >= targetMass)
+			{
+				isOrbiting = false;
+				LevelUp ();
+			}
+			else if(Mass < downMass)
+			{
+				isOrbiting = false;
+				LevelDown();
+			}
+
+			else if(disabled)
+			{
+				disabled = false;
+			}
+
+			if(Input.GetKeyDown(KeyCode.Q))
+			{
+				GameOver ();
+			}
+		}
+		else
 		{
-			disabled = false;
+			if(flash.blackFinished)
+			{
+				Application.LoadLevel("FinalScore");
+			}
 		}
 	}
 
@@ -147,6 +167,7 @@ public class PlayerCharacter : MonoBehaviour {
 
 			disabled = true;
 			GameObject.Find ("Trail").GetComponent<TrailRenderer>().enabled = false;
+			GetComponent<CircleCollider2D>().enabled = false;
 			GetComponent<Body>().enabled = false;
 			Generator.instance.GetComponent<Generator>().LayerUp ();
 			transform.position = backgroundCamera.transform.position;
@@ -159,6 +180,9 @@ public class PlayerCharacter : MonoBehaviour {
 			GameObject.Find ("Trail").GetComponent<TrailRenderer>().enabled = true;
 			targetMass = ProgressCircle.instance.TargetSize;
 			BodyComponent.enabled = true;
+
+			GetComponent<CircleCollider2D>().enabled = true;
+
 			disabled = false;
 		}
 		isOrbiting = false;
@@ -189,6 +213,13 @@ public class PlayerCharacter : MonoBehaviour {
 			downMass = downMass/2f;
 		}
 		isOrbiting = false;
-		
+	}
+
+	public void GameOver()
+	{
+		flash.blackScreen();
+		gameOver = true;
+
+		GetComponent<CircleCollider2D>().enabled = false;
 	}
 }
