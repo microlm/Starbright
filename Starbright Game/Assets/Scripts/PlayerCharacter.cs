@@ -88,6 +88,8 @@ public class PlayerCharacter : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
+		BodyComponent.UpdateBody ();
+
 		if(!gameOver)
 		{
 			if (isOrbiting) {
@@ -130,7 +132,7 @@ public class PlayerCharacter : MonoBehaviour {
 		}
 	}
 
-	void Orbit (Body b) {
+	public void Orbit (Body b) {
 		if (b != this.BodyComponent) {
 			isOrbiting = true;
 			body = b;
