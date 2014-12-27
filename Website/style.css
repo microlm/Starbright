@@ -26,7 +26,6 @@ a {
 }
 
 .top-bar {
-	width: 100%;
 	text-align: center;
 	background-color: #090909;
 	padding: 10px;
@@ -36,6 +35,15 @@ a {
 	height: 30px;
 	width: 30px;
 	margin: 0px 10px;
+	border-radius: 15px;
+	-webkit-transition: background-color 250ms ease-out;
+	-moz-transition: background-color 250ms ease-out;
+	-o-transition: background-color 250ms ease-out;
+	transition: background-color 250ms ease-out;
+}
+
+.contact-item-img:hover {
+	background-color: #aa33aa;
 }
 
 .content {
@@ -147,21 +155,28 @@ a {
 
 .subscribe-input {
 	padding: 7px;
-	border: 1px solid #cccccc;
+	margin-right: 10px;
+	border: 0px solid #cccccc;
+	font-family: 'Oswald', sans-serif;
+	font-size: 12pt;
 	color: #cccccc;
-	font-size: 11pt;
-	background-color: #111111;
+	background-color: black;
 	border-radius: 6px;
 }
 
 .subscribe-button {
-	padding: 7px;
-	border: 1px solid #cccccc;
-	color: #cccccc;
-	font-size: 11pt;
-	background-color: #111111;
+	padding: 7px 10px;
+	border: 0px solid #cccccc;
+	font-family: 'Oswald', sans-serif;
+	font-size: 12pt;
+	color: #eeeeee;
+	background-color: #992299;;
 	text-transform: uppercase;
 	border-radius: 6px;
+}
+
+.subscribe-button:hover {
+	background-color: #aa33aa;;
 }
 
 .contact-area {
