@@ -3,6 +3,8 @@ body {
 	font-size: 14pt;
 	color: #eeeeee;
 	background-color: #333333;
+	margin: 0px;
+	padding: 0px;
 }
 
 a {
@@ -17,10 +19,31 @@ a {
 	top: 0;
 	left: 0;
 	z-index: -1;
-	-webkit-transition: top 200ms ease-out;
-	-moz-transition: top 200ms ease-out;
-	-o-transition: top 200ms ease-out;
-	transition: top 200ms ease-out;
+	-webkit-transition: top 250ms ease-out;
+	-moz-transition: top 250ms ease-out;
+	-o-transition: top 250ms ease-out;
+	transition: top 250ms ease-out;
+}
+
+.top-bar {
+	text-align: center;
+	background-color: #090909;
+	padding: 10px;
+}
+
+.contact-item-img {
+	height: 30px;
+	width: 30px;
+	margin: 0px 10px;
+	border-radius: 15px;
+	-webkit-transition: background-color 250ms ease-out;
+	-moz-transition: background-color 250ms ease-out;
+	-o-transition: background-color 250ms ease-out;
+	transition: background-color 250ms ease-out;
+}
+
+.contact-item-img:hover {
+	background-color: #aa33aa;
 }
 
 .content {
@@ -37,7 +60,7 @@ a {
 
 .header-title {
 	margin-top: 120px;
-	margin-bottom: 60px;
+	margin-bottom: 40px;
 }
 
 .header-title-img {
@@ -62,17 +85,17 @@ a {
 }
 
 .game-nav-bar-item {
-	margin: 0px 20px;
+	margin: 0px 25px;
 	text-transform: uppercase;
-	font-size: 16pt;
+	font-size: 14pt;
 	color: #eeeeee;
-}
-
-.game-nav-bar-item:hover {
 	-webkit-transition: color 300ms ease-in-out;
 	-moz-transition: color 300ms ease-in-out;
 	-o-transition: color 300ms ease-in-out;
 	transition: color 300ms ease-in-out;
+}
+
+.game-nav-bar-item:hover {
 	color: #aa33aa;
 }
 
@@ -98,12 +121,84 @@ a {
 }
 
 .screenshots {
-	
+	width: 640px;
+	margin: 40px auto;
+	text-align: center;
 }
 
+
 .screenshot-item {
-	width: 200px;
-	height: 200px;
+	width: 600px;
 	margin: 20px;
 	background-color: #cccccc;
+}
+
+.footer {
+	width: 100%;
+	text-align: center;
+	background-color: #090909;
+}
+
+.subscribe-area {
+	padding: 30px;
+}
+
+.subscribe-desc {
+	padding: 10px;
+	font-size: 16pt;
+	text-transform: uppercase;
+}
+
+.subscribe-sign-up {
+	padding: 10px;
+}
+
+.subscribe-input {
+	padding: 7px;
+	margin-right: 10px;
+	border: 0px solid #cccccc;
+	font-family: 'Oswald', sans-serif;
+	font-size: 12pt;
+	color: #cccccc;
+	background-color: black;
+	border-radius: 6px;
+}
+
+.subscribe-button {
+	padding: 7px 10px;
+	border: 0px solid #cccccc;
+	font-family: 'Oswald', sans-serif;
+	font-size: 12pt;
+	color: #eeeeee;
+	background-color: #992299;;
+	text-transform: uppercase;
+	border-radius: 6px;
+}
+
+.subscribe-button:hover {
+	background-color: #aa33aa;;
+}
+
+.contact-area {
+	padding: 20px;
+}
+
+.logo
+{
+	padding: 10px;
+}
+
+.logo-text {
+	font-family: 'Amatic SC', cursive;
+	font-size: 26pt;
+	color: #eeeeee;
+	text-transform: uppercase;
+	-webkit-transition: color 300ms ease-in-out;
+	-moz-transition: color 300ms ease-in-out;
+	-o-transition: color 300ms ease-in-out;
+	transition: color 300ms ease-in-out;
+}
+
+.logo-text:hover {
+	color: #aa33aa;
 }
