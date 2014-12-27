@@ -3,12 +3,16 @@ function parallax(){
     $('.background').css('top', -(scrolled * 0.1) + 'px');
 }
 
-function fadeNav() {
-	var scrolled = $(window).scrollTop();
-	if (scrolled == 0)
-		$('.navigation').fadeIn('slow');
-	else
-		$('.navigation').fadeOut('slow');
+function moveLeft() {
+	$('#screenshot-container').animate({
+		'marginLeft' : "-=50px"
+	});
+}
+
+function moveRight() {
+	$('#screenshot-container').animate({
+		'marginLeft' : "+=50px"
+	});
 }
 
 function backToTop(){
@@ -24,5 +28,4 @@ function scrollTo(element){
 
 $(window).scroll(function(e){
     parallax();
-	fadeNav();
 });
