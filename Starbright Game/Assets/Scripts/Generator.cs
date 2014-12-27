@@ -36,6 +36,8 @@ public class Generator : MonoBehaviour {
 	public GameObject foregroundLayer;
 	public GameObject backgroundLayer;
 
+	public int bholeChanceOffset;
+
 	private System.Random rand;
 
 	void Start () 
@@ -176,7 +178,10 @@ public class Generator : MonoBehaviour {
 		float[][] asteroids = ProceduralGeneration.generate(areaWidth, areaHeight, minDensity / size, densityRange / size, genChance, minGenSize, genSizeRange, minGenSpacing,
 		                                                    genSpacingRange, minAsteroidSize * size, asteroidSizeRange * size, sizeDistribution);
 		List<int> ids = new List<int>();
-		float bhChance = blackHoleChance.Evaluate (((float)currentLayer) / ((float)(currentLayer + 1)));
+		currentLayer += bholeChanceOffset;
+		float curvePosition = ((float)(currentLayer - 1)) / ((float)currentLayer);
+		float bhChance = blackHoleChance.Evaluate(curvePosition);
+		bhChance = bhChance > 0 ? bhChance : 0;
 		bool isBlackHole = false;
 
 		foreach(float[] a in asteroids)
@@ -196,7 +201,8 @@ public class Generator : MonoBehaviour {
 				GameObject asteroid = backgroundPool.getBody(id);
 				asteroid.transform.parent = backgroundLayer.transform;
 				asteroid.layer = backgroundLayer.layer;
-				asteroid.rigidbody2D.collider2D.enabled = false;
+				if(!isBlackHole)
+					asteroid.rigidbody2D.collider2D.enabled = false;
 				ids.Add(id);
 			}
 		}

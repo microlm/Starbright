@@ -23,10 +23,13 @@ public class ObjectPool : MonoBehaviour
 	public GameObject farAsteroidPrefab3;
 	public GameObject farAsteroidPrefab4;
 	public GameObject farAsteroidPrefab5;
+	public GameObject blackHolePrefab;
 
 
 	private List<GameObject> pool;
 	private List<Boolean> isFree;
+	private List<GameObject> blackHolePool;
+	private List<Boolean> isBlackHoleFree;
 	private GameObject[] prefabs;
 	private GameObject[] farPrefabs;
 
@@ -34,6 +37,8 @@ public class ObjectPool : MonoBehaviour
 	{
 		pool = new List<GameObject>();
 		isFree = new List<Boolean>();
+		blackHolePool = new List<GameObject>();
+		isBlackHoleFree = new List<Boolean>();
 		prefabs = new GameObject[5] {asteroidPrefab1, asteroidPrefab2, asteroidPrefab3, asteroidPrefab4, asteroidPrefab5};
 		farPrefabs = new GameObject[5] {farAsteroidPrefab1, farAsteroidPrefab2, farAsteroidPrefab3, farAsteroidPrefab4, farAsteroidPrefab5};
 	}
@@ -50,58 +55,85 @@ public class ObjectPool : MonoBehaviour
 
 	public int addBody(float x, float y, float depth, float mass, bool isFar, bool isBlackHole)
 	{
-		int nextFree = 0;
-		while(nextFree < isFree.Count && !(isFree[nextFree] || !pool[nextFree].activeSelf)) nextFree++;
-		if(nextFree == pool.Count)
+		if (!isBlackHole) 
 		{
-			GameObject asteroid;
-			if(!isFar)
-			{
-				asteroid = (GameObject)Instantiate(pickAPrefab(prefabs), new Vector3(x, y, depth), Quaternion.identity);
+			int nextFree = 0;
+			while (nextFree < isFree.Count && !(isFree[nextFree] || !pool[nextFree].activeSelf))
+					nextFree++;
+			if (nextFree == pool.Count) {
+					GameObject asteroid;
+					if (!isFar) {
+							asteroid = (GameObject)Instantiate (pickAPrefab (prefabs), new Vector3 (x, y, depth), Quaternion.identity);
+					} else {
+							asteroid = (GameObject)Instantiate (pickAPrefab (farPrefabs), new Vector3 (x, y, depth), Quaternion.identity);
+					}
+					Body asteroidScript = asteroid.GetComponent<Body> ();
+					asteroidScript.mass = mass;
+					pool.Add (asteroid);
+					isFree.Add (false);
+					return nextFree;
 			}
-			else
-			{
-				asteroid = (GameObject)Instantiate(pickAPrefab(farPrefabs), new Vector3(x, y, depth), Quaternion.identity);
+			GameObject a = pool [nextFree];
+			a.rigidbody2D.transform.position = new Vector3 (x, y, depth);
+			SpriteRenderer renderer;
+			if (!isFar) {
+					renderer = pickAPrefab (prefabs).GetComponent<SpriteRenderer> ();
+			} else {
+					renderer = pickAPrefab (farPrefabs).GetComponent<SpriteRenderer> ();
 			}
-			Body asteroidScript = asteroid.GetComponent<Body>();
-			asteroidScript.mass = mass;
-			pool.Add(asteroid);
-			isFree.Add(false);
+			a.GetComponent<SpriteRenderer> ().sprite = renderer.sprite;
+			Body aScript = a.GetComponent<Body> ();
+			aScript.mass = mass;
+			a.SetActive (true);
+			isFree [nextFree] = false;
 			return nextFree;
-		}
-		GameObject a = pool[nextFree];
-		a.rigidbody2D.transform.position = new Vector3(x, y, depth);
-		SpriteRenderer renderer;
-		if(!isFar)
-		{
-			renderer = pickAPrefab(prefabs).GetComponent<SpriteRenderer>();
 		}
 		else
 		{
-			renderer = pickAPrefab(farPrefabs).GetComponent<SpriteRenderer>();
+			int nextBlackHoleFree = 0;
+			while(nextBlackHoleFree < isBlackHoleFree.Count && !(isBlackHoleFree[nextBlackHoleFree] || !blackHolePool[nextBlackHoleFree].activeSelf)) nextBlackHoleFree++;
+			if(nextBlackHoleFree == blackHolePool.Count)
+			{
+				GameObject blackHole;
+				blackHole = (GameObject)Instantiate(blackHolePrefab, new Vector3(x, y, depth), Quaternion.identity);
+				blackHolePool.Add(blackHole);
+				isBlackHoleFree.Add(false);
+				return (nextBlackHoleFree + 1) * -1;
+			}
+			GameObject b = blackHolePool[nextBlackHoleFree];
+			b.transform.position = new Vector3(x, y, depth);
+			b.SetActive(true);
+			isBlackHoleFree[nextBlackHoleFree] = false;
+			return (nextBlackHoleFree + 1) * -1;
 		}
-		a.GetComponent<SpriteRenderer>().sprite = renderer.sprite;
-		Body aScript = a.GetComponent<Body>();
-		aScript.mass = mass;
-		a.SetActive(true);
-		isFree[nextFree] = false;
-		return nextFree;
 	}
 
 	public GameObject getBody(int index)
 	{
-		return pool[index];
+		if(index >= 0)
+			return pool[index];
+		else
+			return blackHolePool[(index + 1) * -1];
 	}
 
 	public void removeBody(int index)
 	{
-		pool[index].SetActive(false);
-		isFree[index] = true;
+		if(index >= 0)
+		{
+			pool[index].SetActive(false);
+			isFree[index] = true;
+		}
+		else
+		{
+			blackHolePool[(index + 1) * -1].SetActive(false);
+			isBlackHoleFree[(index + 1) * -1] = true;
+		}
 	}
 
 	public void drain()
 	{
 		for(int i = 0; i < pool.Count; i++) removeBody(i);
+		for(int i = 0; i < blackHolePool.Count; i++) removeBody((i + 1) * -1);
 	}
 
 	private GameObject pickAPrefab(GameObject[] objs)
@@ -115,12 +147,16 @@ public class ObjectPool : MonoBehaviour
 	{
 		for(int i = 0; i < pool.Count; i++) 
 			pool[i].layer = layer;
+		for(int i = 0; i < blackHolePool.Count; i++)
+			blackHolePool[i].layer = layer;
 	}
 
 	public void setParent(GameObject parent)
 	{
 		for(int i = 0; i < pool.Count; i++) 
 			pool[i].transform.parent = parent.transform;
+		for(int i = 0; i < blackHolePool.Count; i++) 
+			blackHolePool[i].transform.parent = parent.transform;
 	}
 
 	public void setEnableCollisions(bool enable)
@@ -134,6 +170,13 @@ public class ObjectPool : MonoBehaviour
 		for (int i=0; i < pool.Count; i++)
 		{
 			foreach(Transform child in pool[i].transform)
+			{
+				child.gameObject.SetActive (enabled);
+			}
+		}
+		for (int i=0; i < blackHolePool.Count; i++)
+		{
+			foreach(Transform child in blackHolePool[i].transform)
 			{
 				child.gameObject.SetActive (enabled);
 			}
@@ -169,7 +212,6 @@ public class ObjectPool : MonoBehaviour
 	 * --------------------------------------------*/
 	public void removePCOverlap(CircleCollider2D pc)
 	{
-		Debug.Log("Get rid of shit");
 		for(int i = 0; i < pool.Count; i++)
 		{
 			if(pc.bounds.Intersects(pool[i].GetComponent<CircleCollider2D>().bounds))
@@ -177,8 +219,13 @@ public class ObjectPool : MonoBehaviour
 				removeBody(i);
 			}
 		}
-
+		for (int i = 0; i < blackHolePool.Count; i++)
+		{
+			if (pc.bounds.Intersects(blackHolePool[i].GetComponent<CircleCollider2D>().bounds))
+			{
+				removeBody((i + 1) * -1);
+			}
+		}
 	}
-	
 }
 
