@@ -75,6 +75,7 @@ public class Body : MonoBehaviour {
 	
 	void Update () {
 		Scale = ScaleByMass ();
+		BodyColor = colorOpt.assignColor(Mass);
 	}
 
 	Vector3 ScaleByMass()
