@@ -18,6 +18,13 @@ public class ProgressCircle : MonoBehaviour {
 	private Color originalColor;
 	private float transisitionTime;
 
+	FlashBehavior flash;
+	PlayerCharacter pc; 
+	bool disabled = false;
+
+	GameObject backgroundCamera;
+	GameObject camera;
+	
 	void Awake () {
 		if (instance == null) {
 			instance = this;
@@ -33,18 +40,35 @@ public class ProgressCircle : MonoBehaviour {
 		targetSize = initialTargetSize;
 		decrementSize = initialDecrementSize;
 		Scale ();
+
+		flash = GameObject.Find ("Flash").GetComponent<FlashBehavior>();
+		backgroundCamera = GameObject.Find ("Background Planets Camera");
+		camera = GameObject.Find ("Main Camera");
+		pc = PlayerCharacter.instance;
+		Debug.Log (pc);
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		//follow player
-		transform.position = PlayerCharacter.instance.transform.position;
+
+		// pc is not always instantiated in the Start: is there a way to guarentee that PlayerCharacter is instantiated before ProgressCircle?
+		if(pc == null)
+		{
+			pc = PlayerCharacter.instance;
+		}
+		transform.position = pc.transform.position;
 
 		//update if goal size is reached
-		if (PlayerCharacter.instance.Mass >= targetSize) {
+		if (pc.Mass >= targetSize) {
 			LevelUp();
 		}
+		else if(disabled)
+		{
+			disabled = false;
+		}
 
+		
 		if (Input.GetKeyDown(KeyCode.LeftShift)) {
 			PlayerCharacter.instance.Mass = targetSize;
 			LevelUp ();
@@ -58,13 +82,87 @@ public class ProgressCircle : MonoBehaviour {
 		{
 			ResetColor();
 		}
+
 	}
+
+	// handles moving up a layer
 
 	void LevelUp()
 	{
-		currentLayer++;
-		targetSize = initialTargetSize * sizeMultiplierFromLayer(currentLayer);
-		Scale ();
+		if(!flash.getWhiteFlash () && !disabled)
+		{
+			// begins flash, turns off pc's trail, disables the colliders of the pc, and moves the pc to the location of the bg camera
+
+			flash.whiteFlash();
+			
+			disabled = true;
+
+			foreach(Transform child in pc.gameObject.transform)
+			{
+				child.gameObject.SetActive(false);
+			}
+
+			pc.gameObject.GetComponent<CircleCollider2D>().enabled = false;
+			pc.BodyComponent.enabled = false;
+			pc.transform.position = backgroundCamera.transform.position;
+			camera.transform.position = pc.transform.position;
+			Generator.instance.GetComponent<Generator>().LayerUp ();
+			
+		}
+		
+		
+		if(!flash.getWhiteFlash () && disabled)
+		{
+			foreach(Transform child in pc.gameObject.transform)
+			{
+				child.gameObject.SetActive(true);
+			}
+
+			pc.BodyComponent.enabled = true;
+			
+			pc.gameObject.GetComponent<CircleCollider2D>().enabled = true;
+			
+			disabled = false;
+			currentLayer++;
+			targetSize = initialTargetSize * sizeMultiplierFromLayer(currentLayer);
+			Scale ();
+		}
+		pc.setOrbiting(false);
+	}
+
+
+	public void LevelDown()
+	{
+		
+		if(!flash.getBlackFlash () && !disabled)
+		{
+			flash.blackFlash();
+			Generator.instance.GetComponent<Generator>().LayerDown ();
+			
+			pc.transform.position = camera.transform.position;
+		}
+		
+		if(flash.getBlackFlash () && !disabled)
+		{
+			disabled = true;
+			foreach(Transform child in pc.gameObject.transform)
+			{
+				child.gameObject.SetActive(false);
+			}
+			pc.BodyComponent.enabled = false;
+		}
+		
+		if(!flash.getBlackFlash ())
+		{
+			foreach(Transform child in pc.gameObject.transform)
+			{
+				child.gameObject.SetActive(true);
+			}
+			pc.BodyComponent.enabled = true;
+			//downMass = downMass/2f;
+	
+		}
+		pc.setOrbiting(false);
 	}
 
 	void Scale()

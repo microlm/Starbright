@@ -189,7 +189,6 @@ public class ObjectPool : MonoBehaviour
 		{
 			string name = pool[i].name;
 			int x = Int32.Parse(name[name.Length - 8] +"");
-			Debug.Log(name);
 			pool[i].GetComponent<SpriteRenderer>().sprite = prefabs[x - 1].GetComponent<SpriteRenderer>().sprite;
 		}
 	}
@@ -217,7 +216,6 @@ public class ObjectPool : MonoBehaviour
 			Debug.Log(pc + " " + pool[i].GetComponent<SpriteRenderer>().bounds);
 			if(circlesIntersect(pc, pool[i].GetComponent<SpriteRenderer>().bounds))
 			{
-				Debug.Log ("OOOOUT OF HERE");
 				removeBody(i);
 			}
 		}

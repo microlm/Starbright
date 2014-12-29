@@ -79,7 +79,6 @@ public class PlayerCharacter : MonoBehaviour {
 
 		flash = GameObject.Find ("Flash").GetComponent<FlashBehavior>();
 		downMass = 4;
-		targetMass = ProgressCircle.instance.TargetSize; 
 		playerBody = GetComponent<Body>();
 
 		DontDestroyOnLoad (this);
@@ -102,7 +101,7 @@ public class PlayerCharacter : MonoBehaviour {
 
 			deltaPosition = transform.position - lastPosition;
 
-			if(Mass >= targetMass)
+			/*if(Mass >= targetMass)
 			{
 				isOrbiting = false;
 				LevelUp ();
@@ -116,7 +115,7 @@ public class PlayerCharacter : MonoBehaviour {
 			else if(disabled)
 			{
 				disabled = false;
-			}
+			}*/
 
 			if(Input.GetKeyDown(KeyCode.Q))
 			{
@@ -161,60 +160,10 @@ public class PlayerCharacter : MonoBehaviour {
 		return deltaPosition;
 	}
 
-	public void LevelUp()
+
+	public void setOrbiting(bool o)
 	{
-		if(!flash.getWhiteFlash () && !disabled)
-		{
-			flash.whiteFlash();
-
-			disabled = true;
-			GameObject.Find ("Trail").GetComponent<TrailRenderer>().enabled = false;
-			GetComponent<CircleCollider2D>().enabled = false;
-			GetComponent<Body>().enabled = false;
-			Generator.instance.GetComponent<Generator>().LayerUp ();
-			transform.position = backgroundCamera.transform.position;
-			camera.transform.position = transform.position;
-		}
-	
-		
-		if(!flash.getWhiteFlash () && disabled)
-		{
-			GameObject.Find ("Trail").GetComponent<TrailRenderer>().enabled = true;
-			targetMass = ProgressCircle.instance.TargetSize;
-			BodyComponent.enabled = true;
-
-			GetComponent<CircleCollider2D>().enabled = true;
-
-			disabled = false;
-		}
-		isOrbiting = false;
-	}
-	
-	public void LevelDown()
-	{
-		
-		if(!flash.getBlackFlash () && !disabled)
-		{
-			flash.blackFlash();
-			Generator.instance.GetComponent<Generator>().LayerDown ();
-			
-			transform.position = camera.transform.position;
-		}
-		
-		if(flash.getBlackFlash () && !disabled)
-		{
-			disabled = true;
-			GameObject.Find ("Trail").GetComponent<TrailRenderer>().enabled = false;
-			GetComponent<Body>().enabled = false;
-		}
-		
-		if(!flash.getBlackFlash ())
-		{
-			GameObject.Find ("Trail").GetComponent<TrailRenderer>().enabled = true;
-			GetComponent<Body>().enabled = true;
-			downMass = downMass/2f;
-		}
-		isOrbiting = false;
+		isOrbiting = o;
 	}
 
 	public void GameOver()

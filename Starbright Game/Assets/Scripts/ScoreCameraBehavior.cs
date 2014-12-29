@@ -24,7 +24,7 @@ public class ScoreCameraBehavior : MonoBehaviour {
 	void Start () 
 	{
 		duration = 0f;
-		player = GameObject.Find ("Player");
+		player = PlayerCharacter.instance.gameObject;
 		lastPlayerPosition = player.transform.position;
 		cameraDepth = camera.transform.position.z;
 		MaxShakeTime = 3f;
@@ -62,9 +62,6 @@ public class ScoreCameraBehavior : MonoBehaviour {
 		duration += Time.deltaTime;
 		speed = duration/5f;
 
-		Debug.Log (camera.transform.position + " " + player.transform.position);
-
-	
 		camera.transform.position = camera.transform.position + ((player.transform.position - lastPlayerPosition) * pcCameraSpeed.Evaluate(speed));
 	
 	
@@ -75,7 +72,6 @@ public class ScoreCameraBehavior : MonoBehaviour {
 	{
 		duration += Time.deltaTime;
 		speed = duration/explosion.duration;
-		Debug.Log ("super nova");
 		if(explosion.duration > duration)
 		{
 			camera.orthographicSize = Mathf.Lerp (camera.orthographicSize, camera.orthographicSize * snZoomSpeed.Evaluate(speed), Time.deltaTime);
@@ -99,7 +95,6 @@ public class ScoreCameraBehavior : MonoBehaviour {
 		{
 			//decrease shake amount over time
 			shakeAmount -= MaxShakeAmount * (shakeTime / MaxShakeTime);
-			Debug.Log (MaxShakeAmount / (shakeTime / MaxShakeTime));
 		}
 		
 		//random position 
@@ -111,7 +106,6 @@ public class ScoreCameraBehavior : MonoBehaviour {
 		Vector3 shakePosition = new Vector3 (x, y, transform.position.z);
 		camera.transform.position = Vector3.Lerp(transform.position, shakePosition, Time.deltaTime);
 		camera.transform.position = new Vector3(transform.position.x, transform.position.y, cameraDepth);
-		Debug.Log ("Shake");
 	}
 
 	private int PositiveOrNegative()

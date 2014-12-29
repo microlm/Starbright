@@ -16,7 +16,6 @@ public class MenuButtonBehavior : MonoBehaviour {
 
 	public void OnClickAction()
 	{
-		Debug.Log (level);
 		Application.LoadLevel(level);
 	}
 }

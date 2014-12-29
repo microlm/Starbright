@@ -16,8 +16,7 @@ public class FinalScorePlayerBehavior : MonoBehaviour {
 		GetComponent<SpriteRenderer>().color = PlayerCharacter.instance.BodyComponent.GetComponent<SpriteRenderer>().color;
 		Destroy (PlayerCharacter.instance.gameObject);
 	}
-	
-	// Update is called once per frame
+
 	void Update () 
 	{
 		target = new Vector3(transform.position.x + (4f/30f) * mass, transform.position.y, -1);

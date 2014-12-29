@@ -180,8 +180,10 @@ public class Generator : MonoBehaviour {
 		List<int> ids = new List<int>();
 		currentLayer += bholeChanceOffset;
 		float curvePosition = ((float)(currentLayer - 1)) / ((float)currentLayer);
+
 		float bhChance = blackHoleChance.Evaluate(curvePosition);
 		bhChance = bhChance > 0 ? bhChance : 0;
+
 		bool isBlackHole = false;
 
 		foreach(float[] a in asteroids)

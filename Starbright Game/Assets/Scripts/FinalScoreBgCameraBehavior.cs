@@ -39,6 +39,8 @@ public class FinalScoreBgCameraBehavior : MonoBehaviour {
 
 	}
 
+	// Controls the movement of the blackhole in the scene
+
 	public void blackHoleControl()
 	{
 		duration += Time.deltaTime;
@@ -47,6 +49,9 @@ public class FinalScoreBgCameraBehavior : MonoBehaviour {
 		Vector3 target = new Vector3(transform.position.x + camera.orthographicSize * 0.33f + pcCameraSpeed.Evaluate(speed) * 1.8f, transform.position.y - camera.orthographicSize * 0.33f, transform.position.z);
 		camera.transform.position = Vector3.Lerp (camera.transform.position, target, Time.deltaTime);
 	}
+
+	// Controls the movement of the camera during the the final part of the scene in which the score
+	// is displayed and the camera pans across the field of stars
 
 	public void pan()
 	{
@@ -58,6 +63,8 @@ public class FinalScoreBgCameraBehavior : MonoBehaviour {
 		minY = (mapY - vertExtent);
 		maxY = (mapY + vertExtent);
 
+		// if the camera starts to go beyond the borders of the star field, make it go in the opposite direction
+
 		if(borderMinX > minX || borderMaxX < maxX)
 		{
 			velocity.x = -velocity.x;
@@ -66,6 +73,8 @@ public class FinalScoreBgCameraBehavior : MonoBehaviour {
 		{
 			velocity.y = -velocity.y;
 		}
+
+		// the direction is randomly modified every 10 cycles
 
 		if(dirCounter == 10)
 		{
@@ -76,6 +85,8 @@ public class FinalScoreBgCameraBehavior : MonoBehaviour {
 		dirCounter ++;
 		camera.transform.position = Vector3.Lerp (camera.transform.position, camera.transform.position + velocity, Time.deltaTime);
 	}
+
+	// picks a random direction in which the path of the camera is modified
 
 	private Vector3 pickDirectionChange()
 	{
@@ -100,6 +111,8 @@ public class FinalScoreBgCameraBehavior : MonoBehaviour {
 		}
 		return dir;
 	}
+
+	// prepares camera for panning stage
 
 	public void preparePan()
 	{
