@@ -174,7 +174,7 @@ public class Generator : MonoBehaviour {
 		{
 			currentLayer++;
 		}
-		float size = ProgressCircle.sizeMultiplierFromLayer(currentLayer);
+		float size = ProgressCircle.SizeMultiplierFromLayer(currentLayer);
 
 		float[][] asteroids = ProceduralGeneration.generate(areaWidth * size, areaHeight * size, minDensity / size, densityRange / size, genChance, minGenSize, genSizeRange, minGenSpacing,
 		                                                    genSpacingRange, minAsteroidSize * size, asteroidSizeRange * size, sizeDistribution);
