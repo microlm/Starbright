@@ -188,6 +188,11 @@ a {
 	padding: 10px;
 }
 
+.company-logo
+{
+	width: 250px;
+}
+
 .logo-text {
 	font-family: 'Amatic SC', cursive;
 	font-size: 26pt;
