@@ -31,6 +31,22 @@ public class PlayerCharacter : MonoBehaviour {
 		get { return GetComponent<Body>(); }
 	}
 
+	public Vector3 Position
+	{
+		get { return BodyComponent.Position; }
+		set { BodyComponent.Position = value; }
+	}
+
+	public TrailRenderer Trail
+	{
+		get { return GetComponentInChildren<TrailRenderer> (); }
+	}
+
+	public CircleCollider2D CircleCollider
+	{
+		get { return GetComponent<CircleCollider2D> (); }
+	}
+
 	public bool IsOrbiting() 
 	{
 		return isOrbiting;
@@ -105,7 +121,7 @@ public class PlayerCharacter : MonoBehaviour {
 
 	public void StopOrbit() {
 		isOrbiting = false;
-		camera.GetComponent<CameraBehavior> ().CameraReturn (this);
+		camera.GetComponent<CameraBehavior> ().CameraReturn ();
 	}
 
 	public Body getOrbiting() {

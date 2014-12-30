@@ -213,7 +213,6 @@ public class ObjectPool : MonoBehaviour
 	{
 		for(int i = 0; i < pool.Count; i++)
 		{
-			Debug.Log(pc + " " + pool[i].GetComponent<SpriteRenderer>().bounds);
 			if(circlesIntersect(pc, pool[i].GetComponent<SpriteRenderer>().bounds))
 			{
 				removeBody(i);
