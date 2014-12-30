@@ -5,12 +5,9 @@ public class PlayerCharacter : MonoBehaviour {
 
 	public static PlayerCharacter instance;
 
-	public float maxMass;
-
 	private bool isOrbiting;
 	private bool isColliding;
 	private Body body; //body that it's orbiting
-	private Body playerBody;
 	private bool gameOver;
 
 	public bool inBounds = true;
@@ -22,38 +19,16 @@ public class PlayerCharacter : MonoBehaviour {
 	GameObject backgroundCamera;
 
 	FlashBehavior flash;
-	private float targetMass;
-	private float downMass;
-
-	bool disabled = false;
-
-
-	public float MaxMass 
-	{
-		get
-		{
-			return maxMass;
-		}
-	}
 
 	public float Mass 
 	{
-		get 
-		{
-			return BodyComponent.Mass;
-		}
-		set
-		{
-			BodyComponent.Mass = value;
-		}
+		get { return BodyComponent.Mass; }
+		set { BodyComponent.Mass = value; }
 	}
 
 	public Body BodyComponent
 	{
-		get
-		{
-			return GetComponent<Body>();
-		}
+		get { return GetComponent<Body>(); }
 	}
 
 	public bool IsOrbiting() 
@@ -66,7 +41,16 @@ public class PlayerCharacter : MonoBehaviour {
 		return isColliding;
 	}
 
-	// Use this for initialization
+	public Vector3 getDeltaPosition()
+	{
+		return deltaPosition;
+	}
+
+	public void setOrbiting(bool o)
+	{
+		isOrbiting = o;
+	}
+	
 	void Start () 
 	{
 		instance = this;
@@ -78,13 +62,10 @@ public class PlayerCharacter : MonoBehaviour {
 		backgroundCamera = GameObject.Find ("Background Planets Camera");
 
 		flash = GameObject.Find ("Flash").GetComponent<FlashBehavior>();
-		downMass = 4;
-		playerBody = GetComponent<Body>();
 
 		DontDestroyOnLoad (this);
 	}
-	
-	// Update is called once per frame
+
 	void Update () 
 	{
 		BodyComponent.UpdateBody ();
@@ -92,7 +73,7 @@ public class PlayerCharacter : MonoBehaviour {
 		if(!gameOver)
 		{
 			if (isOrbiting) {
-				GetComponent<Body>().Gravitiate (body);
+				BodyComponent.Gravitiate (body);
 			}
 
 			if(isColliding) {
@@ -100,22 +81,6 @@ public class PlayerCharacter : MonoBehaviour {
 			}
 
 			deltaPosition = transform.position - lastPosition;
-
-			/*if(Mass >= targetMass)
-			{
-				isOrbiting = false;
-				LevelUp ();
-			}
-			else if(Mass < downMass)
-			{
-				isOrbiting = false;
-				LevelDown();
-			}
-
-			else if(disabled)
-			{
-				disabled = false;
-			}*/
 
 			if(Input.GetKeyDown(KeyCode.Q))
 			{
@@ -132,7 +97,7 @@ public class PlayerCharacter : MonoBehaviour {
 	}
 
 	public void Orbit (Body b) {
-		if (b != this.BodyComponent) {
+		if (b != BodyComponent) {
 			isOrbiting = true;
 			body = b;
 		}
@@ -140,7 +105,7 @@ public class PlayerCharacter : MonoBehaviour {
 
 	public void StopOrbit() {
 		isOrbiting = false;
-		camera.BroadcastMessage("CameraReturn", this);
+		camera.GetComponent<CameraBehavior> ().CameraReturn (this);
 	}
 
 	public Body getOrbiting() {
@@ -150,20 +115,9 @@ public class PlayerCharacter : MonoBehaviour {
 	void OnCollisionEnter2D(Collision2D c) {
 		if(!isColliding)
 		{
-			BroadcastMessage ("Hit", c.gameObject.GetComponent<Body> ());
+			BodyComponent.Hit(c.gameObject.GetComponent<Body> ());
 			isColliding = true;
 		}
-	}
-	
-	public Vector3 getDeltaPosition()
-	{
-		return deltaPosition;
-	}
-
-
-	public void setOrbiting(bool o)
-	{
-		isOrbiting = o;
 	}
 
 	public void GameOver()

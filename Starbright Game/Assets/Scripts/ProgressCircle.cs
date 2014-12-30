@@ -45,7 +45,6 @@ public class ProgressCircle : MonoBehaviour {
 		backgroundCamera = GameObject.Find ("Background Planets Camera");
 		camera = GameObject.Find ("Main Camera");
 		pc = PlayerCharacter.instance;
-		Debug.Log (pc);
 	}
 	
 	// Update is called once per frame
