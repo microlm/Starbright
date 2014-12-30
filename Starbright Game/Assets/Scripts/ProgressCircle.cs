@@ -62,6 +62,9 @@ public class ProgressCircle : MonoBehaviour {
 		if (pc.Mass >= targetSize) {
 			LevelUp();
 		}
+		else if (pc.Mass < decrementSize) {
+			LevelDown();
+		}
 		else if(disabled)
 		{
 			disabled = false;
@@ -72,6 +75,11 @@ public class ProgressCircle : MonoBehaviour {
 			PlayerCharacter.instance.Mass = targetSize;
 			LevelUp ();
 		}
+		else if (Input.GetKeyDown(KeyCode.LeftControl)) {
+			PlayerCharacter.instance.Mass = decrementSize;
+			LevelDown ();
+		}
+
 
 		if (PlayerCharacter.instance.Mass <= GetWarningSize ()) 
 		{
@@ -123,7 +131,7 @@ public class ProgressCircle : MonoBehaviour {
 			
 			disabled = false;
 			currentLayer++;
-			targetSize = initialTargetSize * sizeMultiplierFromLayer(currentLayer);
+			targetSize = initialTargetSize * SizeMultiplierFromLayer(currentLayer);
 			Scale ();
 		}
 		pc.setOrbiting(false);
@@ -206,7 +214,7 @@ public class ProgressCircle : MonoBehaviour {
 		get { return currentLayer; }
 	}
 
-	public static float sizeMultiplierFromLayer(int layer)
+	public static float SizeMultiplierFromLayer(int layer)
 	{
 		if (layer <= 1)
 			return 1;

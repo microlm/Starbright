@@ -72,7 +72,7 @@ public class Generator : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
-		float mult = ProgressCircle.sizeMultiplierFromLayer(ProgressCircle.instance.CurrentLayer);
+		float mult = ProgressCircle.SizeMultiplierFromLayer(ProgressCircle.instance.CurrentLayer);
 		////////////////////////////////////
 		//
 		// There's probably a better way to arrange this, but I'm tired
@@ -214,7 +214,7 @@ public class Generator : MonoBehaviour {
 
 	public void destroyChunk(float xOff, float yOff, bool isForeground)
 	{
-		float mult = ProgressCircle.sizeMultiplierFromLayer(ProgressCircle.instance.CurrentLayer);
+		float mult = ProgressCircle.SizeMultiplierFromLayer(ProgressCircle.instance.CurrentLayer);
 		Dictionary<float, int[]> relevantChunks = isForeground ? foregroundChunks : backgroundChunks;
 		ObjectPool relevantPool = isForeground ? foregroundPool : backgroundPool;
 		int[] chunk = relevantChunks[posHash(xOff, yOff, mult)];
@@ -246,7 +246,7 @@ public class Generator : MonoBehaviour {
 
 	public void LayerUp()
 	{ 
-		float mult = ProgressCircle.sizeMultiplierFromLayer(ProgressCircle.instance.CurrentLayer);
+		float mult = ProgressCircle.SizeMultiplierFromLayer(ProgressCircle.instance.CurrentLayer);
 		if(genBg)
 		{
 			// switch object pools
@@ -301,7 +301,7 @@ public class Generator : MonoBehaviour {
 
 	public void LayerDown()
 	{
-		float mult = ProgressCircle.sizeMultiplierFromLayer(ProgressCircle.instance.CurrentLayer);
+		float mult = ProgressCircle.SizeMultiplierFromLayer(ProgressCircle.instance.CurrentLayer);
 		if(genBg)
 		{
 			// switch object pools
