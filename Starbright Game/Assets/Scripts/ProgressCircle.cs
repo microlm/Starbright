@@ -20,10 +20,6 @@ public class ProgressCircle : MonoBehaviour {
 
 	FlashBehavior flash;
 
-	PlayerCharacter pc; 
-	bool whiteFlashStarted = false;
-	bool blackFlashStarted = false;
-
 	GameObject backgroundCamera;
 	GameObject camera;
 	
@@ -52,16 +48,6 @@ public class ProgressCircle : MonoBehaviour {
 	void Update () {
 		PlayerCharacter pc = PlayerCharacter.instance;
 		transform.position = pc.transform.position;
-
-		//update if goal size is reached
-		if (whiteFlashStarted) {
-			LevelUp();
-		}
-		else if (blackFlashStarted) {
-			LevelDown();
-		}
-
-
 		
 		if (Input.GetKeyDown(KeyCode.LeftShift)) {
 			PlayerCharacter.instance.Mass = targetSize;
@@ -71,6 +57,17 @@ public class ProgressCircle : MonoBehaviour {
 		}
 		else if (Input.GetKeyDown(KeyCode.LeftControl)) {
 			PlayerCharacter.instance.Mass = decrementSize;
+
+			LevelDown ();
+		}
+
+		if (PlayerCharacter.instance.Mass >= targetSize)
+		{
+			LevelUp ();
+		}
+		else if (PlayerCharacter.instance.Mass <= decrementSize)
+		{
+			LevelDown ();
 		}
 
 
@@ -232,8 +229,6 @@ public class ProgressCircle : MonoBehaviour {
 
 	public static float SizeMultiplierFromLayer(int layer)
 	{
-		if (layer <= 1)
-			return 1;
 		return Mathf.Pow (instance.incrementSize, layer - 1);
 	}
 }
