@@ -270,7 +270,7 @@ public class Generator : MonoBehaviour {
 
 			foregroundPool.setForegroundImage();
 
-			foregroundPool.removePCOverlap(pc.instance.GetComponent<SpriteRenderer>().bounds);
+			foregroundPool.removePCOverlap(PlayerCharacter.instance.GetComponent<SpriteRenderer>().bounds);
 
 			backgroundPool.setEnableCollisions(false);
 			foregroundPool.setEnableCollisions(true);
@@ -296,7 +296,7 @@ public class Generator : MonoBehaviour {
 					foregroundChunks.Add(posHash(xOff, yOff, mult), generate(true, xOff, yOff));	
 				}
 			}
-			foregroundPool.removePCOverlap(pc.instance.GetComponent<SpriteRenderer>().bounds);
+			foregroundPool.removePCOverlap(PlayerCharacter.instance.GetComponent<SpriteRenderer>().bounds);
 		}
 	}
 
@@ -337,7 +337,7 @@ public class Generator : MonoBehaviour {
 					foregroundChunks.Add(posHash(xOff, yOff, mult), generate(false, xOff, yOff));	
 				}
 			}
-			foregroundPool.removePCOverlap(pc.instance.GetComponent<CircleCollider2D>().bounds);
+			foregroundPool.removePCOverlap(PlayerCharacter.instance.GetComponent<CircleCollider2D>().bounds);
 		}
 		else
 		{
@@ -350,7 +350,7 @@ public class Generator : MonoBehaviour {
 					foregroundChunks.Add(posHash(xOff, yOff, mult), generate(true, xOff, yOff));	
 				}
 			}
-			foregroundPool.removePCOverlap(pc.instance.GetComponent<SpriteRenderer>().bounds);
+			foregroundPool.removePCOverlap(PlayerCharacter.instance.GetComponent<SpriteRenderer>().bounds);
 		}
 	}
 }
