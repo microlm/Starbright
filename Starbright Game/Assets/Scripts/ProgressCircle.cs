@@ -19,7 +19,10 @@ public class ProgressCircle : MonoBehaviour {
 	private float transisitionTime;
 
 	FlashBehavior flash;
-	bool disabled = false;
+
+	PlayerCharacter pc; 
+	bool whiteFlashStarted = false;
+	bool blackFlashStarted = false;
 
 	GameObject backgroundCamera;
 	GameObject camera;
@@ -51,20 +54,20 @@ public class ProgressCircle : MonoBehaviour {
 		transform.position = pc.transform.position;
 
 		//update if goal size is reached
-		if (pc.Mass >= targetSize) {
+		if (whiteFlashStarted) {
 			LevelUp();
 		}
-		else if (pc.Mass <= decrementSize) {
+		else if (blackFlashStarted) {
 			LevelDown();
 		}
-		else if(disabled)
-		{
-			disabled = false;
-		}
+
 
 		
 		if (Input.GetKeyDown(KeyCode.LeftShift)) {
 			PlayerCharacter.instance.Mass = targetSize;
+
+			LevelUp ();
+
 		}
 		else if (Input.GetKeyDown(KeyCode.LeftControl)) {
 			PlayerCharacter.instance.Mass = decrementSize;
@@ -103,14 +106,30 @@ public class ProgressCircle : MonoBehaviour {
 	// handles moving up a layer
 	void LevelUp()
 	{
-		if(!flash.getWhiteFlash () && !disabled)
+		if(!flash.getWhiteFlash() && !whiteFlashStarted)
 		{
 			flash.whiteFlash();
-			disabled = true;			
+			whiteFlashStarted = true;
+		}
+
+		if(flash.getWhiteFlash () && flash.getCurrentFrame() == (flash.getMaxFrame() - 10))
+		{
+			// turns off pc's trail, disables the colliders of the pc, and moves the pc to the location of the bg camera
+
+			foreach(Transform child in pc.gameObject.transform)
+			{
+				child.gameObject.SetActive(false);
+			}
+
+			pc.gameObject.GetComponent<CircleCollider2D>().enabled = false;
+			pc.BodyComponent.enabled = false;
+			pc.transform.position = backgroundCamera.transform.position;
+			camera.transform.position = pc.transform.position;
+			Generator.instance.GetComponent<Generator>().LayerUp ();
 		}
 		
 		
-		if(!flash.getWhiteFlash () && disabled)
+		if(!flash.getWhiteFlash () && whiteFlashStarted)
 		{
 			foreach(Transform child in pc.gameObject.transform)
 			{
@@ -121,9 +140,11 @@ public class ProgressCircle : MonoBehaviour {
 			
 			pc.gameObject.GetComponent<CircleCollider2D>().enabled = true;
 			
-			disabled = false;
+			whiteFlashStarted = false;
 			currentLayer++;
+
 			targetSize = initialTargetSize * SizeMultiplierFromLayer(currentLayer);
+
 			Scale ();
 		}
 		pc.setOrbiting(false);
@@ -133,7 +154,7 @@ public class ProgressCircle : MonoBehaviour {
 	public void LevelDown()
 	{
 		
-		if(!flash.getBlackFlash () && !disabled)
+		if(!flash.getBlackFlash () && !blackFlashStarted)
 		{
 			flash.blackFlash();
 			Generator.instance.GetComponent<Generator>().LayerDown ();
@@ -141,9 +162,9 @@ public class ProgressCircle : MonoBehaviour {
 			pc.transform.position = camera.transform.position;
 		}
 		
-		if(flash.getBlackFlash () && !disabled)
+		if(flash.getBlackFlash () && !blackFlashStarted)
 		{
-			disabled = true;
+			blackFlashStarted = true;
 			foreach(Transform child in pc.gameObject.transform)
 			{
 				child.gameObject.SetActive(false);

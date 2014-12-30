@@ -5,7 +5,7 @@ public class FlashBehavior : MonoBehaviour {
 
 	public AnimationCurve opacity;
 	public AnimationCurve size;
-	float timer;
+
 	float initSize;
 
 	private bool whiteFlashed = false;
@@ -18,6 +18,9 @@ public class FlashBehavior : MonoBehaviour {
 	private float screenSize;
 	private float scale;
 
+	private float maxFrame = 60;
+	private float currentFrame = 0;
+
 	// Use this for initialization
 	void Start () {
 
@@ -27,46 +30,51 @@ public class FlashBehavior : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-	
+	void Update () 
+	{
 		if (whiteFlashed)
 		{
-			sprite.color = new Color (sprite.color.r, sprite.color.g, sprite.color.b, opacity.Evaluate (timer));
-			scale = size.Evaluate (timer) * screenSize;
+			sprite.color = new Color (sprite.color.r, sprite.color.g, sprite.color.b, opacity.Evaluate ((currentFrame/maxFrame))*opacity[opacity.length - 1].time);
+			scale = size.Evaluate ((currentFrame/maxFrame) * size[size.length - 1].time) * screenSize;
 			sprite.transform.localScale = new Vector3(scale, scale, scale);
-			
-			timer += Time.deltaTime;
+			currentFrame++;
 
-			if(timer >= (opacity[opacity.length - 1].time - 0.01) && timer >= (size[size.length-1].time - 0.01))
+			if(currentFrame > maxFrame)
 			{
 				whiteFlashed = false;
+				currentFrame = 0;
 			}
+
 
 		}
 
 		if(blackFlashed)
 		{
-			sprite.color = new Color (0f, 0f, 0f, opacity.Evaluate (timer));
-			scale = size.Evaluate (timer) * screenSize;
+			sprite.color = new Color (0f, 0f, 0f, opacity.Evaluate ((currentFrame/maxFrame)*opacity[opacity.length - 1].time));
+			scale = size.Evaluate ((currentFrame/maxFrame)*size[size.length - 1].time) * screenSize;
 			sprite.transform.localScale = new Vector3(scale, scale, scale);
-			
-			timer += Time.deltaTime;
-			
-			if(timer >= (opacity[opacity.length - 1].time - 0.01) && timer >= (size[size.length-1].time - 0.01))
+			currentFrame ++;
+
+			if(currentFrame == (maxFrame - 5))
 			{
 				blackFlashed = false;
+				currentFrame = 0;
 			}
+
 		}
 
 		if(blackOut)
 		{
-			sprite.color = new Color (0f, 0f, 0f, opacity.Evaluate (timer));
-			timer += Time.deltaTime;
-			if(timer >= (opacity[opacity.length - 1].time/2f))
+			sprite.color = new Color (0f, 0f, 0f, opacity.Evaluate ((currentFrame/maxFrame)*opacity[opacity.length - 1].time));
+			currentFrame ++;
+
+			if(currentFrame == (maxFrame / 2f))
 			{
 				blackOut = false;
 				blackFinished = true;
+				currentFrame = 0;
 			}
+
 		}
 	}
 
@@ -76,7 +84,6 @@ public class FlashBehavior : MonoBehaviour {
 		whiteFlashed = true;
 		float screenHeight = Camera.main.orthographicSize * 2f;
 		float screenWidth = screenHeight / Screen.height * Screen.width;
-		timer = 0f;
 		if(screenHeight > screenWidth)
 		{
 			screenSize = (screenHeight/(sprite.sprite.bounds.size.y))*2f;
@@ -91,7 +98,6 @@ public class FlashBehavior : MonoBehaviour {
 	{
 		transform.position = GameObject.Find ("Main Camera").transform.position;
 		blackFlashed = true;
-		timer = 0f;
 		float screenHeight = Camera.main.orthographicSize * 2f;
 		float screenWidth = screenHeight / Screen.height * Screen.width;
 		
@@ -110,7 +116,6 @@ public class FlashBehavior : MonoBehaviour {
 	{
 		transform.position = GameObject.Find ("Main Camera").transform.position;
 		blackOut = true;
-		timer = 0f;
 		float screenHeight = Camera.main.orthographicSize * 2f;
 		float screenWidth = screenHeight / Screen.height * Screen.width;
 		
@@ -144,6 +149,16 @@ public class FlashBehavior : MonoBehaviour {
 	public bool getBlackFlash()
 	{
 		return blackFlashed;
+	}
+
+	public float getCurrentFrame()
+	{
+		return currentFrame;
+	}
+
+	public float getMaxFrame()
+	{
+		return maxFrame;
 	}
 	
 }
