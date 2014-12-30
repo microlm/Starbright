@@ -112,6 +112,14 @@ public class PlayerCharacter : MonoBehaviour {
 		}
 	}
 
+	void OnCollisionEnter2D(Collision2D c) {
+		if(!isColliding)
+		{
+			BodyComponent.Hit(c.gameObject.GetComponent<Body> ());
+			isColliding = true;
+		}
+	}
+
 	public void Orbit (Body b) {
 		if (b != BodyComponent) {
 			isOrbiting = true;
@@ -128,12 +136,14 @@ public class PlayerCharacter : MonoBehaviour {
 		return body;
 	}
 
-	void OnCollisionEnter2D(Collision2D c) {
-		if(!isColliding)
-		{
-			BodyComponent.Hit(c.gameObject.GetComponent<Body> ());
-			isColliding = true;
-		}
+	public void LevelUp()
+	{
+		Generator.instance.LayerUp ();
+	}
+
+	public void LevelDown()
+	{
+		Generator.instance.LayerDown ();
 	}
 
 	public void GameOver()

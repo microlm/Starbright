@@ -19,7 +19,6 @@ public class ProgressCircle : MonoBehaviour {
 	private float transisitionTime;
 
 	FlashBehavior flash;
-	PlayerCharacter pc; 
 	bool disabled = false;
 
 	GameObject backgroundCamera;
@@ -44,25 +43,18 @@ public class ProgressCircle : MonoBehaviour {
 		flash = GameObject.Find ("Flash").GetComponent<FlashBehavior>();
 		backgroundCamera = GameObject.Find ("Background Planets Camera");
 		camera = GameObject.Find ("Main Camera");
-		pc = PlayerCharacter.instance;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		//follow player
-
-		// pc is not always instantiated in the Start: is there a way to guarentee that PlayerCharacter is instantiated before ProgressCircle?
-		if(pc == null)
-		{
-			pc = PlayerCharacter.instance;
-		}
+		PlayerCharacter pc = PlayerCharacter.instance;
 		transform.position = pc.transform.position;
 
 		//update if goal size is reached
 		if (pc.Mass >= targetSize) {
 			LevelUp();
 		}
-		else if (pc.Mass < decrementSize) {
+		else if (pc.Mass <= decrementSize) {
 			LevelDown();
 		}
 		else if(disabled)
@@ -73,11 +65,9 @@ public class ProgressCircle : MonoBehaviour {
 		
 		if (Input.GetKeyDown(KeyCode.LeftShift)) {
 			PlayerCharacter.instance.Mass = targetSize;
-			LevelUp ();
 		}
 		else if (Input.GetKeyDown(KeyCode.LeftControl)) {
 			PlayerCharacter.instance.Mass = decrementSize;
-			LevelDown ();
 		}
 
 
@@ -92,29 +82,31 @@ public class ProgressCircle : MonoBehaviour {
 
 	}
 
-	// handles moving up a layer
+	void LevelUp()
+	{
+		currentLayer++;
+		PlayerCharacter.instance.LevelUp ();
+		Scale ();
+	}
 
+	void LevelDown()
+	{
+		if (currentLayer > 1) 
+		{
+			currentLayer--;
+			PlayerCharacter.instance.LevelDown ();
+			Scale ();
+		}
+	}
+
+	/*
+	// handles moving up a layer
 	void LevelUp()
 	{
 		if(!flash.getWhiteFlash () && !disabled)
 		{
-			// begins flash, turns off pc's trail, disables the colliders of the pc, and moves the pc to the location of the bg camera
-
 			flash.whiteFlash();
-			
-			disabled = true;
-
-			foreach(Transform child in pc.gameObject.transform)
-			{
-				child.gameObject.SetActive(false);
-			}
-
-			pc.gameObject.GetComponent<CircleCollider2D>().enabled = false;
-			pc.BodyComponent.enabled = false;
-			pc.transform.position = backgroundCamera.transform.position;
-			camera.transform.position = pc.transform.position;
-			Generator.instance.GetComponent<Generator>().LayerUp ();
-			
+			disabled = true;			
 		}
 		
 		
@@ -171,9 +163,12 @@ public class ProgressCircle : MonoBehaviour {
 		}
 		pc.setOrbiting(false);
 	}
+	*/
 
 	void Scale()
 	{
+		targetSize = initialTargetSize * SizeMultiplierFromLayer (currentLayer);
+		decrementSize = initialDecrementSize * SizeMultiplierFromLayer (currentLayer);
 		transform.localScale = maxScale / 20 * targetSize;
 	}
 
