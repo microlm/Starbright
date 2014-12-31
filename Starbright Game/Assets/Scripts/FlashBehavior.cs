@@ -160,5 +160,10 @@ public class FlashBehavior : MonoBehaviour {
 	{
 		return maxFrame;
 	}
+
+	public bool isMaxFlash()
+	{
+		return (getWhiteFlash () && getCurrentFrame () == (getMaxFrame () - 10));
+	}
 	
 }

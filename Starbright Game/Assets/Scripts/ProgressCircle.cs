@@ -19,7 +19,6 @@ public class ProgressCircle : MonoBehaviour {
 	private float transisitionTime;
 
 	FlashBehavior flash;
-
 	GameObject backgroundCamera;
 	GameObject camera;
 	
@@ -70,6 +69,10 @@ public class ProgressCircle : MonoBehaviour {
 			LevelDown ();
 		}
 
+		if (!flash.getWhiteFlash())
+		{
+			DoneLeveling();
+		}
 
 		if (PlayerCharacter.instance.Mass <= GetWarningSize ()) 
 		{
@@ -84,6 +87,7 @@ public class ProgressCircle : MonoBehaviour {
 
 	void LevelUp()
 	{
+		StartLeveling ();
 		currentLayer++;
 		PlayerCharacter.instance.LevelUp ();
 		Scale ();
@@ -93,10 +97,22 @@ public class ProgressCircle : MonoBehaviour {
 	{
 		if (currentLayer > 1) 
 		{
+			StartLeveling ();
 			currentLayer--;
 			PlayerCharacter.instance.LevelDown ();
 			Scale ();
 		}
+	}
+
+	void StartLeveling()
+	{
+		Time.timeScale = 0f;
+		flash.whiteFlash ();
+	}
+
+	void DoneLeveling()
+	{
+		Time.timeScale = 1f;
 	}
 
 	/*

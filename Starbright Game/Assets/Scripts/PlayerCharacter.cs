@@ -138,11 +138,13 @@ public class PlayerCharacter : MonoBehaviour {
 
 	public void LevelUp()
 	{
+		BodyComponent.ResetVelocity ();
 		Generator.instance.LayerUp ();
 	}
 
 	public void LevelDown()
 	{
+		BodyComponent.ResetVelocity ();
 		Generator.instance.LayerDown ();
 	}
 

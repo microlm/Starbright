@@ -115,6 +115,11 @@ public class Body : MonoBehaviour {
 		GlowChild.GlowColor = Glow.DimWhite;
 	}
 
+	public void ResetVelocity()
+	{
+		velocity = Vector3.zero;
+	}
+
 	public void Hit(Body b)
 	{
 		if (Mass >= b.Mass) 
