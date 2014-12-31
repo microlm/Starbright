@@ -140,12 +140,14 @@ public class PlayerCharacter : MonoBehaviour {
 	{
 		BodyComponent.ResetVelocity ();
 		Generator.instance.LayerUp ();
+		ColorOption.Instance.GenerateNewGradiant ();
 	}
 
 	public void LevelDown()
 	{
 		BodyComponent.ResetVelocity ();
 		Generator.instance.LayerDown ();
+		ColorOption.Instance.GenerateNewGradiant ();
 	}
 
 	public void GameOver()

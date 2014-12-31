@@ -18,8 +18,7 @@ public class Body : MonoBehaviour {
 	
 	private Vector3 maxScale;
 	private Vector3 cMaxScale;
-
-	ColorOption colorOpt;
+	
 	GameObject camera;
 		
 	public float Mass 
@@ -65,17 +64,13 @@ public class Body : MonoBehaviour {
 		velocity = initialVel;
 		maxScale = Scale;
 		cMaxScale = gameObject.collider2D.transform.localScale;
-		
-		Scale = ScaleByMass ();
-		colorOpt = GameObject.Find ("ColorOptions").GetComponent<ColorOption> ();
-		BodyColor = colorOpt.assignColor(Mass);
 
 		camera = GameObject.Find ("Main Camera");
 	}
 	
 	void Update () {
 		Scale = ScaleByMass ();
-		BodyColor = colorOpt.assignColor(Mass);
+		BodyColor = ColorOption.Instance.assignColor(Mass);
 	}
 
 	Vector3 ScaleByMass()
@@ -98,7 +93,7 @@ public class Body : MonoBehaviour {
 		collider2D.transform.localScale = cMaxScale / 20 * Mass;
 		
 		//update color
-		BodyColor = colorOpt.assignColor(Mass);
+		BodyColor = ColorOption.Instance.assignColor(Mass);
 	}
 	
 	void OnMouseDown () 
