@@ -55,7 +55,7 @@ public class FlashBehavior : MonoBehaviour {
 			sprite.transform.localScale = new Vector3(scale, scale, scale);
 			currentFrame ++;
 
-			if(currentFrame == (maxFrame - 5))
+			if(currentFrame > maxFrame)
 			{
 				blackFlashed = false;
 				currentFrame = 0;
@@ -80,7 +80,7 @@ public class FlashBehavior : MonoBehaviour {
 
 	public void whiteFlash()
 	{
-		transform.position = GameObject.Find ("Background Planets Camera").transform.position;
+		transform.position = GameObject.Find ("Main Camera").transform.position;
 		whiteFlashed = true;
 		float screenHeight = Camera.main.orthographicSize * 2f;
 		float screenWidth = screenHeight / Screen.height * Screen.width;
