@@ -24,7 +24,7 @@ public class ScoreCameraBehavior : MonoBehaviour {
 	void Start () 
 	{
 		duration = 0f;
-		player = PlayerCharacter.instance.gameObject;
+		player = GameObject.Find ("Player");
 		lastPlayerPosition = player.transform.position;
 		cameraDepth = camera.transform.position.z;
 		MaxShakeTime = 3f;
