@@ -17,7 +17,7 @@ public class BlackHole : MonoBehaviour {
 
 	void OnCollisionEnter2D(Collision2D c)
 	{
-		
+		PlayerCharacter.instance.GameOver ();
 	}
 
 	public Vector3 Position {
