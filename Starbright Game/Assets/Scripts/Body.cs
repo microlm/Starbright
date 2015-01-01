@@ -71,7 +71,21 @@ public class Body : MonoBehaviour {
 	void Update () {
 		Scale = ScaleByMass ();
 		BodyColor = ColorOption.Instance.assignColor(Mass);
+
+		if(Mass <= PlayerCharacter.instance.Mass && GlowChild.matching == true)
+		{
+			Color temp = new Color(0, 0, 0, 0.5f);
+			GlowChild.GlowColor = temp;
+			GlowChild.matching = false;
+		}
+		else if(Mass > PlayerCharacter.instance.Mass && GlowChild.matching == false)
+		{
+			Color temp = new Color(BodyColor.r, BodyColor.g, BodyColor.b, 0.5f);
+			GlowChild.GlowColor = temp;
+			GlowChild.matching = true;
+		}
 	}
+
 
 	Vector3 ScaleByMass()
 	{
@@ -100,14 +114,14 @@ public class Body : MonoBehaviour {
 	{
 		//playor orbits this body
 		PlayerCharacter.instance.Orbit (this);
-		GlowChild.GlowColor = Glow.BrightWhite;
+		GlowChild.GlowColor = GlowChild.Bright;
 	}
 	
 	void OnMouseUp () 
 	{
 		//player stops orbiting this body
 		PlayerCharacter.instance.StopOrbit ();
-		GlowChild.GlowColor = Glow.DimWhite;
+		GlowChild.GlowColor = GlowChild.Dim;
 	}
 
 	public void ResetVelocity()

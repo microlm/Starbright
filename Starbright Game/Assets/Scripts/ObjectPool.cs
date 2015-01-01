@@ -69,6 +69,7 @@ public class ObjectPool : MonoBehaviour
 					}
 					Body asteroidScript = asteroid.GetComponent<Body> ();
 					asteroidScript.mass = mass;
+					
 					pool.Add (asteroid);
 					isFree.Add (false);
 					return nextFree;
