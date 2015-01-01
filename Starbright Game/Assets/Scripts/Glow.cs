@@ -7,17 +7,13 @@ public class Glow : MonoBehaviour {
 
 	private Color glowColor;
 	private float timer;
-	private Color brightColor;
-	private Color dimColor;
-
-	public bool matching;
+	private Color bodyColor;
 
 	// Use this for initialization
 	void Start () {
 		timer = 0f;
 		glowColor = CurrentColor;
-		brightColor = new Color(glowColor.r, glowColor.g, glowColor.b, 1f);
-		matching = false;
+		bodyColor = glowColor;
 	}
 	
 	// Update is called once per frame
@@ -71,8 +67,7 @@ public class Glow : MonoBehaviour {
 	{
 		get
 		{
-			brightColor = new Color(glowColor.r, glowColor.g, glowColor.b, 1f);
-			return Color.Lerp (glowColor, brightColor, 0.2f);
+			return Color.Lerp (bodyColor, Color.clear, 0.05f);
 		}
 	}
 
@@ -80,8 +75,13 @@ public class Glow : MonoBehaviour {
 	{
 		get
 		{
-			dimColor = new Color(glowColor.r, glowColor.g, glowColor.b, 0.5f);
-			return Color.Lerp (glowColor, dimColor, 0.5f);
+			return Color.Lerp (bodyColor, Color.clear, 0.3f);
 		}
 	}
+
+	public void setBodyColor(Color c)
+	{
+		bodyColor = c;
+	}
+
 }
