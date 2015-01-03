@@ -157,4 +157,10 @@ public class PlayerCharacter : MonoBehaviour {
 
 		GetComponent<CircleCollider2D>().enabled = false;
 	}
+
+	public void Restart()
+	{
+		Application.LoadLevel (Application.loadedLevel);
+		Destroy (this.gameObject);
+	}
 }

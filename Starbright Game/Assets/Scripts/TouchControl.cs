@@ -4,13 +4,11 @@ using System.Collections;
 public class TouchControl : MonoBehaviour {
 
 	public float swypeSpeed = 10f;
-
-	GameObject pc;
+	
 	GameObject camera;
 	Body target;
 	// Use this for initialization
 	void Start () {
-		pc = GameObject.Find ("PC");
 		camera = GameObject.Find ("Main Camera");
 	}
 	
@@ -18,6 +16,9 @@ public class TouchControl : MonoBehaviour {
 
 	void Update () {
 		TapSelect(); 
+		if (Input.GetKeyDown(KeyCode.RightAlt)) {
+			PlayerCharacter.instance.Restart();
+		}
 	}
 	
 	void TapSelect() {
@@ -45,16 +46,16 @@ public class TouchControl : MonoBehaviour {
 				if (Physics.Raycast (ray, out hit)) {
 					
 					target = hit.transform.GetComponent<Body>();
-					pc.BroadcastMessage("Orbit", target);
+					PlayerCharacter.instance.Orbit(target);
 					
 				}
 			}
 
 			//when stop touching
 			if(touch.phase == TouchPhase.Ended){
-				if(target != null && pc.GetComponent<PlayerCharacter>().IsOrbiting())
+				if(target != null && PlayerCharacter.instance.IsOrbiting())
 				{
-					pc.BroadcastMessage("StopOrbit", target);
+					PlayerCharacter.instance.StopOrbit();
 				}
 				camera.GetComponent<CameraBehavior>().StopScroll();
 			}
@@ -65,12 +66,14 @@ public class TouchControl : MonoBehaviour {
 	
 
 		//four fingers quits
-		if (count >= 4)
+		if (count >= 4) {
 			Application.Quit ();
+			Application.runInBackground = false;
+		}
 		//three fingers restarts
-		if (count >= 3)
-			Application.LoadLevel (Application.loadedLevel);
-
+		else if (count >= 3)
+			PlayerCharacter.instance.Restart();
+			
 
 	}
 }
