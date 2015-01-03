@@ -19,15 +19,16 @@ public class HighScores {
 	}
 
 	/** Adds score to list of high scores and saves it to memory, will cause a slow down in gameplay */
-	public void AddScore(int score)
+	public bool AddScore(int score)
 	{
 		int i = 0;
+		bool added = false;
 		while (i < numScores) 
 		{
 			if (scores[i] == null) {
 				scores[i] = score;
 				SaveScores ();
-				return;
+				return true;
 			}
 			else if (scores[i] >= score) {
 				i++;
@@ -37,10 +38,12 @@ public class HighScores {
 				scores[i] = score;
 				score = temp;
 				i++;
+				added = true;
 			}
 		}
 
 		SaveScores ();
+		return added;
 	}
 
 	/** Loads player scores from memory */

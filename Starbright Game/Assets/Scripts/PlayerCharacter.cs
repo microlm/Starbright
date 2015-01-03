@@ -154,7 +154,7 @@ public class PlayerCharacter : MonoBehaviour {
 	{
 		flash.blackScreen();
 		gameOver = true;
-
+		//DontDestroyOnLoad(this.gameObject);
 		GetComponent<CircleCollider2D>().enabled = false;
 	}
 

@@ -116,5 +116,17 @@ public class FinalScoreDirector : MonoBehaviour {
 		time += Time.deltaTime;
 	}
 
+	void DisplayHiScore()
+	{
+
+	}
+
+	void loadHiScores()
+	{
+		HighScores hiscores = new HighScores();
+		//bool added = AddScore(ScoreManager.Instance.Score);
+
+
+	}
 
 }
