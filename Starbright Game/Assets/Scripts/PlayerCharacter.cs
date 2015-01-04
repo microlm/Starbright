@@ -115,8 +115,11 @@ public class PlayerCharacter : MonoBehaviour {
 	void OnCollisionEnter2D(Collision2D c) {
 		if(!isColliding)
 		{
-			BodyComponent.Hit(c.gameObject.GetComponent<Body> ());
-			isColliding = true;
+			Body b = c.gameObject.GetComponent<Body> ();
+			if (b != null) {
+				BodyComponent.Hit(b);
+				isColliding = true;
+			}
 		}
 	}
 
