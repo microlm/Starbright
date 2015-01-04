@@ -159,6 +159,8 @@ public class Body : MonoBehaviour {
 	/** "Eats" Body b. Mass grows, velocity increases, stops orbiting b, causes an explosion, and sets b to inactive */
 	public void Eat(Body b)
 	{
+		SoundManager.Instance.PlayEatSound (SoundManager.Instance.GetNoteByMass(b.Mass));
+
 		Mass += growth * b.Mass;
 		velocity += growth * Velocity * b.Mass / Mass;
 		if(PlayerCharacter.instance.getOrbiting() == b)
@@ -173,6 +175,8 @@ public class Body : MonoBehaviour {
 	/** causes damage proportional to size of body b and how fast was going and stop orbit around b */
 	public void Shrink(Body b)
 	{
+		SoundManager.Instance.PlayHitSound (SoundManager.Instance.GetNoteByMass(b.Mass));
+
 		float massLost = Mass * Velocity.magnitude;
 		Mass -= massLost;
 		velocity = setExitVelocity(b);
