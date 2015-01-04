@@ -6,6 +6,7 @@ public class SoundManager : MonoBehaviour {
 	public float minMass;
 	public float maxMass;
 	public int numNotes;
+	public int randomIndex;
 
 	SoundBehavior EatSounds;
 	SoundBehavior HitSounds;
@@ -45,6 +46,11 @@ public class SoundManager : MonoBehaviour {
 	{
 		float percent = (maxMass - mass) / (maxMass - minMass);
 		int note = Mathf.FloorToInt (percent * numNotes);
-		return note + 1;
+		note += Random.Range (-randomIndex, randomIndex) + 1;
+		if (note > 21)
+			note = 21;
+		if (note < 1)
+			note = 1;
+		return note;
 	}
 }
