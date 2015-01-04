@@ -72,21 +72,24 @@ public class Body : MonoBehaviour {
 		Scale = ScaleByMass ();
 		BodyColor = ColorOption.Instance.assignColor(Mass);
 
-		if(Mass <= PlayerCharacter.instance.Mass)
+		if (PlayerCharacter.instance != null) 
 		{
-			Color temp = Color.white;
-			temp.a = 0.4f;
-			GlowChild.GlowColor = temp;
-		
-			GlowChild.setBodyColor(Color.white);
-		}
-		else if(Mass > PlayerCharacter.instance.Mass)
-		{
-			Color temp = new Color(BodyColor.r, BodyColor.g, BodyColor.b, 0.4f);
-			GlowChild.GlowColor = temp;
+			if(Mass <= PlayerCharacter.instance.Mass)
+			{
+				Color temp = Color.white;
+				temp.a = 0.4f;
+				GlowChild.GlowColor = temp;
+			
+				GlowChild.setBodyColor(Color.white);
+			}
+			else if(Mass > PlayerCharacter.instance.Mass)
+			{
+				Color temp = new Color(BodyColor.r, BodyColor.g, BodyColor.b, 0.4f);
+				GlowChild.GlowColor = temp;
 
-			temp.a = 1f;
-			GlowChild.setBodyColor(temp);
+				temp.a = 1f;
+				GlowChild.setBodyColor(temp);
+			}
 		}
 	}
 
