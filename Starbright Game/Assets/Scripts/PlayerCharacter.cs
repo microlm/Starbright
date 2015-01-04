@@ -152,6 +152,7 @@ public class PlayerCharacter : MonoBehaviour {
 
 	public void GameOver()
 	{
+		GetComponent<Explosion>().Explode(Mass, Mass, BodyComponent.Velocity * 10f);
 		flash.blackScreen();
 		gameOver = true;
 		//DontDestroyOnLoad(this.gameObject);
