@@ -5,21 +5,44 @@ public class Glow : MonoBehaviour {
 	
 	public AnimationCurve transition;
 
+	float ActiveGlowOpacity = 0.7f;
+	float InactiveGlowOpacity = 0.4f;
+
+
+	private Color color;
 	private Color glowColor;
 	private float timer;
-	private Color bodyColor;
+
+	private bool IsSet;
 
 	// Use this for initialization
 	void Start () {
-		timer = 0f;
+		timer = 1f;
 		glowColor = CurrentColor;
-		bodyColor = glowColor;
+		IsSet = false;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		if (!IsSet)
+		{
+			if (InactiveColor != null) {
+				glowColor = InactiveColor;
+				IsSet = true;
+			}
+		}
+
 		CurrentColor = Color.Lerp (CurrentColor, glowColor, transition.Evaluate(timer));
 		timer += Time.deltaTime;
+	}
+
+	public bool InTransisition {
+		get 
+		{
+			if ( timer < 1f)
+				return true;
+			else return false;
+		}
 	}
 
 	private Color CurrentColor 
@@ -36,10 +59,7 @@ public class Glow : MonoBehaviour {
 
 	public Color GlowColor
 	{
-		get 
-		{
-			return glowColor;
-		}
+		get { return glowColor; }
 		set 
 		{
 			glowColor = value;
@@ -47,41 +67,33 @@ public class Glow : MonoBehaviour {
 		}
 	}
 
-	public static Color DimWhite 
+	public Color DefaultColor
 	{
-		get
-		{
-			return Color.Lerp (Color.white, Color.clear, 0.5f);
+		get { return color; }
+		set 
+		{ 
+			color = value;
+			IsSet = false;
 		}
 	}
 
-	public static Color BrightWhite 
+	public Color InactiveColor
 	{
 		get
-		{
-			return Color.Lerp (Color.white, Color.clear, 0.2f);
+		{ 
+			Color temp = color; 
+			temp.a = InactiveGlowOpacity;
+			return temp;
 		}
 	}
 
-	public Color Bright
+	public Color ActiveColor
 	{
 		get
-		{
-			return Color.Lerp (bodyColor, Color.clear, 0.05f);
+		{ 
+			Color temp = color; 
+			temp.a = ActiveGlowOpacity;
+			return temp;
 		}
 	}
-
-	public Color Dim
-	{
-		get
-		{
-			return Color.Lerp (bodyColor, Color.clear, 0.3f);
-		}
-	}
-
-	public void setBodyColor(Color c)
-	{
-		bodyColor = c;
-	}
-
 }

@@ -72,23 +72,15 @@ public class Body : MonoBehaviour {
 		Scale = ScaleByMass ();
 		BodyColor = ColorOption.Instance.assignColor(Mass);
 
-		if (PlayerCharacter.instance != null) 
+		if (PlayerCharacter.instance != null && !GlowChild.InTransisition) 
 		{
 			if(Mass <= PlayerCharacter.instance.Mass)
 			{
-				Color temp = Color.white;
-				temp.a = 0.4f;
-				GlowChild.GlowColor = temp;
-			
-				GlowChild.setBodyColor(Color.white);
+				GlowChild.DefaultColor = Color.white;
 			}
 			else if(Mass > PlayerCharacter.instance.Mass)
 			{
-				Color temp = new Color(BodyColor.r, BodyColor.g, BodyColor.b, 0.4f);
-				GlowChild.GlowColor = temp;
-
-				temp.a = 1f;
-				GlowChild.setBodyColor(temp);
+				GlowChild.DefaultColor = BodyColor;
 			}
 		}
 	}
@@ -121,14 +113,14 @@ public class Body : MonoBehaviour {
 	{
 		//playor orbits this body
 		PlayerCharacter.instance.Orbit (this);
-		GlowChild.GlowColor = GlowChild.Bright;
+		GlowChild.GlowColor = GlowChild.ActiveColor;
 	}
 	
 	void OnMouseUp () 
 	{
 		//player stops orbiting this body
 		PlayerCharacter.instance.StopOrbit ();
-		GlowChild.GlowColor = GlowChild.Dim;
+		GlowChild.GlowColor = GlowChild.InactiveColor;
 	}
 
 	public void ResetVelocity()
