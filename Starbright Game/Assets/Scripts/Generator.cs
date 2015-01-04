@@ -18,8 +18,10 @@ public class Generator : MonoBehaviour {
 	public float minAsteroidSize;
 	public float asteroidSizeRange;
 	public AnimationCurve sizeDistribution;
+	public AnimationCurve densityByLayer;
 	public float genRadius;
 	public AnimationCurve blackHoleChance;
+	public int maxLayer = 100;
 
 	public bool genBg;
 
@@ -176,11 +178,12 @@ public class Generator : MonoBehaviour {
 		}
 		float size = ProgressCircle.SizeMultiplierFromLayer(currentLayer);
 
-		float[][] asteroids = ProceduralGeneration.generate(areaWidth * size, areaHeight * size, minDensity / size, densityRange / size, genChance, minGenSize, genSizeRange, minGenSpacing,
-		                                                    genSpacingRange, minAsteroidSize * size, asteroidSizeRange * size, sizeDistribution);
+		float densityMult = densityByLayer.Evaluate ((float) currentLayer / (float)maxLayer);
+
+		float[][] asteroids = ProceduralGeneration.generate(areaWidth * size, areaHeight * size, minDensity * densityMult / size, densityRange * densityMult / size, genChance, minGenSize, genSizeRange, minGenSpacing, genSpacingRange, minAsteroidSize * size, asteroidSizeRange * size, sizeDistribution);
 		List<int> ids = new List<int>();
 		currentLayer += bholeChanceOffset;
-		float curvePosition = ((float)(currentLayer - 1)) / ((float)currentLayer);
+		float curvePosition = ((float)currentLayer / (float)maxLayer);
 
 		float bhChance = blackHoleChance.Evaluate(curvePosition);
 		bhChance = bhChance > 0 ? bhChance : 0;
