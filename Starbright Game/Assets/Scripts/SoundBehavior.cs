@@ -57,6 +57,6 @@ public class SoundBehavior : MonoBehaviour {
 		Audio.time = offset;
 		Audio.Play ();
 
-		timer = interval;
+		timer = interval - 0.05f;
 	}
 }
