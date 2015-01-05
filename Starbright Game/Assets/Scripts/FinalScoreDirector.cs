@@ -23,6 +23,14 @@ public class FinalScoreDirector : MonoBehaviour {
 	public ParticleSystem exp3;
 	public ParticleSystem exp4;
 
+	public GameObject hiScore1;
+	public GameObject hiScore2;
+	public GameObject hiScore3;
+	public GameObject hiScore4;
+	public GameObject hiScore5;
+
+	private GameObject[] hiScores;
+
 	FinalScoreBgCameraBehavior bgBehavior;
 	ScoreCameraBehavior mainBehavior;
 
@@ -37,12 +45,20 @@ public class FinalScoreDirector : MonoBehaviour {
 		mainBehavior = mainCamera.GetComponent<ScoreCameraBehavior>();
 		centered = false;
 
-		Debug.Log (ScoreManager.Instance.Score.ToString ());
 		GameObject.Find ("FinalScore").GetComponent<Text>().text= ScoreManager.Instance.Score.ToString();
 		scoreDisplayed = false;
 		score.SetActive(false);
 
 		Destroy(ScoreManager.Instance.gameObject);
+
+		//hiScores = new GameObject[5];
+		hiScores = new GameObject[5];
+		hiScores[0] = hiScore1;
+		hiScores[1] = hiScore2; 
+		hiScores[2] = hiScore3; 
+		hiScores[3] = hiScore4;
+		hiScores[4] = hiScore5;
+		loadHiScores();
 	}
 	
 	// Calls the actions of each gameObject for the final score cutscene
@@ -115,17 +131,29 @@ public class FinalScoreDirector : MonoBehaviour {
 
 		time += Time.deltaTime;
 	}
-
-	void DisplayHiScore()
-	{
-
-	}
-
+	
 	void loadHiScores()
 	{
-		HighScores hiscores = new HighScores();
-		//bool added = AddScore(ScoreManager.Instance.Score);
+		HighScores hi = new HighScores();
+		int added = hi.AddScore(ScoreManager.Instance.Score);
 
+		for(int i=0; i < hiScores.Length; i++)
+		{
+			if(hi.Scores[i] == 0)
+			{
+				hiScores[i].GetComponent<Text>().text = (i + 1) + "";
+			}
+			else
+			{
+				hiScores[i].GetComponent<Text>().text = (i + 1) + "        " + hi.Scores[i].ToString();
+			}
+		}
+
+		if(added < 5)
+		{
+			Color newTextColor = Color.Lerp (Color.yellow, Color.clear, 0.2f);
+			hiScores[added].GetComponent<Text>().color = newTextColor;
+		}
 
 	}
 

@@ -155,11 +155,11 @@ public class PlayerCharacter : MonoBehaviour {
 
 	public void GameOver()
 	{
+		GetComponent<CircleCollider2D>().enabled = false;
+		Debug.Log ("off it goes");
 		GetComponent<Explosion>().Explode(Mass, Mass, BodyComponent.Velocity * 10f);
 		flash.blackScreen();
 		gameOver = true;
-		//DontDestroyOnLoad(this.gameObject);
-		GetComponent<CircleCollider2D>().enabled = false;
 	}
 
 	public void Restart()

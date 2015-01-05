@@ -37,7 +37,6 @@ public class ScoreCameraBehavior : MonoBehaviour {
 		MaxShakeAmount = shakeAmount/5f;
 
 		float adjustment = player.transform.position.x + (camera.orthographicSize * Screen.width/Screen.height * 1.1f);
-		Debug.Log (adjustment);
 		camera.transform.position = new Vector3(adjustment, camera.transform.position.y, camera.transform.position.z);
 
 	}
@@ -100,8 +99,6 @@ public class ScoreCameraBehavior : MonoBehaviour {
 		//random position 
 		float x = camera.transform.position.x + PositiveOrNegative() * shakeAmount * UnityEngine.Random.Range(0f, 1f);
 		float y = camera.transform.position.y + PositiveOrNegative() * shakeAmount * UnityEngine.Random.Range(0f, 1f);
-
-		//Debug.Log (shakeAmount + " " + x + " " + y);
 		
 		Vector3 shakePosition = new Vector3 (x, y, transform.position.z);
 		camera.transform.position = Vector3.Lerp(transform.position, shakePosition, Time.deltaTime);

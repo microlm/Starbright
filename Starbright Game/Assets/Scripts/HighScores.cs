@@ -18,17 +18,18 @@ public class HighScores {
 		get { return scores; }
 	}
 
-	/** Adds score to list of high scores and saves it to memory, will cause a slow down in gameplay */
-	public bool AddScore(int score)
+	/** Adds score to list of high scores and saves it to memory, will cause a slow down in gameplay. Returns the location to which the score was added. */
+	public int AddScore(int score)
 	{
 		int i = 0;
 		bool added = false;
+		int p = 5;
 		while (i < numScores) 
 		{
 			if (scores[i] == null) {
 				scores[i] = score;
 				SaveScores ();
-				return true;
+				p = 0;
 			}
 			else if (scores[i] >= score) {
 				i++;
@@ -37,13 +38,18 @@ public class HighScores {
 				int temp = scores[i];
 				scores[i] = score;
 				score = temp;
+
+				if(!added)
+				{
+					p = i;
+					added = true;
+				}
 				i++;
-				added = true;
 			}
 		}
 
 		SaveScores ();
-		return added;
+		return p;
 	}
 
 	/** Loads player scores from memory */
