@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class Generator : MonoBehaviour {
 	
@@ -29,9 +30,10 @@ public class Generator : MonoBehaviour {
 	public float backgroundDepth;
 	public ObjectPool foregroundPool;
 	public ObjectPool backgroundPool;
-	
-	private Dictionary<float, int[]> foregroundChunks;
-	private Dictionary<float, int[]> backgroundChunks;
+
+	private int[][] keys; //forgive me
+	private Dictionary<int, int[]> foregroundChunks;
+	private Dictionary<int, int[]> backgroundChunks;
 	private float xCenter;
 	private float yCenter;
 
@@ -49,24 +51,28 @@ public class Generator : MonoBehaviour {
 			instance = this;
 		}
 		rand = new System.Random();
-		foregroundChunks = new Dictionary<float, int[]>();
-		backgroundChunks = new Dictionary<float, int[]>();
+		keys = new int[4][];//just hoping this will work well enough to finish this game
+		keys[0] = new int[4];
+		keys[1] = new int[4];
+		keys[2] = new int[4];
+		keys[3] = new int[4];
+		foregroundChunks = new Dictionary<int, int[]>();
+		backgroundChunks = new Dictionary<int, int[]>();
 		xCenter = 0;
 		yCenter = 0;
-		for(float yOff = -1 * genRadius; yOff < genRadius; yOff += areaHeight)
+		for(int yShift = 0; yShift < 4; yShift++)
 		{
-			for(float xOff = -1 * genRadius; xOff < genRadius; xOff += areaWidth)
+			for(int xShift = 0; xShift < 4; xShift++)
 			{
 				////////////////////////////////////
 				//
 				// Where initial generation happens
 				//
 				////////////////////////////////////
-				foregroundChunks.Add(posHash(xOff, yOff, 1f), generate(true, xOff, yOff));
-				if(genBg)
-				{
-					backgroundChunks.Add(posHash(xOff, yOff, 1f), generate(false, xOff, yOff));
-				}
+				float xOff = -1 * genRadius + xShift * areaWidth;
+				float yOff = -1 * genRadius + yShift * areaHeight;
+				keys[xShift][yShift] = posHash(xShift, yShift);
+				foregroundChunks.Add(keys[xShift][yShift], generate(true, xOff, yOff));
 			}
 		}
 	}
@@ -87,6 +93,7 @@ public class Generator : MonoBehaviour {
 
 		while(absXDist > areaWidth * mult)
 		{
+			int count = 0; //God have mercy on my soul
 			for(float yOff = -1 * genRadius * mult + yCenter; yOff < genRadius * mult + yCenter; yOff += areaHeight * mult)
 			{
 				if(signX > 0)
@@ -96,13 +103,12 @@ public class Generator : MonoBehaviour {
 					// Where further generation happens (POSITIVE X)
 					//
 					////////////////////////////////////
-					destroyChunk(-1 * genRadius * mult + xCenter, yOff, true);
-					foregroundChunks.Add(posHash(genRadius * mult + xCenter, yOff, mult), generate(true, genRadius * mult + xCenter, yOff));
-					if(genBg)
-					{
-						destroyChunk(-1 * genRadius + xCenter, yOff, false);
-						backgroundChunks.Add(posHash(genRadius * mult + xCenter, yOff, mult), generate(false, genRadius * mult + xCenter, yOff));
-					}
+					destroyChunk(keys[0][count], true);
+					keys[0][count] = keys[1][count];
+					keys[1][count] = keys[2][count];
+					keys[2][count] = keys[3][count];
+					keys[3][count] = posHash((int)Math.Round(xCenter / areaWidth) + 4, (int)Math.Round(yCenter / areaHeight) + count);
+					foregroundChunks.Add(keys[3][count], generate(true, genRadius * mult + xCenter, yOff));
 				}
 				else
 				{
@@ -111,14 +117,14 @@ public class Generator : MonoBehaviour {
 					// Where further generation happens (NEGATIVE X)
 					//
 					////////////////////////////////////
-					destroyChunk(genRadius * mult + xCenter - areaWidth * mult, yOff, true);
-					foregroundChunks.Add(posHash(-1 * genRadius * mult + xCenter - areaWidth * mult, yOff, mult), generate(true, -1 * genRadius * mult + xCenter - areaWidth * mult, yOff));
-					if(genBg)
-					{
-						destroyChunk(genRadius * mult + xCenter - areaWidth * mult, yOff, false);
-						backgroundChunks.Add(posHash(-1 * genRadius * mult + xCenter - areaWidth * mult, yOff, mult), generate(false, -1 * genRadius * mult + xCenter - areaWidth * mult, yOff));
-					}
+					destroyChunk(keys[3][count], true);
+					keys[3][count] = keys[2][count];
+					keys[2][count] = keys[1][count];
+					keys[1][count] = keys[0][count];
+					keys[0][count] = posHash((int)Math.Round(xCenter / areaWidth) - 1, (int)Math.Round(yCenter / areaHeight) + count);
+					foregroundChunks.Add(keys[0][count], generate(true, -1 * genRadius * mult + xCenter - areaWidth * mult, yOff));
 				}
+				count++;
 			}
 			xCenter += areaWidth * mult * signX;
 			xDist = loc.x - xCenter;
@@ -129,6 +135,7 @@ public class Generator : MonoBehaviour {
 		float signY = yDist / absYDist;
 		while(absYDist > areaHeight * mult)
 		{
+			int count = 0;
 			for(float xOff = -1 * genRadius * mult + xCenter; xOff < genRadius * mult + xCenter; xOff += areaWidth * mult)
 			{
 				if(signY > 0)
@@ -138,13 +145,12 @@ public class Generator : MonoBehaviour {
 					// Where further generation happens (POSITIVE Y)
 					//
 					////////////////////////////////////
-					destroyChunk(xOff, -1 * genRadius * mult + yCenter, true);
-					foregroundChunks.Add(posHash(xOff, genRadius * mult + yCenter, mult), generate(true, xOff, genRadius * mult + yCenter));
-					if(genBg)
-					{
-						destroyChunk(xOff, -1 * genRadius * mult + yCenter, false);
-						backgroundChunks.Add(posHash(xOff, genRadius * mult + yCenter, mult), generate(false, xOff, genRadius * mult + yCenter));
-					}
+					destroyChunk(keys[count][0], true);
+					keys[count][0] = keys[count][1];
+					keys[count][1] = keys[count][2];
+					keys[count][2] = keys[count][3];
+					keys[count][3] = posHash((int)Math.Round(xCenter / (areaWidth * mult)) + count, (int)Math.Round(yCenter / (areaHeight * mult)) + 4);
+					foregroundChunks.Add(keys[count][3], generate(true, xOff, genRadius * mult + yCenter));
 				}
 				else
 				{
@@ -153,16 +159,15 @@ public class Generator : MonoBehaviour {
 					// Where further generation happens (NEGATIVE Y)
 					//
 					////////////////////////////////////
-					destroyChunk(xOff, genRadius * mult + yCenter - areaHeight * mult, true);
-					foregroundChunks.Add(posHash(xOff, -1 * genRadius * mult + yCenter - areaHeight * mult, mult), generate(true, xOff, -1 * genRadius * mult + yCenter - areaHeight * mult));
-					if(genBg)
-					{
-						destroyChunk(xOff, genRadius * mult + yCenter - areaHeight * mult, false);
-						backgroundChunks.Add(posHash(xOff, -1 * genRadius * mult + yCenter - areaHeight * mult, mult), generate(false, xOff, -1 * genRadius * mult + yCenter - areaHeight * mult));
-					}
+					destroyChunk(keys[count][3], true);
+					keys[count][3] = keys[count][2];
+					keys[count][2] = keys[count][1];
+					keys[count][1] = keys[count][0];
+					keys[count][0] = posHash((int)Math.Round(xCenter / (areaWidth * mult)) + count, (int)Math.Round(yCenter / (areaHeight * mult)) - 1);
+					foregroundChunks.Add(keys[count][0], generate(true, xOff, -1 * genRadius * mult + yCenter - areaHeight * mult));
 				}
+				count++;
 			}
-
 			yCenter += areaWidth * mult * signY;
 			yDist = loc.y - yCenter;
 			absYDist = Mathf.Abs(yDist);
@@ -215,22 +220,33 @@ public class Generator : MonoBehaviour {
 		return ids.ToArray();
 	}
 
-	public void destroyChunk(float xOff, float yOff, bool isForeground)
+	public void destroyChunk(int xOff, int yOff, bool isForeground)
 	{
-		float mult = ProgressCircle.SizeMultiplierFromLayer(ProgressCircle.instance.CurrentLayer);
-		Dictionary<float, int[]> relevantChunks = isForeground ? foregroundChunks : backgroundChunks;
+		Dictionary<int, int[]> relevantChunks = isForeground ? foregroundChunks : backgroundChunks;
 		ObjectPool relevantPool = isForeground ? foregroundPool : backgroundPool;
-		int[] chunk = relevantChunks[posHash(xOff, yOff, mult)];
+		int[] chunk = relevantChunks[posHash(xOff, yOff)];
 		foreach(int id in chunk)
 		{
 			relevantPool.removeBody(id);
 		}
-		relevantChunks.Remove(posHash(xOff, yOff, mult));
+		relevantChunks.Remove(posHash(xOff, yOff));
+	}
+
+	public void destroyChunk(int key, bool isForeground)
+	{
+		Dictionary<int, int[]> relevantChunks = isForeground ? foregroundChunks : backgroundChunks;
+		ObjectPool relevantPool = isForeground ? foregroundPool : backgroundPool;
+		int[] chunk = relevantChunks[key];
+		foreach(int id in chunk)
+		{
+			relevantPool.removeBody(id);
+		}
+		relevantChunks.Remove(key);
 	}
 	
-	public float posHash(float xOff, float yOff, float mult)
+	public int posHash(int xOff, int yOff)
 	{
-		return yOff * genRadius * 512f * mult + xOff;
+		return yOff * 512 + xOff;
 	}
 
 
@@ -239,121 +255,39 @@ public class Generator : MonoBehaviour {
 		return mass * 0.08f;
 	}
 
-	/*------------------------------------------
-	 * Causes the background layer of planets
-	 * to be moved into the foreground layer.
-	 * Empties background pool into foreground
-	 * pool and foreground object pool into 
-	 * background object pool.
-	 * -----------------------------------------*/
-
 	public void LayerUp()
 	{ 
 		float mult = ProgressCircle.SizeMultiplierFromLayer(ProgressCircle.instance.CurrentLayer);
-		if(genBg)
+		foregroundPool.drain();
+		foregroundChunks = new Dictionary<int, int[]>();
+		for(int yShift = 0 ; yShift < 4; yShift++)
 		{
-			// switch object pools
-			ObjectPool tempPool = foregroundPool;
-			foregroundPool = backgroundPool;
-			backgroundPool = tempPool;
-			backgroundPool.setEnabledChildren(false);
-			foregroundPool.setEnabledChildren(true);
-
-			backgroundPool.drain();
-
-			//switch layers on objects
-			foregroundPool.setPoolLayer(foregroundLayer.layer);
-			foregroundPool.setParent (foregroundLayer);
-
-			backgroundPool.setPoolLayer(backgroundLayer.layer);
-			backgroundPool.setParent (backgroundLayer);
-
-			// enable collisions for new foreground planets
-			// and disable for background planets
-
-			foregroundPool.setForegroundImage();
-
-			foregroundPool.removePCOverlap(PlayerCharacter.instance.GetComponent<SpriteRenderer>().bounds);
-
-			backgroundPool.setEnableCollisions(false);
-			foregroundPool.setEnableCollisions(true);
-
-			foregroundChunks = backgroundChunks;
-			backgroundChunks = new Dictionary<float, int[]>();
-			for(float yOff = -1 * genRadius * mult + yCenter ; yOff < genRadius * mult + yCenter; yOff += areaHeight)
+			for(int xShift = 0; xShift < 4; xShift++)
 			{
-				for(float xOff = -1 * genRadius * mult + xCenter; xOff < genRadius * mult + xCenter; xOff += areaWidth * mult)
-				{
-					backgroundChunks.Add(posHash(xOff, yOff, mult), generate(false, xOff, yOff));	
-				}
+				float xOff = -1 * genRadius + xCenter + xShift * areaWidth * mult;
+				float yOff = -1 * genRadius + yCenter + yShift * areaHeight * mult;
+				keys[xShift][yShift] =  posHash((int)Math.Round(xOff / (areaWidth * mult)), (int)Math.Round(yOff / (areaHeight * mult)));
+				foregroundChunks.Add(keys[xShift][yShift], generate(true, xOff, yOff));
 			}
 		}
-		else
-		{
-			foregroundPool.drain();
-			foregroundChunks = new Dictionary<float, int[]>();
-			for(float yOff = -1 * genRadius * mult + yCenter ; yOff < genRadius * mult + yCenter; yOff += areaHeight)
-			{
-				for(float xOff = -1 * genRadius * mult + xCenter; xOff < genRadius * mult + xCenter; xOff += areaWidth * mult)
-				{
-					foregroundChunks.Add(posHash(xOff, yOff, mult), generate(true, xOff, yOff));	
-				}
-			}
-			foregroundPool.removePCOverlap(PlayerCharacter.instance.GetComponent<SpriteRenderer>().bounds);
-		}
+		foregroundPool.removePCOverlap(PlayerCharacter.instance.GetComponent<SpriteRenderer>().bounds);
 	}
 
 	public void LayerDown()
 	{
 		float mult = ProgressCircle.SizeMultiplierFromLayer(ProgressCircle.instance.CurrentLayer);
-		if(genBg)
+		foregroundPool.drain();
+		foregroundChunks = new Dictionary<int, int[]>();
+		for(int yShift = 0 ; yShift < 4; yShift++)
 		{
-			// switch object pools
-			ObjectPool tempPool = foregroundPool;
-			foregroundPool = backgroundPool;
-			backgroundPool = tempPool;
-			backgroundPool.setEnabledChildren(false);
-			foregroundPool.setEnabledChildren(true);
-			foregroundPool.drain();
-			
-			//switch layers on objects
-			foregroundPool.setPoolLayer(foregroundLayer.layer);
-			foregroundPool.setParent (foregroundLayer);
-			
-			backgroundPool.setPoolLayer(backgroundLayer.layer);
-			backgroundPool.setParent (backgroundLayer);
-			
-			// enable collisions for new foreground planets
-			// and disable for background planets
-			
-			foregroundPool.setForegroundImage();
-			
-			backgroundPool.setEnableCollisions(false);
-			foregroundPool.setEnableCollisions(true);
-			
-			backgroundChunks = foregroundChunks;
-			foregroundChunks = new Dictionary<float, int[]>();
-			for(float yOff = -1 * genRadius + yCenter ; yOff < genRadius + yCenter; yOff += areaHeight * mult)
+			for(int xShift = 0; xShift < 4; xShift++)
 			{
-				for(float xOff = -1 * genRadius + xCenter; xOff < genRadius + xCenter; xOff += areaWidth * mult)
-				{
-					foregroundChunks.Add(posHash(xOff, yOff, mult), generate(false, xOff, yOff));	
-				}
+				float xOff = -1 * genRadius + xCenter + xShift * areaWidth * mult;
+				float yOff = -1 * genRadius + yCenter + yShift * areaHeight * mult;
+				keys[xShift][yShift] =  posHash((int)Math.Round(xOff / (areaWidth * mult)), (int)Math.Round(yOff / (areaHeight * mult)));
+				foregroundChunks.Add(keys[xShift][yShift], generate(true, xOff, yOff));
 			}
-			foregroundPool.removePCOverlap(PlayerCharacter.instance.GetComponent<CircleCollider2D>().bounds);
 		}
-		else
-		{
-			foregroundPool.drain();
-			foregroundChunks = new Dictionary<float, int[]>();
-			for(float yOff = -1 * genRadius + yCenter ; yOff < genRadius + yCenter; yOff += areaHeight * mult)
-			{
-				for(float xOff = -1 * genRadius + xCenter; xOff < genRadius + xCenter; xOff += areaWidth * mult)
-				{
-					foregroundChunks.Add(posHash(xOff, yOff, mult), generate(true, xOff, yOff));	
-				}
-			}
-			foregroundPool.removePCOverlap(PlayerCharacter.instance.GetComponent<SpriteRenderer>().bounds);
-		}
+		foregroundPool.removePCOverlap(PlayerCharacter.instance.GetComponent<SpriteRenderer>().bounds);
 	}
 }
