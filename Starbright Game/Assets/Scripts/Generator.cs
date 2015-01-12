@@ -108,11 +108,7 @@ public class Generator : MonoBehaviour {
 					keys[1][count] = keys[2][count];
 					keys[2][count] = keys[3][count];
 					keys[3][count] = posHash((int)Math.Round(xCenter / areaWidth) + 4, (int)Math.Round(yCenter / areaHeight) + count);
-					try{
 					foregroundChunks.Add(keys[3][count], generate(true, genRadius * mult + xCenter, yOff));
-					}catch(ArgumentException){
-						Debug.Log("E-ROAR");
-					}
 				}
 				else
 				{
@@ -126,11 +122,7 @@ public class Generator : MonoBehaviour {
 					keys[2][count] = keys[1][count];
 					keys[1][count] = keys[0][count];
 					keys[0][count] = posHash((int)Math.Round(xCenter / areaWidth) - 2, (int)Math.Round(yCenter / areaHeight) - 1 + count);
-					try{
 					foregroundChunks.Add(keys[0][count], generate(true, -1 * genRadius * mult + xCenter - areaWidth * mult, yOff));
-					}catch(ArgumentException){
-					Debug.Log("E-ROAR");
-				}
 			}
 				count++;
 			}
