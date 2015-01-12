@@ -89,7 +89,7 @@ public class ProgressCircle : MonoBehaviour {
 
 	void LevelUp()
 	{
-		StartLeveling ();
+		StartLeveling (true);
 		currentLayer++;
 		PlayerCharacter.instance.LevelUp ();
 		Scale ();
@@ -99,17 +99,25 @@ public class ProgressCircle : MonoBehaviour {
 	{
 		if (currentLayer > 1) 
 		{
-			StartLeveling ();
+			StartLeveling (false);
 			currentLayer--;
 			PlayerCharacter.instance.LevelDown ();
 			Scale ();
 		}
 	}
 
-	void StartLeveling()
+	void StartLeveling(bool up)
 	{
 		Time.timeScale = 0f;
-		flash.whiteFlash ();
+
+		if(up)
+		{
+			flash.whiteFlash ();
+		}
+		else
+		{
+			flash.blackFlash();
+		}
 	}
 
 	void DoneLeveling()
