@@ -72,7 +72,7 @@ public class Generator : MonoBehaviour {
 				float xOff = -1 * genRadius + xShift * areaWidth;
 				float yOff = -1 * genRadius + yShift * areaHeight;
 				keys[xShift][yShift] = posHash(xShift, yShift);
-				foregroundChunks.Add(keys[xShift][yShift], generate(true, xOff, yOff));
+				foregroundChunks.Add(keys[xShift][yShift], generate(true, xOff, yOff, true));
 			}
 		}
 	}
@@ -108,11 +108,7 @@ public class Generator : MonoBehaviour {
 					keys[1][count] = keys[2][count];
 					keys[2][count] = keys[3][count];
 					keys[3][count] = posHash((int)Math.Round(xCenter / areaWidth) + 4, (int)Math.Round(yCenter / areaHeight) + count);
-					try{
-					foregroundChunks.Add(keys[3][count], generate(true, genRadius * mult + xCenter, yOff));
-					}catch(ArgumentException){
-						Debug.Log("E-ROAR");
-					}
+					foregroundChunks.Add(keys[3][count], generate(true, genRadius * mult + xCenter, yOff, false));
 				}
 				else
 				{
@@ -126,11 +122,7 @@ public class Generator : MonoBehaviour {
 					keys[2][count] = keys[1][count];
 					keys[1][count] = keys[0][count];
 					keys[0][count] = posHash((int)Math.Round(xCenter / areaWidth) - 2, (int)Math.Round(yCenter / areaHeight) - 1 + count);
-					try{
-					foregroundChunks.Add(keys[0][count], generate(true, -1 * genRadius * mult + xCenter - areaWidth * mult, yOff));
-					}catch(ArgumentException){
-					Debug.Log("E-ROAR");
-				}
+					foregroundChunks.Add(keys[0][count], generate(true, -1 * genRadius * mult + xCenter - areaWidth * mult, yOff, false));
 			}
 				count++;
 			}
@@ -158,7 +150,7 @@ public class Generator : MonoBehaviour {
 					keys[count][1] = keys[count][2];
 					keys[count][2] = keys[count][3];
 					keys[count][3] = posHash((int)Math.Round(xCenter / (areaWidth * mult)) + count, (int)Math.Round(yCenter / (areaHeight * mult)) + 4);
-					foregroundChunks.Add(keys[count][3], generate(true, xOff, genRadius * mult + yCenter));
+					foregroundChunks.Add(keys[count][3], generate(true, xOff, genRadius * mult + yCenter, false));
 				}
 				else
 				{
@@ -172,7 +164,7 @@ public class Generator : MonoBehaviour {
 					keys[count][2] = keys[count][1];
 					keys[count][1] = keys[count][0];
 					keys[count][0] = posHash((int)Math.Round(xCenter / (areaWidth * mult)) + count, (int)Math.Round(yCenter / (areaHeight * mult)) - 1);
-					foregroundChunks.Add(keys[count][0], generate(true, xOff, -1 * genRadius * mult + yCenter - areaHeight * mult));
+					foregroundChunks.Add(keys[count][0], generate(true, xOff, -1 * genRadius * mult + yCenter - areaHeight * mult, false));
 				}
 				count++;
 			}
@@ -182,7 +174,7 @@ public class Generator : MonoBehaviour {
 		}
 	}
 
-	public int[] generate(bool isForeground, float xOff, float yOff)
+	public int[] generate(bool isForeground, float xOff, float yOff, bool noHoles)
 	{		
 		int currentLayer = ProgressCircle.instance.CurrentLayer;
 		if (!isForeground)
@@ -200,6 +192,8 @@ public class Generator : MonoBehaviour {
 
 		float bhChance = blackHoleChance.Evaluate(curvePosition);
 		bhChance = bhChance > 0 ? bhChance : 0;
+		if(currentLayer <= 1 || noHoles)
+			bhChance = 0;
 
 		bool isBlackHole = false;
 
@@ -275,7 +269,7 @@ public class Generator : MonoBehaviour {
 				float xOff = -1 * genRadius + xCenter + xShift * areaWidth * mult;
 				float yOff = -1 * genRadius + yCenter + yShift * areaHeight * mult;
 				keys[xShift][yShift] =  posHash((int)Math.Round(xOff / (areaWidth * mult)), (int)Math.Round(yOff / (areaHeight * mult)));
-				foregroundChunks.Add(keys[xShift][yShift], generate(true, xOff, yOff));
+				foregroundChunks.Add(keys[xShift][yShift], generate(true, xOff, yOff, true));
 			}
 		}
 		foregroundPool.removePCOverlap(PlayerCharacter.instance.GetComponent<SpriteRenderer>().bounds);
@@ -293,7 +287,7 @@ public class Generator : MonoBehaviour {
 				float xOff = -1 * genRadius + xCenter + xShift * areaWidth * mult;
 				float yOff = -1 * genRadius + yCenter + yShift * areaHeight * mult;
 				keys[xShift][yShift] =  posHash((int)Math.Round(xOff / (areaWidth * mult)), (int)Math.Round(yOff / (areaHeight * mult)));
-				foregroundChunks.Add(keys[xShift][yShift], generate(true, xOff, yOff));
+				foregroundChunks.Add(keys[xShift][yShift], generate(true, xOff, yOff, true));
 			}
 		}
 		foregroundPool.removePCOverlap(PlayerCharacter.instance.GetComponent<SpriteRenderer>().bounds);
