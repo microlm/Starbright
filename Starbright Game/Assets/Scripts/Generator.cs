@@ -200,6 +200,8 @@ public class Generator : MonoBehaviour {
 
 		float bhChance = blackHoleChance.Evaluate(curvePosition);
 		bhChance = bhChance > 0 ? bhChance : 0;
+		if(currentLayer <= 1)
+			bhChance = 0;
 
 		bool isBlackHole = false;
 
