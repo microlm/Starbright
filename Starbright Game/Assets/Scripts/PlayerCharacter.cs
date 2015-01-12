@@ -110,6 +110,8 @@ public class PlayerCharacter : MonoBehaviour {
 				Application.LoadLevel("FinalScore");
 			}
 		}
+
+		BodyComponent.GlowChild.CurrentColor = BodyComponent.BodyColor;
 	}
 
 	void OnCollisionEnter2D(Collision2D c) {

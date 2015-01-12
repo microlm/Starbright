@@ -5,8 +5,8 @@ public class Glow : MonoBehaviour {
 	
 	public AnimationCurve transition;
 
-	float ActiveGlowOpacity = 0.7f;
-	float InactiveGlowOpacity = 0.4f;
+	float ActiveGlowOpacity = 0.8f;
+	float InactiveGlowOpacity = 0.5f;
 
 
 	private Color color;
@@ -45,7 +45,7 @@ public class Glow : MonoBehaviour {
 		}
 	}
 
-	private Color CurrentColor 
+	public Color CurrentColor 
 	{
 		get 
 		{
