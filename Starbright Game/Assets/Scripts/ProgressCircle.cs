@@ -47,7 +47,8 @@ public class ProgressCircle : MonoBehaviour {
 	void Update () {
 		PlayerCharacter pc = PlayerCharacter.instance;
 		transform.position = pc.transform.position;
-		
+
+		Debug.Log (PlayerCharacter.instance.Mass + " " + decrementSize);
 		if (Input.GetKeyDown(KeyCode.LeftShift)) {
 			PlayerCharacter.instance.Mass = targetSize;
 
@@ -66,6 +67,7 @@ public class ProgressCircle : MonoBehaviour {
 		}
 		else if (PlayerCharacter.instance.Mass <= decrementSize)
 		{
+			Debug.Log ("LEVEL DOWN");
 			LevelDown ();
 		}
 
