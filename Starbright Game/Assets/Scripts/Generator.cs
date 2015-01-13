@@ -242,8 +242,8 @@ public class Generator : MonoBehaviour {
 		{
 			for(int xShift = 0; xShift < 4; xShift++)
 			{
-				float xOff = -1 * genRadius + xCenter + xShift * areaWidth * mult;
-				float yOff = -1 * genRadius + yCenter + yShift * areaHeight * mult;
+				float xOff = -1 * genRadius + xCenter + (xShift - 1) * areaWidth * mult;
+				float yOff = -1 * genRadius + yCenter + (yShift - 1) * areaHeight * mult;
 				chunks[xShift][yShift] = generate(true, xOff, yOff, true);
 			}
 		}
@@ -258,8 +258,8 @@ public class Generator : MonoBehaviour {
 		{
 			for(int xShift = 0; xShift < 4; xShift++)
 			{
-				float xOff = -1 * genRadius + xCenter + xShift * areaWidth * mult;
-				float yOff = -1 * genRadius + yCenter + yShift * areaHeight * mult;
+				float xOff = -1 * genRadius + xCenter + (xShift - 1) * areaWidth * mult;
+				float yOff = -1 * genRadius + yCenter + (yShift - 1) * areaHeight * mult;
 				chunks[xShift][yShift] = generate(true, xOff, yOff, true);
 			}
 		}
