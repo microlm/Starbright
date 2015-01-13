@@ -214,6 +214,8 @@ public class ProgressCircle : MonoBehaviour {
 		targetSize = initialTargetSize * SizeMultiplierFromLayer (currentLayer);
 		decrementSize = initialDecrementSize * SizeMultiplierFromLayer (currentLayer);
 		transform.localScale = maxScale / 20 * targetSize;
+		ColorOption.Instance.maxMass = targetSize * 2.5f;
+		ColorOption.Instance.minMass = decrementSize / 1.5f;
 	}
 
 	void Warning()

@@ -15,8 +15,12 @@ public class ColorOption : MonoBehaviour {
 
 	private static ColorOption instance;
 
-	void Start() {
+	void Awake() {
+		DontDestroyOnLoad(transform.gameObject);
 		instance = this;
+	}
+
+	void Start() {
 		GenerateNewGradiant ();
 	}
 
