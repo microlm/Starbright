@@ -67,7 +67,6 @@ public class ProgressCircle : MonoBehaviour {
 		}
 		else if (PlayerCharacter.instance.Mass <= decrementSize)
 		{
-			Debug.Log ("LEVEL DOWN");
 			LevelDown ();
 		}
 
