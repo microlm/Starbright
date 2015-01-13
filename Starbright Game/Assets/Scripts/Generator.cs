@@ -20,7 +20,7 @@ public class Generator : MonoBehaviour {
 	public float asteroidSizeRange;
 	public AnimationCurve sizeDistribution;
 	public AnimationCurve densityByLayer;
-	public float genRadius;
+	private float genRadius;
 	public AnimationCurve blackHoleChance;
 	public int maxLayer = 100;
 
@@ -31,9 +31,7 @@ public class Generator : MonoBehaviour {
 	public ObjectPool foregroundPool;
 	public ObjectPool backgroundPool;
 
-	private int[][] keys; //forgive me
-	private Dictionary<int, int[]> foregroundChunks;
-	private Dictionary<int, int[]> backgroundChunks;
+	private int[][][] chunks;
 	private float xCenter;
 	private float yCenter;
 
@@ -51,15 +49,14 @@ public class Generator : MonoBehaviour {
 			instance = this;
 		}
 		rand = new System.Random();
-		keys = new int[4][];//just hoping this will work well enough to finish this game
-		keys[0] = new int[4];
-		keys[1] = new int[4];
-		keys[2] = new int[4];
-		keys[3] = new int[4];
-		foregroundChunks = new Dictionary<int, int[]>();
-		backgroundChunks = new Dictionary<int, int[]>();
+		chunks = new int[4][][];
+		chunks[0] = new int[4][];
+		chunks[1] = new int[4][];
+		chunks[2] = new int[4][];
+		chunks[3] = new int[4][];
 		xCenter = 0;
 		yCenter = 0;
+		genRadius = 2 * areaWidth;
 		for(int yShift = 0; yShift < 4; yShift++)
 		{
 			for(int xShift = 0; xShift < 4; xShift++)
@@ -71,8 +68,7 @@ public class Generator : MonoBehaviour {
 				////////////////////////////////////
 				float xOff = -1 * genRadius + xShift * areaWidth;
 				float yOff = -1 * genRadius + yShift * areaHeight;
-				keys[xShift][yShift] = posHash(xShift, yShift);
-				foregroundChunks.Add(keys[xShift][yShift], generate(true, xOff, yOff, true));
+				chunks[xShift][yShift] = generate(true, xOff, yOff, true);
 			}
 		}
 	}
@@ -103,12 +99,11 @@ public class Generator : MonoBehaviour {
 					// Where further generation happens (POSITIVE X)
 					//
 					////////////////////////////////////
-					destroyChunk(keys[0][count], true);
-					keys[0][count] = keys[1][count];
-					keys[1][count] = keys[2][count];
-					keys[2][count] = keys[3][count];
-					keys[3][count] = posHash((int)Math.Round(xCenter / areaWidth) + 4, (int)Math.Round(yCenter / areaHeight) + count);
-					foregroundChunks.Add(keys[3][count], generate(true, genRadius * mult + xCenter, yOff, false));
+					destroyChunk(0, count);
+					chunks[0][count] = chunks[1][count];
+					chunks[1][count] = chunks[2][count];
+					chunks[2][count] = chunks[3][count];
+					chunks[3][count] = generate(true, genRadius * mult + xCenter, yOff, false);
 				}
 				else
 				{
@@ -117,12 +112,11 @@ public class Generator : MonoBehaviour {
 					// Where further generation happens (NEGATIVE X)
 					//
 					////////////////////////////////////
-					destroyChunk(keys[3][count], true);
-					keys[3][count] = keys[2][count];
-					keys[2][count] = keys[1][count];
-					keys[1][count] = keys[0][count];
-					keys[0][count] = posHash((int)Math.Round(xCenter / areaWidth) - 2, (int)Math.Round(yCenter / areaHeight) - 1 + count);
-					foregroundChunks.Add(keys[0][count], generate(true, -1 * genRadius * mult + xCenter - areaWidth * mult, yOff, false));
+					destroyChunk(3, count);
+					chunks[3][count] = chunks[2][count];
+					chunks[2][count] = chunks[1][count];
+					chunks[1][count] = chunks[0][count];
+					chunks[0][count] = generate(true, -1 * genRadius * mult + xCenter - areaWidth * mult, yOff, false);
 			}
 				count++;
 			}
@@ -145,12 +139,11 @@ public class Generator : MonoBehaviour {
 					// Where further generation happens (POSITIVE Y)
 					//
 					////////////////////////////////////
-					destroyChunk(keys[count][0], true);
-					keys[count][0] = keys[count][1];
-					keys[count][1] = keys[count][2];
-					keys[count][2] = keys[count][3];
-					keys[count][3] = posHash((int)Math.Round(xCenter / (areaWidth * mult)) + count, (int)Math.Round(yCenter / (areaHeight * mult)) + 4);
-					foregroundChunks.Add(keys[count][3], generate(true, xOff, genRadius * mult + yCenter, false));
+					destroyChunk(count, 0);
+					chunks[count][0] = chunks[count][1];
+					chunks[count][1] = chunks[count][2];
+					chunks[count][2] = chunks[count][3];
+					chunks[count][3] = generate(true, xOff, genRadius * mult + yCenter, false);
 				}
 				else
 				{
@@ -159,12 +152,11 @@ public class Generator : MonoBehaviour {
 					// Where further generation happens (NEGATIVE Y)
 					//
 					////////////////////////////////////
-					destroyChunk(keys[count][3], true);
-					keys[count][3] = keys[count][2];
-					keys[count][2] = keys[count][1];
-					keys[count][1] = keys[count][0];
-					keys[count][0] = posHash((int)Math.Round(xCenter / (areaWidth * mult)) + count, (int)Math.Round(yCenter / (areaHeight * mult)) - 1);
-					foregroundChunks.Add(keys[count][0], generate(true, xOff, -1 * genRadius * mult + yCenter - areaHeight * mult, false));
+					destroyChunk(count, 3);
+					chunks[count][3] = chunks[count][2];
+					chunks[count][2] = chunks[count][1];
+					chunks[count][1] = chunks[count][0];
+					chunks[count][0] = generate(true, xOff, -1 * genRadius * mult + yCenter - areaHeight * mult, false);
 				}
 				count++;
 			}
@@ -222,30 +214,15 @@ public class Generator : MonoBehaviour {
 		return ids.ToArray();
 	}
 
-	public void destroyChunk(int xOff, int yOff, bool isForeground)
+	public void destroyChunk(int x, int y)
 	{
-		Dictionary<int, int[]> relevantChunks = isForeground ? foregroundChunks : backgroundChunks;
-		ObjectPool relevantPool = isForeground ? foregroundPool : backgroundPool;
-		int[] chunk = relevantChunks[posHash(xOff, yOff)];
+		int[] chunk = chunks[x][y];
 		foreach(int id in chunk)
 		{
-			relevantPool.removeBody(id);
+			foregroundPool.removeBody(id);
 		}
-		relevantChunks.Remove(posHash(xOff, yOff));
 	}
 
-	public void destroyChunk(int key, bool isForeground)
-	{
-		Dictionary<int, int[]> relevantChunks = isForeground ? foregroundChunks : backgroundChunks;
-		ObjectPool relevantPool = isForeground ? foregroundPool : backgroundPool;
-		int[] chunk = relevantChunks[key];
-		foreach(int id in chunk)
-		{
-			relevantPool.removeBody(id);
-		}
-		relevantChunks.Remove(key);
-	}
-	
 	public int posHash(int xOff, int yOff)
 	{
 		return yOff * 512 + xOff;
@@ -261,33 +238,29 @@ public class Generator : MonoBehaviour {
 	{ 
 		float mult = ProgressCircle.SizeMultiplierFromLayer(ProgressCircle.instance.CurrentLayer);
 		foregroundPool.drain();
-		foregroundChunks = new Dictionary<int, int[]>();
 		for(int yShift = 0 ; yShift < 4; yShift++)
 		{
 			for(int xShift = 0; xShift < 4; xShift++)
 			{
 				float xOff = -1 * genRadius + xCenter + xShift * areaWidth * mult;
 				float yOff = -1 * genRadius + yCenter + yShift * areaHeight * mult;
-				keys[xShift][yShift] =  posHash((int)Math.Round(xOff / (areaWidth * mult)), (int)Math.Round(yOff / (areaHeight * mult)));
-				foregroundChunks.Add(keys[xShift][yShift], generate(true, xOff, yOff, true));
+				chunks[xShift][yShift] = generate(true, xOff, yOff, true);
 			}
 		}
 		foregroundPool.removePCOverlap(PlayerCharacter.instance.GetComponent<SpriteRenderer>().bounds);
 	}
 
 	public void LayerDown()
-	{
+	{ 
 		float mult = ProgressCircle.SizeMultiplierFromLayer(ProgressCircle.instance.CurrentLayer);
 		foregroundPool.drain();
-		foregroundChunks = new Dictionary<int, int[]>();
 		for(int yShift = 0 ; yShift < 4; yShift++)
 		{
 			for(int xShift = 0; xShift < 4; xShift++)
 			{
 				float xOff = -1 * genRadius + xCenter + xShift * areaWidth * mult;
 				float yOff = -1 * genRadius + yCenter + yShift * areaHeight * mult;
-				keys[xShift][yShift] =  posHash((int)Math.Round(xOff / (areaWidth * mult)), (int)Math.Round(yOff / (areaHeight * mult)));
-				foregroundChunks.Add(keys[xShift][yShift], generate(true, xOff, yOff, true));
+				chunks[xShift][yShift] = generate(true, xOff, yOff, true);
 			}
 		}
 		foregroundPool.removePCOverlap(PlayerCharacter.instance.GetComponent<SpriteRenderer>().bounds);
