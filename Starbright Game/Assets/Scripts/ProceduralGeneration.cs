@@ -92,7 +92,7 @@ public class ProceduralGeneration
 			//Use the child asteroid as a new seed, possibly producing its own children
 			asteroids.AddRange(growSeed(nextX, nextY, nextSize, genChance, minGenSize, genSizeRange, minGenSpacing, genSpacingRange, minAsteroidSize, asteroidSizeRange, sizeDistribution));
 		}
-		Debug.Log ("Grow " + asteroids.Count);
+		//Debug.Log ("Grow " + asteroids.Count);
 		return asteroids;
 	}
 	
