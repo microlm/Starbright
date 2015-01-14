@@ -7,8 +7,7 @@ public class Generator : MonoBehaviour {
 	
 	public static Generator instance;
 
-	public float areaWidth;
-	public float areaHeight;
+	public float chunkLen = 20;
 	public float minDensity;
 	public float densityRange;
 	public double genChance;
@@ -24,19 +23,14 @@ public class Generator : MonoBehaviour {
 	public AnimationCurve blackHoleChance;
 	public int maxLayer = 100;
 
-	public bool genBg;
-
 	public float foregroundDepth;
-	public float backgroundDepth;
 	public ObjectPool foregroundPool;
-	public ObjectPool backgroundPool;
 
 	private int[][][] chunks;
 	private float xCenter;
 	private float yCenter;
 
 	public GameObject foregroundLayer;
-	public GameObject backgroundLayer;
 
 	public int bholeChanceOffset;
 
@@ -56,7 +50,7 @@ public class Generator : MonoBehaviour {
 		chunks[3] = new int[4][];
 		xCenter = 0;
 		yCenter = 0;
-		genRadius = 2 * areaWidth;
+		genRadius = 2 * chunkLen;
 		for(int yShift = 0; yShift < 4; yShift++)
 		{
 			for(int xShift = 0; xShift < 4; xShift++)
@@ -66,9 +60,9 @@ public class Generator : MonoBehaviour {
 				// Where initial generation happens
 				//
 				////////////////////////////////////
-				float xOff = -1 * genRadius + xShift * areaWidth;
-				float yOff = -1 * genRadius + yShift * areaHeight;
-				chunks[xShift][yShift] = generate(true, xOff, yOff, true);
+				float xOff = -1 * genRadius + xShift * chunkLen;
+				float yOff = -1 * genRadius + yShift * chunkLen;
+				chunks[xShift][yShift] = generate(xOff, yOff, true);
 			}
 		}
 	}
@@ -87,10 +81,10 @@ public class Generator : MonoBehaviour {
 		float absXDist = Mathf.Abs(xDist);
 		float signX = xDist / absXDist;
 
-		while(absXDist > areaWidth * mult)
+		while(absXDist > chunkLen * mult)
 		{
 			int count = 0; //God have mercy on my soul
-			for(float yOff = -1 * genRadius * mult + yCenter; yOff < genRadius * mult + yCenter; yOff += areaHeight * mult)
+			for(float yOff = -1 * genRadius * mult + yCenter; yOff < genRadius * mult + yCenter; yOff += chunkLen * mult)
 			{
 				if(signX > 0)
 				{
@@ -103,7 +97,7 @@ public class Generator : MonoBehaviour {
 					chunks[0][count] = chunks[1][count];
 					chunks[1][count] = chunks[2][count];
 					chunks[2][count] = chunks[3][count];
-					chunks[3][count] = generate(true, genRadius * mult + xCenter, yOff, false);
+					chunks[3][count] = generate(genRadius * mult + xCenter, yOff, false);
 				}
 				else
 				{
@@ -116,21 +110,21 @@ public class Generator : MonoBehaviour {
 					chunks[3][count] = chunks[2][count];
 					chunks[2][count] = chunks[1][count];
 					chunks[1][count] = chunks[0][count];
-					chunks[0][count] = generate(true, -1 * genRadius * mult + xCenter - areaWidth * mult, yOff, false);
+					chunks[0][count] = generate(-1 * genRadius * mult + xCenter - chunkLen * mult, yOff, false);
 			}
 				count++;
 			}
-			xCenter += areaWidth * mult * signX;
+			xCenter += chunkLen * mult * signX;
 			xDist = loc.x - xCenter;
 			absXDist = Mathf.Abs(xDist);
 		}
 		float yDist = loc.y - yCenter;
 		float absYDist = Mathf.Abs(yDist);
 		float signY = yDist / absYDist;
-		while(absYDist > areaHeight * mult)
+		while(absYDist > chunkLen * mult)
 		{
 			int count = 0;
-			for(float xOff = -1 * genRadius * mult + xCenter; xOff < genRadius * mult + xCenter; xOff += areaWidth * mult)
+			for(float xOff = -1 * genRadius * mult + xCenter; xOff < genRadius * mult + xCenter; xOff += chunkLen * mult)
 			{
 				if(signY > 0)
 				{
@@ -143,7 +137,7 @@ public class Generator : MonoBehaviour {
 					chunks[count][0] = chunks[count][1];
 					chunks[count][1] = chunks[count][2];
 					chunks[count][2] = chunks[count][3];
-					chunks[count][3] = generate(true, xOff, genRadius * mult + yCenter, false);
+					chunks[count][3] = generate(xOff, genRadius * mult + yCenter, false);
 				}
 				else
 				{
@@ -156,28 +150,24 @@ public class Generator : MonoBehaviour {
 					chunks[count][3] = chunks[count][2];
 					chunks[count][2] = chunks[count][1];
 					chunks[count][1] = chunks[count][0];
-					chunks[count][0] = generate(true, xOff, -1 * genRadius * mult + yCenter - areaHeight * mult, false);
+					chunks[count][0] = generate(xOff, -1 * genRadius * mult + yCenter - chunkLen * mult, false);
 				}
 				count++;
 			}
-			yCenter += areaWidth * mult * signY;
+			yCenter += chunkLen * mult * signY;
 			yDist = loc.y - yCenter;
 			absYDist = Mathf.Abs(yDist);
 		}
 	}
 
-	public int[] generate(bool isForeground, float xOff, float yOff, bool noHoles)
+	public int[] generate(float xOff, float yOff, bool noHoles)
 	{		
 		int currentLayer = ProgressCircle.instance.CurrentLayer;
-		if (!isForeground)
-		{
-			currentLayer++;
-		}
 		float size = ProgressCircle.SizeMultiplierFromLayer(currentLayer);
 
 		float densityMult = densityByLayer.Evaluate ((float) currentLayer / (float)maxLayer);
 
-		float[][] asteroids = ProceduralGeneration.generate(areaWidth * size, areaHeight * size, minDensity * densityMult / size, densityRange * densityMult / size, genChance, minGenSize, genSizeRange, minGenSpacing, genSpacingRange, minAsteroidSize * size, asteroidSizeRange * size, sizeDistribution);
+		float[][] asteroids = ProceduralGeneration.generate(chunkLen * size, chunkLen * size, minDensity * densityMult / size, densityRange * densityMult / size, genChance, minGenSize, genSizeRange, minGenSpacing, genSpacingRange, minAsteroidSize * size, asteroidSizeRange * size, sizeDistribution);
 		List<int> ids = new List<int>();
 		currentLayer += bholeChanceOffset;
 		float curvePosition = ((float)currentLayer / (float)maxLayer);
@@ -192,24 +182,11 @@ public class Generator : MonoBehaviour {
 		foreach(float[] a in asteroids)
 		{
 			isBlackHole = rand.NextDouble() < bhChance;
-			if(isForeground)
-			{
-				int id = foregroundPool.addBody(a[0] + xOff, a[1] + yOff, foregroundDepth, a[2], false, isBlackHole);
-				GameObject asteroid = foregroundPool.getBody(id);
-				asteroid.transform.parent = foregroundLayer.transform;
-				asteroid.layer = foregroundLayer.layer;
-				ids.Add(id);
-			}
-			else
-			{
-				int id = backgroundPool.addBody(a[0] + xOff, a[1] + yOff, backgroundDepth, a[2], true, isBlackHole);
-				GameObject asteroid = backgroundPool.getBody(id);
-				asteroid.transform.parent = backgroundLayer.transform;
-				asteroid.layer = backgroundLayer.layer;
-				if(!isBlackHole)
-					asteroid.rigidbody2D.collider2D.enabled = false;
-				ids.Add(id);
-			}
+			int id = foregroundPool.addBody(a[0] + xOff, a[1] + yOff, foregroundDepth, a[2], false, isBlackHole);
+			GameObject asteroid = foregroundPool.getBody(id);
+			asteroid.transform.parent = foregroundLayer.transform;
+			asteroid.layer = foregroundLayer.layer;
+			ids.Add(id);
 		}
 		return ids.ToArray();
 	}
@@ -242,9 +219,9 @@ public class Generator : MonoBehaviour {
 		{
 			for(int xShift = 0; xShift < 4; xShift++)
 			{
-				float xOff = -1 * genRadius + xCenter + (xShift - 1) * areaWidth * mult;
-				float yOff = -1 * genRadius + yCenter + (yShift - 1) * areaHeight * mult;
-				chunks[xShift][yShift] = generate(true, xOff, yOff, true);
+				float xOff = -1 * genRadius + xCenter + (xShift - 1) * chunkLen * mult;
+				float yOff = -1 * genRadius + yCenter + (yShift - 1) * chunkLen * mult;
+				chunks[xShift][yShift] = generate(xOff, yOff, true);
 			}
 		}
 		foregroundPool.removePCOverlap(PlayerCharacter.instance.GetComponent<SpriteRenderer>().bounds);
@@ -258,9 +235,9 @@ public class Generator : MonoBehaviour {
 		{
 			for(int xShift = 0; xShift < 4; xShift++)
 			{
-				float xOff = -1 * genRadius + xCenter + (xShift - 1) * areaWidth * mult;
-				float yOff = -1 * genRadius + yCenter + (yShift - 1) * areaHeight * mult;
-				chunks[xShift][yShift] = generate(true, xOff, yOff, true);
+				float xOff = -1 * genRadius + xCenter + (xShift - 1) * chunkLen * mult;
+				float yOff = -1 * genRadius + yCenter + (yShift - 1) * chunkLen * mult;
+				chunks[xShift][yShift] = generate(xOff, yOff, true);
 			}
 		}
 		foregroundPool.removePCOverlap(PlayerCharacter.instance.GetComponent<SpriteRenderer>().bounds);
