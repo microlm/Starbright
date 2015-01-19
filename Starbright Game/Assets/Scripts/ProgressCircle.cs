@@ -45,45 +45,45 @@ public class ProgressCircle : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		PlayerCharacter pc = PlayerCharacter.instance;
-		transform.position = pc.transform.position;
-		//TAKE THESE OUT
-		//Debug.Log (PlayerCharacter.instance.Mass + " " + decrementSize);
-		if (Input.GetKeyDown(KeyCode.LeftShift)) {
-			PlayerCharacter.instance.Mass = targetSize;
-
-			LevelUp ();
-
-		}
-		else if (Input.GetKeyDown(KeyCode.LeftControl)) {
-			PlayerCharacter.instance.Mass = decrementSize;
-
-			LevelDown ();
-		}
-
-		if (PlayerCharacter.instance.Mass >= targetSize)
+		if (Game.Instance.State == GameState.Playing)
 		{
-			LevelUp ();
-		}
-		else if (PlayerCharacter.instance.Mass <= decrementSize)
-		{
-			LevelDown ();
-		}
+			PlayerCharacter pc = PlayerCharacter.instance;
+			transform.position = pc.transform.position;
+			if (Input.GetKeyDown(KeyCode.LeftShift)) {
+				PlayerCharacter.instance.Mass = targetSize;
 
-		if (!flash.getWhiteFlash())
-		{
-			DoneLeveling();
-		}
+				LevelUp ();
 
-		if (PlayerCharacter.instance.Mass <= GetWarningSize ()) 
-		{
-			Warning ();
-		}
-		else 
-		{
-			ResetColor();
-		}
+			}
+			else if (Input.GetKeyDown(KeyCode.LeftControl)) {
+				PlayerCharacter.instance.Mass = decrementSize;
 
+				LevelDown ();
+			}
+
+			if (PlayerCharacter.instance.Mass >= targetSize)
+			{
+				LevelUp ();
+			}
+			else if (PlayerCharacter.instance.Mass <= decrementSize)
+			{
+				LevelDown ();
+			}
+
+			if (!flash.getWhiteFlash())
+			{
+				DoneLeveling();
+			}
+
+			if (PlayerCharacter.instance.Mass <= GetWarningSize ()) 
+			{
+				Warning ();
+			}
+			else 
+			{
+				ResetColor();
+			}
+		}
 	}
 
 	void LevelUp()

@@ -84,34 +84,37 @@ public class PlayerCharacter : MonoBehaviour {
 
 	void Update () 
 	{
-		BodyComponent.UpdateBody ();
-
-		if(!gameOver)
+		if (Game.Instance.State == GameState.Playing)
 		{
-			if (isOrbiting) {
-				BodyComponent.Gravitiate (body);
-			}
+			BodyComponent.UpdateBody ();
 
-			if(isColliding) {
-				isColliding = !isColliding;
-			}
-
-			deltaPosition = transform.position - lastPosition;
-
-			if(Input.GetKeyDown(KeyCode.Q))
+			if(!gameOver)
 			{
-				GameOver ();
-			}
-		}
-		else
-		{
-			if(flash.blackFinished)
-			{
-				Application.LoadLevel("FinalScore");
-			}
-		}
+				if (isOrbiting) {
+					BodyComponent.Gravitiate (body);
+				}
 
-		BodyComponent.GlowChild.CurrentColor = BodyComponent.BodyColor;
+				if(isColliding) {
+					isColliding = !isColliding;
+				}
+
+				deltaPosition = transform.position - lastPosition;
+
+				if(Input.GetKeyDown(KeyCode.Q))
+				{
+					GameOver ();
+				}
+			}
+			else
+			{
+				if(flash.blackFinished)
+				{
+					Game.Instance.EndGame("FinalScore");
+				}
+			}
+
+			BodyComponent.GlowChild.CurrentColor = BodyComponent.BodyColor;
+		}
 	}
 
 	void OnCollisionEnter2D(Collision2D c) {
@@ -158,7 +161,6 @@ public class PlayerCharacter : MonoBehaviour {
 	public void GameOver()
 	{
 		GetComponent<CircleCollider2D>().enabled = false;
-		Debug.Log ("off it goes");
 		GetComponent<Explosion>().Explode(Mass, Mass, BodyComponent.Velocity * 10f);
 		flash.blackScreen();
 		gameOver = true;
@@ -166,7 +168,7 @@ public class PlayerCharacter : MonoBehaviour {
 
 	public void Restart()
 	{
-		Application.LoadLevel (Application.loadedLevel);
+		Game.Instance.Start (Application.loadedLevelName);
 		Destroy (this.gameObject);
 	}
 }

@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MenuButtonBehavior : MonoBehaviour {
+public class PauseButtonBehavior : MonoBehaviour {
 
-	public string level;
 	// Use this for initialization
 	void Start () {
 	
@@ -14,8 +13,13 @@ public class MenuButtonBehavior : MonoBehaviour {
 	
 	}
 
-	public void OnClickAction()
+	public void PauseButton()
 	{
-		Game.Instance.Start (level);
+		Game.Instance.Pause ();
+	}
+
+	public void ResumeButton()
+	{
+		Game.Instance.Resume ();
 	}
 }

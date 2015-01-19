@@ -86,38 +86,42 @@ public class CameraBehavior : MonoBehaviour {
 	// Update is called once per frame
 	void LateUpdate () 
 	{
-		// move the camera
-		moveCamera (1f);
-
-		// if shaking
-		if (shakeTime > 0)
+		if (Game.Instance.State == GameState.Playing ||
+		    Game.Instance.State == GameState.GameOver)
 		{
-			ShakeCameraMovement();
-			shakeTime -= Time.deltaTime;
-		}
-		//if shaking has just ended
-		else if (shakeTime < 0) 
-		{
-			CameraReturn ();
-			shakeTime = 0f; 
-		}
+			// move the camera
+			moveCamera (1f);
 
-		// if the camera zoom has changed, then adjust border calculations
-		if(camera.orthographicSize != vertExtent && !isScrolling)
-		{
-			vertExtent = camera.orthographicSize/gameScale;
-			horzExtent = vertExtent * Screen.width / Screen.height;
-			mapX = camera.transform.position.x;
-			mapY = camera.transform.position.y;
-			
-			minX = (mapX - horzExtent) * border;
-			maxX = (mapX + horzExtent) * border;
-			minY = (mapY - vertExtent) * border;
-			maxY = (mapY + vertExtent) * border;
+			// if shaking
+			if (shakeTime > 0)
+			{
+				ShakeCameraMovement();
+				shakeTime -= Time.deltaTime;
+			}
+			//if shaking has just ended
+			else if (shakeTime < 0) 
+			{
+				CameraReturn ();
+				shakeTime = 0f; 
+			}
+
+			// if the camera zoom has changed, then adjust border calculations
+			if(camera.orthographicSize != vertExtent && !isScrolling)
+			{
+				vertExtent = camera.orthographicSize/gameScale;
+				horzExtent = vertExtent * Screen.width / Screen.height;
+				mapX = camera.transform.position.x;
+				mapY = camera.transform.position.y;
+				
+				minX = (mapX - horzExtent) * border;
+				maxX = (mapX + horzExtent) * border;
+				minY = (mapY - vertExtent) * border;
+				maxY = (mapY + vertExtent) * border;
 
 
-			previousSize = camera.orthographicSize;
+				previousSize = camera.orthographicSize;
 
+			}
 		}
 	}
 

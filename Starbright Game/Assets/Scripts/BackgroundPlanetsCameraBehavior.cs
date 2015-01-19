@@ -26,16 +26,20 @@ public class BackgroundPlanetsCameraBehavior : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (Game.Instance.State == GameState.Playing ||
+		    Game.Instance.State == GameState.GameOver)
+		{
 
-		factor = pc.GetComponent<Body>().Mass/targetMass;
+			factor = pc.GetComponent<Body>().Mass/targetMass;
 
-		deltaPosition = (main.camera.transform.position - previousPosition)*factor;
+			deltaPosition = (main.camera.transform.position - previousPosition)*factor;
 
-		camera.transform.position = new Vector3(camera.transform.position.x + deltaPosition.x, camera.transform.position.y + deltaPosition.y, camera.transform.position.z);
-		camera.orthographicSize += (main.camera.orthographicSize - previousCamSize) * factor;
+			camera.transform.position = new Vector3(camera.transform.position.x + deltaPosition.x, camera.transform.position.y + deltaPosition.y, camera.transform.position.z);
+			camera.orthographicSize += (main.camera.orthographicSize - previousCamSize) * factor;
 
-		previousPosition = main.camera.transform.position;
-		previousCamSize = main.camera.orthographicSize;
+			previousPosition = main.camera.transform.position;
+			previousCamSize = main.camera.orthographicSize;
+		}
 	}
 
 	public void setTargetMass(int mass)

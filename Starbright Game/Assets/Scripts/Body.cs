@@ -69,18 +69,21 @@ public class Body : MonoBehaviour {
 	}
 	
 	void Update () {
-		Scale = ScaleByMass ();
-		BodyColor = ColorOption.Instance.assignColor(Mass);
-
-		if (PlayerCharacter.instance != null && !GlowChild.InTransisition) 
+		if (Game.Instance.State == GameState.Playing) 
 		{
-			if(Mass <= PlayerCharacter.instance.Mass)
+			Scale = ScaleByMass ();
+			BodyColor = ColorOption.Instance.assignColor(Mass);
+
+			if (PlayerCharacter.instance != null && !GlowChild.InTransisition) 
 			{
-				GlowChild.DefaultColor = Color.white;
-			}
-			else if(Mass > PlayerCharacter.instance.Mass)
-			{
-				GlowChild.DefaultColor = BodyColor;
+				if(Mass <= PlayerCharacter.instance.Mass)
+				{
+					GlowChild.DefaultColor = Color.white;
+				}
+				else if(Mass > PlayerCharacter.instance.Mass)
+				{
+					GlowChild.DefaultColor = BodyColor;
+				}
 			}
 		}
 	}
