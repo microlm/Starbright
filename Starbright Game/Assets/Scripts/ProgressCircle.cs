@@ -54,6 +54,7 @@ public class ProgressCircle : MonoBehaviour {
 
 				LevelUp ();
 
+
 			}
 			else if (Input.GetKeyDown(KeyCode.LeftControl)) {
 				PlayerCharacter.instance.Mass = decrementSize;
@@ -92,6 +93,7 @@ public class ProgressCircle : MonoBehaviour {
 		currentLayer++;
 		PlayerCharacter.instance.LevelUp ();
 		Scale ();
+		SoundManager.Instance.PlayMiscSound(1);
 	}
 
 	void LevelDown()
@@ -102,15 +104,17 @@ public class ProgressCircle : MonoBehaviour {
 			currentLayer--;
 			PlayerCharacter.instance.LevelDown ();
 			Scale ();
+			SoundManager.Instance.PlayMiscSound(2);
 		}
 	}
 
 	void StartLeveling(bool up)
 	{
 		Time.timeScale = 0f;
-
+		Debug.Log ("Up? " + up);
 		if(up)
 		{
+			Debug.Log ("Up you fool");
 			flash.whiteFlash ();
 		}
 		else
