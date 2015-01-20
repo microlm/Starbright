@@ -42,7 +42,7 @@ public class AsteroidQuadTree
 	{
 		if(HasChild(num))
 		{
-			return this;
+			return children[num];
 		}
 		
 		AsteroidQuadTree child;
@@ -111,11 +111,11 @@ public class AsteroidQuadTree
 
 	public bool AddAsteroid(float asteroidX, float asteroidY, float asteroidSize)
 	{
-		if(Generator.instance.radiusFromMass(asteroidSize) > maxSize)
+		if(Generator.radiusFromMass(asteroidSize) > maxSize)
 		{
 			return false;
 		}
-		float range = Generator.instance.radiusFromMass(asteroidSize) + maxSize;
+		float range = Generator.radiusFromMass(asteroidSize) + maxSize;
 		foreach(float[] a in SearchWithinBounds(asteroidX - range, asteroidY - range, range * 2, range * 2))
 		{
 			if(doesIntersect(new float[]{asteroidX, asteroidY, asteroidSize}, a))
@@ -140,16 +140,17 @@ public class AsteroidQuadTree
 			astSize = asteroidSize;
 			return true;
 		}
-		int child = PickChild(asteroidX, asteroidY);
-		AddChild(child);
-		children[child].AddAsteroidHelper(asteroidX, asteroidY, asteroidSize);
+		int child;
 		if(HasAsteroid)
 		{
 			child = PickChild(astX, astY);
 			AddChild(child);
-			children[child].AddAsteroidHelper(astX, astY, asteroidSize);
+			children[child].AddAsteroidHelper(astX, astY, astSize);
 			hasAsteroid = false;
 		}
+		child = PickChild(asteroidX, asteroidY);
+		AddChild(child);
+		children[child].AddAsteroidHelper(asteroidX, asteroidY, asteroidSize);
 		return true;
 	}
 
@@ -160,6 +161,10 @@ public class AsteroidQuadTree
 			if(a.Length == 3)
 			{
 				AddAsteroid(a[0], a[1], a[2]);
+			}
+			else
+			{
+				throw new ArgumentException("Asteroid data did not have 3 elements");
 			}
 		}
 		return this;
@@ -238,7 +243,7 @@ public class AsteroidQuadTree
 
 	private static bool doesIntersect(float[] a, float[] b)
 	{
-		return Math.Sqrt((a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1])) < Generator.instance.radiusFromMass(a[2]) + Generator.instance.radiusFromMass(b[2]);
+		return Math.Sqrt((a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1])) < Generator.radiusFromMass(a[2]) + Generator.radiusFromMass(b[2]);
 	}
 }
 
