@@ -16,6 +16,6 @@ public class MenuButtonBehavior : MonoBehaviour {
 
 	public void OnClickAction()
 	{
-		Application.LoadLevel(level);
+		Game.Instance.Start (level);
 	}
 }

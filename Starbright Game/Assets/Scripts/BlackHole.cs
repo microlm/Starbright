@@ -11,8 +11,11 @@ public class BlackHole : MonoBehaviour {
 	}
 
 	void Update () {
-		PlayerCharacter.instance.BodyComponent.Gravitiate (this, GravityDampening);
-		Scale += Scale * GrowthSpeed;
+		if (Game.Instance.State == GameState.Playing)
+		{
+			PlayerCharacter.instance.BodyComponent.Gravitiate (this, GravityDampening);
+			Scale += Scale * GrowthSpeed;
+		}
 	}
 
 	void OnCollisionEnter2D(Collision2D c)

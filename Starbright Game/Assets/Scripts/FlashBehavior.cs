@@ -34,7 +34,7 @@ public class FlashBehavior : MonoBehaviour {
 	{
 		if (whiteFlashed)
 		{
-			sprite.color = new Color (sprite.color.r, sprite.color.g, sprite.color.b, opacity.Evaluate ((currentFrame/maxFrame))*opacity[opacity.length - 1].time);
+			sprite.color = new Color (1f, 1f, 1f, opacity.Evaluate ((currentFrame/maxFrame))*opacity[opacity.length - 1].time);
 			scale = size.Evaluate ((currentFrame/maxFrame) * size[size.length - 1].time) * screenSize;
 			sprite.transform.localScale = new Vector3(scale, scale, scale);
 			currentFrame++;

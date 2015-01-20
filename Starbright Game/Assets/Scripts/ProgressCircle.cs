@@ -45,45 +45,46 @@ public class ProgressCircle : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		PlayerCharacter pc = PlayerCharacter.instance;
-		transform.position = pc.transform.position;
-		//TAKE THESE OUT
-		//Debug.Log (PlayerCharacter.instance.Mass + " " + decrementSize);
-		if (Input.GetKeyDown(KeyCode.LeftShift)) {
-			PlayerCharacter.instance.Mass = targetSize;
-
-			LevelUp ();
-
-		}
-		else if (Input.GetKeyDown(KeyCode.LeftControl)) {
-			PlayerCharacter.instance.Mass = decrementSize;
-
-			LevelDown ();
-		}
-
-		if (PlayerCharacter.instance.Mass >= targetSize)
+		if (Game.Instance.State == GameState.Playing)
 		{
-			LevelUp ();
-		}
-		else if (PlayerCharacter.instance.Mass <= decrementSize)
-		{
-			LevelDown ();
-		}
+			PlayerCharacter pc = PlayerCharacter.instance;
+			transform.position = pc.transform.position;
+			if (Input.GetKeyDown(KeyCode.LeftShift)) {
+				PlayerCharacter.instance.Mass = targetSize;
 
-		if (!flash.getWhiteFlash())
-		{
-			DoneLeveling();
-		}
+				LevelUp ();
 
-		if (PlayerCharacter.instance.Mass <= GetWarningSize ()) 
-		{
-			Warning ();
-		}
-		else 
-		{
-			ResetColor();
-		}
 
+			}
+			else if (Input.GetKeyDown(KeyCode.LeftControl)) {
+				PlayerCharacter.instance.Mass = decrementSize;
+
+				LevelDown ();
+			}
+
+			if (PlayerCharacter.instance.Mass >= targetSize)
+			{
+				LevelUp ();
+			}
+			else if (PlayerCharacter.instance.Mass <= decrementSize)
+			{
+				LevelDown ();
+			}
+
+			if (!flash.getWhiteFlash())
+			{
+				DoneLeveling();
+			}
+
+			if (PlayerCharacter.instance.Mass <= GetWarningSize ()) 
+			{
+				Warning ();
+			}
+			else 
+			{
+				ResetColor();
+			}
+		}
 	}
 
 	void LevelUp()
@@ -92,6 +93,7 @@ public class ProgressCircle : MonoBehaviour {
 		currentLayer++;
 		PlayerCharacter.instance.LevelUp ();
 		Scale ();
+		SoundManager.Instance.PlayMiscSound(1);
 	}
 
 	void LevelDown()
@@ -102,15 +104,17 @@ public class ProgressCircle : MonoBehaviour {
 			currentLayer--;
 			PlayerCharacter.instance.LevelDown ();
 			Scale ();
+			SoundManager.Instance.PlayMiscSound(2);
 		}
 	}
 
 	void StartLeveling(bool up)
 	{
 		Time.timeScale = 0f;
-
+		Debug.Log ("Up? " + up);
 		if(up)
 		{
+			Debug.Log ("Up you fool");
 			flash.whiteFlash ();
 		}
 		else
