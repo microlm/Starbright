@@ -8,37 +8,37 @@ public class Generator : MonoBehaviour {
 	public static Generator instance;
 
 	[Tooltip("Base side length, in Unity's units, of a chunk.")]
-	public float chunkLen = 20;
+	public float chunkLen = 40f;
 
 	[Tooltip("Number of seeds created per chunk.")]
-	public float density;
+	public float density = 2f;
 	[Tooltip("How much the density can vary from chunk to chunk, as a percentage. A value of 1 results in a variation from 0 to 2 * density.")]
-	public float densityJitter;
+	public float densityJitter = 0f;
 
 	[Tooltip("Minimum number of children to be generated per iteration on a seed.")]
-	public int minimumChildren;
+	public int minimumChildren = 3;
 	[Tooltip("Maximum number of children to be generated per iteration on a seed.")]
-	public int maximumChildren;
+	public int maximumChildren = 3;
 
 	[Tooltip("Distance between a parent body and it's children, proportionally to the size of the parent. This number will be multiplied by the parents size to generate a value")]
-	public float childDistance;
+	public float childDistance = 8f;
 	[Tooltip("How much the child distance can vary from iteration to iteration, as a percentage. A value of 1 results in a variation from 0 to 2 * child distance.")]
-	public float childDistanceJitter;
+	public float childDistanceJitter = 0f;
 
 	[Tooltip("Size of seed body.")]
-	public float initialSize;
+	public float initialSize = 40f;
 	[Tooltip("How much the initial size can vary from seed to seed, as a percentage. A value of 1 results in a variation from 0 to 2 * initial size.")]
-	public float initialSizeJitter;
+	public float initialSizeJitter = 0f;
 
 	[Tooltip("Size of final generation. The generator will create new children until the children are this percentage of the seed.")]
-	public float finalSize;
+	public float finalSize = 2.5f;
 	[Tooltip("How much the child quantity can vary from seed to seed, as a percentage. A value of 1 results in a variation from 0 to 2 * final size.")]
-	public float finalSizeJitter;
+	public float finalSizeJitter = 0f;
 
 	[Tooltip("The number body size is multiplied by for each iteration of generation.")]
-	public float iterationSizeMultiplier;
+	public float iterationSizeMultiplier = 0.5f;
 	[Tooltip("How much the iteration size multiplier can vary from seed to seed, as a percentage. A value of 1 results in a variation from 0 to 2 * iteration size multiplier.")]
-	public float iterationSizeMultiplierJitter;
+	public float iterationSizeMultiplierJitter = 0f;
 
 	[Tooltip("Determines how common various sizes are. Asteroid size is determined by picking a random point along the bottom axis, the multiplying the jitter by the height of the curve - 0.5.")]
 	public AnimationCurve sizeDistribution;
@@ -51,7 +51,8 @@ public class Generator : MonoBehaviour {
 	public int maxLayer = 100;
 
 	[Tooltip("Z-value at which the foreground is created.")]
-	public float foregroundDepth;
+	public float foregroundDepth = 30;
+
 	[Tooltip("Object to hold and manage bodies")]
 	public ObjectPool foregroundPool;
 
