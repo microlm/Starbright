@@ -10,6 +10,7 @@ public class SoundManager : MonoBehaviour {
 
 	SoundBehavior EatSounds;
 	SoundBehavior HitSounds;
+	SoundBehavior MiscSounds;
 
 	private static SoundManager instance;
 
@@ -18,6 +19,7 @@ public class SoundManager : MonoBehaviour {
 		instance = this;
 		EatSounds = GameObject.Find ("Eating Sounds").GetComponent<SoundBehavior>();
 		HitSounds = GameObject.Find ("Hit Sounds").GetComponent<SoundBehavior>();
+		MiscSounds = GameObject.Find ("Misc Sounds").GetComponent<SoundBehavior> ();
 	}
 	
 	// Update is called once per frame
@@ -40,6 +42,12 @@ public class SoundManager : MonoBehaviour {
 	{
 		if (HitSounds != null)
 			HitSounds.PlayNote (note);
+	}
+
+	public void PlayMiscSound(int misc)
+	{
+		if (MiscSounds != null)
+			MiscSounds.PlayNote (misc);
 	}
 
 	public int GetNoteByMass(float mass) 
