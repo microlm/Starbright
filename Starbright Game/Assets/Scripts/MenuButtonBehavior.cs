@@ -15,6 +15,11 @@ public class MenuButtonBehavior : MonoBehaviour {
 	void Start () {
 	
 	}
+
+	void Awake()
+	{
+		Game.Instance.Resume ();
+	}
 	
 	// Update is called once per frame
 	void Update () 
@@ -27,26 +32,9 @@ public class MenuButtonBehavior : MonoBehaviour {
 			}
 			else
 			{
-				Game.Instance.Start (level);
+				Application.LoadLevel (level);
 			}
 		}
-
-		/*
-		if(unloadMenu)
-		{
-			if(time < 0.3f)
-			{
-				targetObject.GetComponent<Animator>().Play("PanelDown");
-				time += Time.deltaTime;
-			}
-			else
-			{
-				time = 0f;
-				targetObject.GetComponent<Animator>().enabled = false;
-				unloadMenu = false;
-				//gameObject.GetComponent<PauseButtonBehavior>().ResumeButton();
-			}
-		}*/
 
 	}
 
@@ -60,6 +48,7 @@ public class MenuButtonBehavior : MonoBehaviour {
 	public void LoadLevel()
 	{
 		gameObject.GetComponent<Animator>().SetBool("Pressed", true);
+		loadLevel = true;
 
 	}
 
@@ -69,9 +58,17 @@ public class MenuButtonBehavior : MonoBehaviour {
 
 	}
 
-	public void Restart()
+	public void LoadMainMenu()
 	{
-		Debug.Log("RESTART");
-		PlayerCharacter.instance.Restart();
+		Destroy (PlayerCharacter.instance.gameObject);
+		Destroy (targetObject);
+		Application.LoadLevel ("Menu");
+
+	}
+
+	public void Quit()
+	{
+		Application.Quit ();
+		Application.runInBackground = false;
 	}
 }
