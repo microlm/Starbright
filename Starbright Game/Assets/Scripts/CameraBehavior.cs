@@ -32,7 +32,7 @@ public class CameraBehavior : MonoBehaviour {
 	protected float minX, minY, maxX, maxY;
 	protected float mapX=100.0f;
 	protected float mapY = 100.0f;
-	protected float border = 0.85f;
+	protected float border = 0.95f;
 	
 	protected float vertExtent, horzExtent;
 
@@ -180,12 +180,12 @@ public class CameraBehavior : MonoBehaviour {
 	protected bool inBounds()
 	{
 		
-		Vector2 pos = player.transform.position;
-		float radius = player.renderer.bounds.size.x/2f;
+		Vector2 pos = pc.Position;
+		float radius = pc.gameObject.renderer.bounds.size.x/2f;
 	
 		// location relative to camera view port, boundaries at 0 and 1 values
-		Vector3 maxPos = camera.WorldToViewportPoint(player.transform.position + player.renderer.bounds.size/2f);
-		Vector3 minPos = camera.WorldToViewportPoint(player.transform.position - player.renderer.bounds.size/2f);
+		Vector3 maxPos = camera.WorldToViewportPoint(pc.Position + player.renderer.bounds.size/2f);
+		Vector3 minPos = camera.WorldToViewportPoint(pc.Position - player.renderer.bounds.size/2f);
 
 		if((maxPos.x < border && minPos.x > 1 - border) && (maxPos.y < border && minPos.y > 1 - border))
 		{

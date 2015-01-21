@@ -111,10 +111,8 @@ public class ProgressCircle : MonoBehaviour {
 	void StartLeveling(bool up)
 	{
 		Time.timeScale = 0f;
-		Debug.Log ("Up? " + up);
 		if(up)
 		{
-			Debug.Log ("Up you fool");
 			flash.whiteFlash ();
 		}
 		else
