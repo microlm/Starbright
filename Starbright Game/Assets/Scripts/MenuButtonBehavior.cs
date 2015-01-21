@@ -32,7 +32,7 @@ public class MenuButtonBehavior : MonoBehaviour {
 			}
 			else
 			{
-				Application.LoadLevel (level);
+				Game.Instance.Start (level);
 			}
 		}
 
@@ -49,7 +49,6 @@ public class MenuButtonBehavior : MonoBehaviour {
 	{
 		gameObject.GetComponent<Animator>().SetBool("Pressed", true);
 		loadLevel = true;
-
 	}
 
 	public void UnloadMenu()
@@ -62,13 +61,21 @@ public class MenuButtonBehavior : MonoBehaviour {
 	{
 		Destroy (PlayerCharacter.instance.gameObject);
 		Destroy (targetObject);
-		Application.LoadLevel ("Menu");
+		Game.Instance.GoToMenu ("Menu");
+	}
 
+	public void Pause()
+	{
+		Game.Instance.Pause ();
+	}
+
+	public void Resume()
+	{
+		Game.Instance.Resume ();
 	}
 
 	public void Quit()
 	{
-		Application.Quit ();
-		Application.runInBackground = false;
+		Game.Instance.Quit ();
 	}
 }

@@ -39,6 +39,12 @@ public class Game {
 		}
 	}
 
+	public void GoToMenu(string menu)
+	{
+		state = GameState.Menu;
+		Application.LoadLevel (menu);
+	}
+
 	public void Pause() 
 	{
 		if (State == GameState.Playing)
@@ -55,5 +61,11 @@ public class Game {
 			state = GameState.Playing;
 			Time.timeScale = 1f;
 		}
+	}
+
+	public void Quit()
+	{
+		Application.Quit ();
+		Application.runInBackground = false;
 	}
 }

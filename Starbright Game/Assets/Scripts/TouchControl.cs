@@ -69,8 +69,7 @@ public class TouchControl : MonoBehaviour {
 
 		//four fingers quits
 		if (count >= 4) {
-			Application.Quit ();
-			Application.runInBackground = false;
+			Game.Instance.Quit();
 		}
 		//three fingers restarts
 		else if (count >= 3)
