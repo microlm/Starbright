@@ -5,9 +5,7 @@ public class MenuButtonBehavior : MonoBehaviour {
 	
 	public string level;
 	private bool loadLevel = false;
-	private bool loadMenu = false;
-	private bool unloadMenu = false;
-	private bool restart = false;
+
 
 	public GameObject targetObject;
 
@@ -33,20 +31,7 @@ public class MenuButtonBehavior : MonoBehaviour {
 			}
 		}
 
-		if(loadMenu)
-		{
-			if(time < 1f)
-			{
-				time += Time.deltaTime;
-			}
-			else
-			{
-				time = 0f;
-				loadMenu = false;
-				//gameObject.GetComponent<PauseButtonBehavior>().PauseButton();
-			}
-		}
-
+		/*
 		if(unloadMenu)
 		{
 			if(time < 0.3f)
@@ -61,20 +46,7 @@ public class MenuButtonBehavior : MonoBehaviour {
 				unloadMenu = false;
 				//gameObject.GetComponent<PauseButtonBehavior>().ResumeButton();
 			}
-		}
-
-		if(restart)
-		{
-			if(time < 1f)
-			{
-				time += Time.deltaTime;
-			}
-			else
-			{
-				time = 0f;
-				PlayerCharacter.instance.Restart();
-			}
-		}
+		}*/
 
 	}
 
@@ -82,23 +54,24 @@ public class MenuButtonBehavior : MonoBehaviour {
 	{
 		gameObject.GetComponent<Animator>().SetBool("Pressed", true);
 		targetObject.GetComponent<Animator>().Play("PanelUp");
-		loadMenu = true;
+
 	}
 
 	public void LoadLevel()
 	{
 		gameObject.GetComponent<Animator>().SetBool("Pressed", true);
-		loadLevel = true;
+
 	}
 
 	public void UnloadMenu()
 	{
-		unloadMenu = true;
+		targetObject.GetComponent<Animator>().Play("PanelDown");
+
 	}
 
 	public void Restart()
 	{
-		restart = true;
-		gameObject.GetComponent<Animator>().SetBool("Pressed", true);
+		Debug.Log("RESTART");
+		PlayerCharacter.instance.Restart();
 	}
 }
