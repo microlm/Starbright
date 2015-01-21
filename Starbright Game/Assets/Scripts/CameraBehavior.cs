@@ -128,7 +128,7 @@ public class CameraBehavior : MonoBehaviour {
 	protected void moveCamera(float speedFactor)
 	{
 		// if camera is not orbiting 
-		if (!pc.IsOrbiting()) 
+		if (pc != null && !pc.IsOrbiting()) 
 		{
 			
 			if (isScrolling) 
@@ -145,7 +145,7 @@ public class CameraBehavior : MonoBehaviour {
 				// if the player lets go of scrolling,
 				// return camera to proper position
 				
-				if(transform.position != player.transform.position)
+				if(transform.position != pc.Position)
 				{
 					CameraReturn ();
 				}
@@ -158,8 +158,8 @@ public class CameraBehavior : MonoBehaviour {
 				// scale camera relative to the size of player
 				
 				previousSize = camera.orthographicSize;
-				float currentMass = player.GetComponent<Body>().mass;
-				camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, initialSize * (player.GetComponent<Body>().mass/initialMass), Time.deltaTime * ease);
+				float currentMass = pc.Mass;
+				camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, initialSize * (pc.Mass/initialMass), Time.deltaTime * ease);
 			}
 		
 		}

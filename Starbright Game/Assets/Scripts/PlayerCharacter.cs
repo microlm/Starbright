@@ -168,7 +168,7 @@ public class PlayerCharacter : MonoBehaviour {
 
 	public void Restart()
 	{
+		Destroy (this);
 		Game.Instance.Start (Application.loadedLevelName);
-		Destroy (this.gameObject);
 	}
 }
