@@ -41,8 +41,10 @@ public class Game {
 
 	public void GoToMenu(string menu)
 	{
-		state = GameState.Menu;
+		if (State == GameState.Paused)
+			Resume ();
 		Application.LoadLevel (menu);
+		state = GameState.Menu;
 	}
 
 	public void Pause() 
