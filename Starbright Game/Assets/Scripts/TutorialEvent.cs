@@ -5,6 +5,9 @@ using System.Collections;
 public class TutorialEvent
 {
 	[SerializeField]
+	private string name;
+
+	[SerializeField]
 	private string text;
 
 	[SerializeField]
@@ -15,6 +18,11 @@ public class TutorialEvent
 	public TutorialEvent ()
 	{
 		hasShown = false;
+	}
+
+	public string Name 
+	{
+		get { return name; }
 	}
 
 	public bool HasShown

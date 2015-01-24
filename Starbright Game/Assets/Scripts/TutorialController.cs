@@ -22,6 +22,7 @@ public class TutorialController : MonoBehaviour {
 		eventTime = 0f;
 		TextColor = hideColor;
 		Text = "Default";
+		ShowEvent("Tutorial Event Tutorial");
 	}
 	
 	// Update is called once per frame
@@ -59,14 +60,28 @@ public class TutorialController : MonoBehaviour {
 		timer = time;
 	}
 
-	/** Displays event x and returns the event. If there is no event x, it return null */
-	public TutorialEvent ShowEvent(int x)
+	/** Displays event x and returns the event. If there is no event x, it return false */
+	public bool ShowEvent(int x)
 	{
 		if (x < EventList.Length) 
 		{
 			EventList[x].Show();
-			return EventList[x];
+			return true;
 		}
-		else return null;
+		else return false;
+	}
+
+	/** Displays event of name and returns the event. If there is no event of that name, it return false */
+	public bool ShowEvent(string name)
+	{
+		for (int i=0; i<EventList.Length; i++)
+		{
+			if (name.Equals(EventList[i].Name))
+			{
+				EventList[i].Show();
+				return true;
+			}
+		}
+		return false;
 	}
 }
