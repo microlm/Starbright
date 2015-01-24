@@ -8,6 +8,8 @@ public class TutorialController : MonoBehaviour {
 	public Color showColor;
 	public Color hideColor;
 
+	public TutorialEvent[] EventList;
+
 	private float timer;
 	private float eventTime;
 	private static TutorialController instance;
@@ -55,5 +57,16 @@ public class TutorialController : MonoBehaviour {
 		Text = text;
 		eventTime = time;
 		timer = time;
+	}
+
+	/** Displays event x and returns the event. If there is no event x, it return null */
+	public TutorialEvent ShowEvent(int x)
+	{
+		if (x < EventList.Length) 
+		{
+			EventList[x].Show();
+			return EventList[x];
+		}
+		else return null;
 	}
 }
