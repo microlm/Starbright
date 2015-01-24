@@ -9,6 +9,8 @@ public class SoundManager : MonoBehaviour {
 	public int randomIndex;
 
 	SoundBehavior EatSounds;
+	SoundBehavior EatSoundsBackup;
+	SoundBehavior EatSoundsBackupBackup;
 	SoundBehavior HitSounds;
 	SoundBehavior MiscSounds;
 
@@ -18,6 +20,8 @@ public class SoundManager : MonoBehaviour {
 	void Start () {
 		instance = this;
 		EatSounds = GameObject.Find ("Eating Sounds").GetComponent<SoundBehavior>();
+		EatSoundsBackup = GameObject.Find ("Eating Sounds 2").GetComponent<SoundBehavior>();
+		EatSoundsBackupBackup = GameObject.Find ("Eating Sounds 3").GetComponent<SoundBehavior>();
 		HitSounds = GameObject.Find ("Hit Sounds").GetComponent<SoundBehavior>();
 		MiscSounds = GameObject.Find ("Misc Sounds").GetComponent<SoundBehavior> ();
 	}
@@ -35,7 +39,17 @@ public class SoundManager : MonoBehaviour {
 	public void PlayEatSound(int note)
 	{
 		if (EatSounds != null)
-			EatSounds.PlayNote (note);
+		{
+			if (EatSounds.IsPlaying && EatSoundsBackup != null)
+			{
+				if (!EatSoundsBackup.IsPlaying && EatSoundsBackupBackup != null)
+				{
+						EatSoundsBackupBackup.PlayNote (note);
+				}
+				else EatSoundsBackup.PlayNote (note);
+			}
+			else EatSounds.PlayNote (note);
+		}
 	}
 
 	public void PlayHitSound(int note)
