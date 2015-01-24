@@ -25,6 +25,16 @@ public class TutorialEvent
 		get { return name; }
 	}
 
+	public string Text 
+	{
+		get { return text; }
+	}
+
+	public float Time
+	{
+		get { return time; }
+	}
+
 	public bool HasShown
 	{
 		get { return hasShown; }

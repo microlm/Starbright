@@ -4,6 +4,7 @@ using System.Collections;
 
 public class TutorialController : MonoBehaviour {
 
+	public bool showTutorial;
 	public AnimationCurve colorTransisition;
 	public Color showColor;
 	public Color hideColor;
@@ -22,7 +23,6 @@ public class TutorialController : MonoBehaviour {
 		eventTime = 0f;
 		TextColor = hideColor;
 		Text = "Default";
-		ShowEvent("Tutorial Event Tutorial");
 	}
 	
 	// Update is called once per frame
@@ -52,34 +52,54 @@ public class TutorialController : MonoBehaviour {
 		set { GetComponent<Text> ().color = value; }
 	}
 
+	private bool IsPlaying
+	{
+		get
+		{
+			if (timer > 0)
+				return true;
+			else return false;
+		}
+	}
+
 	/** Displays string text in tutorial overlay for time specified */
 	public void DisplayText(string text, float time)
 	{
-		Text = text;
+		if (!IsPlaying)
+			Text = text;
+		else Text += '\n' + text;
 		eventTime = time;
 		timer = time;
 	}
 
-	/** Displays event x and returns the event. If there is no event x, it return false */
+	/** Displays event x. If there is no event x or x has already played, it returns false */
 	public bool ShowEvent(int x)
 	{
-		if (x < EventList.Length) 
+		if (showTutorial)
 		{
-			EventList[x].Show();
-			return true;
+			if (x < EventList.Length) 
+			{
+				bool hasShown = EventList[x].HasShown;
+				EventList[x].Show();
+				return !hasShown;
+			}
 		}
-		else return false;
+		return false;
 	}
 
-	/** Displays event of name and returns the event. If there is no event of that name, it return false */
+	/** Displays event of name. If there is no event x or x has already played, it returns false */
 	public bool ShowEvent(string name)
 	{
-		for (int i=0; i<EventList.Length; i++)
+		if (showTutorial)
 		{
-			if (name.Equals(EventList[i].Name))
+			for (int i=0; i<EventList.Length; i++)
 			{
-				EventList[i].Show();
-				return true;
+				if (name.Equals(EventList[i].Name))
+				{
+					bool hasShown = EventList[i].HasShown;
+					EventList[i].Show();
+					return !hasShown;
+				}
 			}
 		}
 		return false;

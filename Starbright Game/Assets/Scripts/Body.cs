@@ -117,6 +117,7 @@ public class Body : MonoBehaviour {
 		//playor orbits this body
 		PlayerCharacter.instance.Orbit (this);
 		GlowChild.GlowColor = GlowChild.ActiveColor;
+		TutorialController.Instance.ShowEvent ("tap and hold");
 	}
 	
 	void OnMouseUp () 
@@ -138,6 +139,11 @@ public class Body : MonoBehaviour {
 			Eat (b);
 
 			ScoreManager.Instance.AddScore(Mathf.FloorToInt(b.Mass));
+
+			if (!TutorialController.Instance.ShowEvent ("eating a planet 1")) {
+				if (!TutorialController.Instance.ShowEvent ("eating a planet 2"))
+					TutorialController.Instance.ShowEvent ("eating a planet 3");
+			}
 		}
 		else
 		{
@@ -147,6 +153,8 @@ public class Body : MonoBehaviour {
 			if (Mass > 1.5) {
 				Shrink (b);
 			}
+
+			TutorialController.Instance.ShowEvent ("hit a large planet");
 		}
 		
 	}

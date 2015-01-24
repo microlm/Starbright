@@ -80,6 +80,8 @@ public class PlayerCharacter : MonoBehaviour {
 		flash = GameObject.Find ("Flash").GetComponent<FlashBehavior>();
 
 		DontDestroyOnLoad (this);
+
+		TutorialController.Instance.ShowEvent("tap a planet");
 	}
 
 	void Update () 
