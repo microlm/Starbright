@@ -10,10 +10,12 @@ public class TutorialController : MonoBehaviour {
 
 	private float timer;
 	private float eventTime;
+	private static TutorialController instance;
 
 	// Use this for initialization
 	void Start () 
 	{
+		instance = this;
 		timer = 0f;
 		eventTime = 0f;
 		TextColor = hideColor;
@@ -28,6 +30,11 @@ public class TutorialController : MonoBehaviour {
 			timer -= Time.deltaTime;
 			TextColor = Color.Lerp(hideColor, showColor, colorTransisition.Evaluate(timer/eventTime));
 		}
+	}
+
+	public static TutorialController Instance
+	{
+		get { return instance; }
 	}
 
 	public string Text
