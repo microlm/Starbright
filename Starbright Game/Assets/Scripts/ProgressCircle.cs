@@ -91,7 +91,7 @@ public class ProgressCircle : MonoBehaviour {
 	{
 		StartLeveling (true);
 		currentLayer++;
-		PlayerCharacter.instance.LevelUp ();
+		PlayerCharacter.instance.LevelRefresh ();
 		Scale ();
 		SoundManager.Instance.PlayMiscSound(1);
 	}
@@ -102,7 +102,7 @@ public class ProgressCircle : MonoBehaviour {
 		{
 			StartLeveling (false);
 			currentLayer--;
-			PlayerCharacter.instance.LevelDown ();
+			PlayerCharacter.instance.LevelRefresh ();
 			Scale ();
 			SoundManager.Instance.PlayMiscSound(2);
 		}

@@ -101,7 +101,6 @@ public class Generator : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
-		float mult = ProgressCircle.SizeMultiplierFromLayer(ProgressCircle.instance.CurrentLayer);
 		////////////////////////////////////
 		//
 		// There's probably a better way to arrange this, but I'm tired
@@ -112,10 +111,10 @@ public class Generator : MonoBehaviour {
 		float absXDist = Mathf.Abs(xDist);
 		float signX = xDist / absXDist;
 
-		while(absXDist > chunkLen * mult)
+		while(absXDist > chunkLen)
 		{
 			int count = 0; //God have mercy on my soul
-			for(float yOff = -1 * genRadius * mult + yCenter; yOff < genRadius * mult + yCenter; yOff += chunkLen * mult)
+			for(float yOff = -1 * genRadius + yCenter; yOff < genRadius + yCenter; yOff += chunkLen)
 			{
 				if(signX > 0)
 				{
@@ -128,7 +127,7 @@ public class Generator : MonoBehaviour {
 					chunks[0][count] = chunks[1][count];
 					chunks[1][count] = chunks[2][count];
 					chunks[2][count] = chunks[3][count];
-					chunks[3][count] = generate(genRadius * mult + xCenter, yOff, false);
+					chunks[3][count] = generate(genRadius + xCenter, yOff, false);
 				}
 				else
 				{
@@ -141,21 +140,21 @@ public class Generator : MonoBehaviour {
 					chunks[3][count] = chunks[2][count];
 					chunks[2][count] = chunks[1][count];
 					chunks[1][count] = chunks[0][count];
-					chunks[0][count] = generate(-1 * genRadius * mult + xCenter - chunkLen * mult, yOff, false);
+					chunks[0][count] = generate(-1 * genRadius + xCenter - chunkLen, yOff, false);
 			}
 				count++;
 			}
-			xCenter += chunkLen * mult * signX;
+			xCenter += chunkLen * signX;
 			xDist = loc.x - xCenter;
 			absXDist = Mathf.Abs(xDist);
 		}
 		float yDist = loc.y - yCenter;
 		float absYDist = Mathf.Abs(yDist);
 		float signY = yDist / absYDist;
-		while(absYDist > chunkLen * mult)
+		while(absYDist > chunkLen)
 		{
 			int count = 0;
-			for(float xOff = -1 * genRadius * mult + xCenter; xOff < genRadius * mult + xCenter; xOff += chunkLen * mult)
+			for(float xOff = -1 * genRadius + xCenter; xOff < genRadius + xCenter; xOff += chunkLen)
 			{
 				if(signY > 0)
 				{
@@ -168,7 +167,7 @@ public class Generator : MonoBehaviour {
 					chunks[count][0] = chunks[count][1];
 					chunks[count][1] = chunks[count][2];
 					chunks[count][2] = chunks[count][3];
-					chunks[count][3] = generate(xOff, genRadius * mult + yCenter, false);
+					chunks[count][3] = generate(xOff, genRadius + yCenter, false);
 				}
 				else
 				{
@@ -181,11 +180,11 @@ public class Generator : MonoBehaviour {
 					chunks[count][3] = chunks[count][2];
 					chunks[count][2] = chunks[count][1];
 					chunks[count][1] = chunks[count][0];
-					chunks[count][0] = generate(xOff, -1 * genRadius * mult + yCenter - chunkLen * mult, false);
+					chunks[count][0] = generate(xOff, -1 * genRadius + yCenter - chunkLen, false);
 				}
 				count++;
 			}
-			yCenter += chunkLen * mult * signY;
+			yCenter += chunkLen * signY;
 			yDist = loc.y - yCenter;
 			absYDist = Mathf.Abs(yDist);
 		}
@@ -207,7 +206,7 @@ public class Generator : MonoBehaviour {
 		float minGenSpacing = childDistance - childDistanceJitter;
 		float genSpacingRange = childDistanceJitter * 2;
 
-		float[][] asteroids = ProceduralGeneration.generate(chunkLen * size, chunkLen * size, minDensity * densityMult, densityRange * densityMult, minGenSize, genSizeRange, minGenSpacing, genSpacingRange, minAsteroidSize * size, asteroidSizeRange * size, iterationSizeMultiplier, iterationSizeMultiplierJitter, finalSize * size, finalSizeJitter * size, sizeDistribution);
+		float[][] asteroids = ProceduralGeneration.generate(chunkLen, chunkLen, minDensity * densityMult, densityRange * densityMult, minGenSize, genSizeRange, minGenSpacing, genSpacingRange, minAsteroidSize, asteroidSizeRange, iterationSizeMultiplier, iterationSizeMultiplierJitter, finalSize, finalSizeJitter, sizeDistribution);
 		List<int> ids = new List<int>();
 		currentLayer += bholeChanceOffset;
 		float curvePosition = ((float)currentLayer / (float)maxLayer);
@@ -251,32 +250,15 @@ public class Generator : MonoBehaviour {
 		return mass * 0.08f;
 	}
 
-	public void LayerUp()
+	public void LevelRefresh()
 	{ 
-		float mult = ProgressCircle.SizeMultiplierFromLayer(ProgressCircle.instance.CurrentLayer);
 		foregroundPool.drain();
 		for(int yShift = 0 ; yShift < 4; yShift++)
 		{
 			for(int xShift = 0; xShift < 4; xShift++)
 			{
-				float xOff = -1 * genRadius + xCenter + (xShift - 1) * chunkLen * mult;
-				float yOff = -1 * genRadius + yCenter + (yShift - 1) * chunkLen * mult;
-				chunks[xShift][yShift] = generate(xOff, yOff, true);
-			}
-		}
-		foregroundPool.removePCOverlap(PlayerCharacter.instance.GetComponent<SpriteRenderer>().bounds);
-	}
-
-	public void LayerDown()
-	{ 
-		float mult = ProgressCircle.SizeMultiplierFromLayer(ProgressCircle.instance.CurrentLayer);
-		foregroundPool.drain();
-		for(int yShift = 0 ; yShift < 4; yShift++)
-		{
-			for(int xShift = 0; xShift < 4; xShift++)
-			{
-				float xOff = -1 * genRadius + xCenter + (xShift - 1) * chunkLen * mult;
-				float yOff = -1 * genRadius + yCenter + (yShift - 1) * chunkLen * mult;
+				float xOff = -1 * genRadius + xCenter + (xShift) * chunkLen;
+				float yOff = -1 * genRadius + yCenter + (yShift) * chunkLen;
 				chunks[xShift][yShift] = generate(xOff, yOff, true);
 			}
 		}

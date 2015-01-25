@@ -20,6 +20,8 @@ public class PlayerCharacter : MonoBehaviour {
 
 	FlashBehavior flash;
 
+	private float initialMass;
+
 	public float Mass 
 	{
 		get { return BodyComponent.Mass; }
@@ -76,6 +78,7 @@ public class PlayerCharacter : MonoBehaviour {
 		lastPosition = transform.position;
 		camera = GameObject.Find ("Main Camera");
 		backgroundCamera = GameObject.Find ("Background Planets Camera");
+		initialMass = BodyComponent.Mass;
 
 		flash = GameObject.Find ("Flash").GetComponent<FlashBehavior>();
 
@@ -146,17 +149,12 @@ public class PlayerCharacter : MonoBehaviour {
 		return body;
 	}
 
-	public void LevelUp()
+	public void LevelRefresh()
 	{
 		BodyComponent.ResetVelocity ();
-		Generator.instance.LayerUp ();
-		ColorOption.Instance.GenerateNewGradiant ();
-	}
-
-	public void LevelDown()
-	{
-		BodyComponent.ResetVelocity ();
-		Generator.instance.LayerDown ();
+		BodyComponent.Mass = initialMass;
+		BodyComponent.UpdateBody ();
+		Generator.instance.LevelRefresh ();
 		ColorOption.Instance.GenerateNewGradiant ();
 	}
 
