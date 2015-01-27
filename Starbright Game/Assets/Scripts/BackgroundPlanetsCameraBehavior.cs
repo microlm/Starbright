@@ -3,6 +3,8 @@ using System.Collections;
 
 public class BackgroundPlanetsCameraBehavior : MonoBehaviour {
 
+	public static BackgroundPlanetsCameraBehavior instance;
+
 	public Camera main;
 	private float factor;
 	public GameObject pc;
@@ -15,6 +17,10 @@ public class BackgroundPlanetsCameraBehavior : MonoBehaviour {
 	private float targetMass;
 	// Use this for initialization
 	void Start () {
+		if(instance == null)
+		{
+			instance = this;
+		}
 
 		previousPosition = main.camera.transform.position;
 		previousCamSize = main.camera.orthographicSize;
