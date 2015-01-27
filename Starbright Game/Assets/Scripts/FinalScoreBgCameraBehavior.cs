@@ -12,7 +12,7 @@ public class FinalScoreBgCameraBehavior : MonoBehaviour {
 	private int borderMinY = - 20;
 	private int borderMaxY = 30;
 
-	private Vector3 velocity;
+	public Vector3 velocity = new Vector3(1, 1, 0);
 	float vertExtent, horzExtent;
 	float minX, maxX, minY, maxY;
 
@@ -29,9 +29,7 @@ public class FinalScoreBgCameraBehavior : MonoBehaviour {
 		minX = (mapX - horzExtent);
 		maxX = (mapX + horzExtent);
 		minY = (mapY - vertExtent);
-		maxY = (mapY + vertExtent);
-
-		velocity = new Vector3(1, 1, 0);
+		maxY = (mapY + vertExtent);		
 	}
 	
 	// Update is called once per frame
