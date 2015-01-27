@@ -23,6 +23,16 @@ public class TutorialController : MonoBehaviour {
 		eventTime = 0f;
 		TextColor = hideColor;
 		Text = "Default";
+
+		int show = PlayerPrefs.GetInt("TutorialOn");
+		if(show == 1)
+		{
+			showTutorial = true;
+		}
+		else
+		{
+			showTutorial=false;
+		}
 	}
 	
 	// Update is called once per frame

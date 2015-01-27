@@ -14,7 +14,6 @@ public class FinalScoreDirector : MonoBehaviour {
 	public Camera mainCamera;
 	public Camera bgObCamera;
 	public GameObject player;
-	public GameObject blackhole;
 	public GameObject score;
 	public GameObject backgroundObs;
 
@@ -64,30 +63,19 @@ public class FinalScoreDirector : MonoBehaviour {
 	// Calls the actions of each gameObject for the final score cutscene
 	void Update () 
 	{
-		if(time <= 5f)
+		if(time <= 1f)
 		{
 			// main camera is following the player at varying speeds, player is moving at a constant speed towards the right, and the bgCamera is "zooming out"
 			// to show that the blackhole is getting further and further from the player
-			mainBehavior.PlayerCameraBehavior();
-			bgBehavior.blackHoleControl();
-		}
-		else if((time <= 8f) && (time >= 5f))
-		{
-			// camera begins to shake, previous actions still apply
-
-			mainBehavior.PlayerCameraBehavior();
-			bgBehavior.blackHoleControl();
 			mainBehavior.Shake(1f);
 		}
-
-		else if(time > 8f && !centered && time < (exp1.duration/1.5f + 8f))
+		else if(time > 1f && !centered && time < (exp1.duration/1.5f + 1f))
 		{
 			// explosion of particles begin, player and blackhole assets are both removed, main camera is recentered
 
 			mainCamera.transform.position = player.transform.position;
 			centered = true;
 			player.SetActive(false);
-			blackhole.SetActive (false);
 			exp1.transform.position = mainCamera.transform.position;
 			exp2.transform.position = exp1.transform.position;
 			exp3.transform.position = exp1.transform.position;
@@ -100,13 +88,13 @@ public class FinalScoreDirector : MonoBehaviour {
 
 			mainBehavior.resetDuration();
 		}
-		else if(time > 8f && time <= (exp1.duration/1.3f + 8f))
+		else if(time > 1f && time <= (exp1.duration/1.3f + 1f))
 		{
 			// main camera zooms in and out to make the explosion "pulsate"
 
 			mainBehavior.SuperNovaZoom();
 		}
-		else if(time > (exp1.duration/1.3f + 8f) && (time < exp1.duration + 8f) && !scoreDisplayed)
+		else if(time > (exp1.duration/1.3f + 1f) && (time < exp1.duration + 1f) && !scoreDisplayed)
 		{
 			// score is displayed, background camera is prepared for it's panning stage, field of stars is displayed
 
@@ -116,12 +104,12 @@ public class FinalScoreDirector : MonoBehaviour {
 			backgroundObs.SetActive(true);
 
 		}
-		else if(time > (exp1.duration/1.3f + 8f) && (time < exp1.duration + 8f) && scoreDisplayed)
+		else if(time > (exp1.duration/1.3f + 1f) && (time < exp1.duration + 1f) && scoreDisplayed)
 		{
 			// main camera continues zooming
 			mainBehavior.SuperNovaZoom ();
 		}
-		else if(time > (exp1.duration + 8f))
+		else if(time > (exp1.duration + 1f))
 		{
 			// background camera pans across field of stars
 

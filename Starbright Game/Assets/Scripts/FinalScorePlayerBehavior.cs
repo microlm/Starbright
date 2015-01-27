@@ -19,8 +19,6 @@ public class FinalScorePlayerBehavior : MonoBehaviour {
 
 	void Update () 
 	{
-		target = new Vector3(transform.position.x + (4f/30f) * mass, transform.position.y, -1);
-		transform.position = Vector3.Lerp (transform.position, target, Time.deltaTime);
 	}
 
 	public float getMass()

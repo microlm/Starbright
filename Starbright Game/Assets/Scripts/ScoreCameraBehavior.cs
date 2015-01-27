@@ -36,9 +36,6 @@ public class ScoreCameraBehavior : MonoBehaviour {
 		shakeAmount = currentMass * 2f;
 		MaxShakeAmount = shakeAmount/5f;
 
-		float adjustment = player.transform.position.x + (camera.orthographicSize * Screen.width/Screen.height * 1.1f);
-		camera.transform.position = new Vector3(adjustment, camera.transform.position.y, camera.transform.position.z);
-
 	}
 	
 	// Update is called once per frame
