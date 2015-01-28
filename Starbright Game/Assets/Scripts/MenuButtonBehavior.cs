@@ -26,7 +26,7 @@ public class MenuButtonBehavior : MonoBehaviour {
 	{
 		if(loadLevel)
 		{
-			if(time < 1.2f)
+			if(time < 0.6f)
 			{
 				time += Time.deltaTime;
 			}
