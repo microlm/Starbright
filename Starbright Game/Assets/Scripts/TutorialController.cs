@@ -38,11 +38,15 @@ public class TutorialController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		if (timer > 0) 
+		if (Game.Instance.State == GameState.Playing)
 		{
-			timer -= Time.deltaTime;
-			TextColor = Color.Lerp(hideColor, showColor, colorTransisition.Evaluate(timer/eventTime));
+			if (timer > 0) 
+			{
+				timer -= Time.deltaTime;
+				TextColor = Color.Lerp(hideColor, showColor, colorTransisition.Evaluate(timer/eventTime));
+			}
 		}
+		else TextColor = Color.clear;
 	}
 
 	public static TutorialController Instance
