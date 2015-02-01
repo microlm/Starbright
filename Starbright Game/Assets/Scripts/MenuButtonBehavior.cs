@@ -59,7 +59,8 @@ public class MenuButtonBehavior : MonoBehaviour {
 
 	public void LoadMainMenu()
 	{
-		Destroy (PlayerCharacter.instance.gameObject);
+		if (PlayerCharacter.instance != null)
+			Destroy (PlayerCharacter.instance);
 		Destroy (targetObject);
 		Game.Instance.GoToMenu ("Menu");
 	}

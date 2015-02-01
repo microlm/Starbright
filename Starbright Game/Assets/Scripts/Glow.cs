@@ -5,7 +5,7 @@ public class Glow : MonoBehaviour {
 	
 	public AnimationCurve transition;
 
-	float ActiveGlowOpacity = 0.8f;
+	float ActiveGlowOpacity = 1f;
 	float InactiveGlowOpacity = 0.5f;
 
 
