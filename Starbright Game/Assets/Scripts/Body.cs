@@ -74,7 +74,7 @@ public class Body : MonoBehaviour {
 			Scale = ScaleByMass ();
 			BodyColor = ColorOption.Instance.assignColor(Mass);
 
-			if (PlayerCharacter.instance != null && !GlowChild.InTransisition) 
+			if (PlayerCharacter.instance != null && !GlowChild.InTransisition && !GlowChild.IsActive) 
 			{
 				if(Mass <= PlayerCharacter.instance.Mass)
 				{
@@ -116,7 +116,7 @@ public class Body : MonoBehaviour {
 	{
 		//playor orbits this body
 		PlayerCharacter.instance.Orbit (this);
-		GlowChild.GlowColor = GlowChild.ActiveColor;
+		GlowChild.Activate ();
 		TutorialController.Instance.ShowEvent ("tap and hold");
 	}
 	
@@ -124,7 +124,7 @@ public class Body : MonoBehaviour {
 	{
 		//player stops orbiting this body
 		PlayerCharacter.instance.StopOrbit ();
-		GlowChild.GlowColor = GlowChild.InactiveColor;
+		GlowChild.Deactivate ();
 	}
 
 	public void ResetVelocity()

@@ -14,6 +14,11 @@ public class Glow : MonoBehaviour {
 	private float timer;
 
 	private bool IsSet;
+	public bool IsActive
+	{
+		get;
+		private set;
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -95,5 +100,17 @@ public class Glow : MonoBehaviour {
 			temp.a = ActiveGlowOpacity;
 			return temp;
 		}
+	}
+
+	public void Activate()
+	{
+		IsActive = true;
+		GlowColor = ActiveColor;
+	}
+
+	public void Deactivate()
+	{
+		IsActive = false;
+		GlowColor = InactiveColor;
 	}
 }
