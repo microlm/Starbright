@@ -117,10 +117,15 @@ public class ObjectPool : MonoBehaviour
 			return blackHolePool[(index + 1) * -1];
 	}
 
-	public void removeBody(int index)
+	public Vector3 removeBody(int index)
 	{
+		Vector3 pos = new Vector3(0,0,-1000);
 		if(index >= 0)
 		{
+			if(!pool[index].activeSelf)
+			{
+				pos = pool[index].transform.position;
+			}
 			pool[index].SetActive(false);
 			isFree[index] = true;
 		}
@@ -129,6 +134,7 @@ public class ObjectPool : MonoBehaviour
 			blackHolePool[(index + 1) * -1].SetActive(false);
 			isBlackHoleFree[(index + 1) * -1] = true;
 		}
+		return pos;
 	}
 
 	public void drain()

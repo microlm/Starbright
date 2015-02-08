@@ -11,9 +11,7 @@ public class AsteroidQuadTree
 	private bool terminal;
 	
 	private bool hasAsteroid;
-	private float astX;
-	private float astY;
-	private float astSize;
+	private Asteroid childAsteroid;
 	private float maxSize;
 	
 	public AsteroidQuadTree (float leftX, float topY, float boundWidth, float boundHeight, float maxAstSize)
@@ -80,6 +78,11 @@ public class AsteroidQuadTree
 	{
 		get { return hasAsteroid; }
 	}
+
+	public bool HasBlackHole
+	{
+		get { return hasAsteroid && childAsteroid.IsBhole; }
+	}
 	
 	public int PickChild (float pointX, float pointY)
 	{
@@ -109,48 +112,46 @@ public class AsteroidQuadTree
 		}
 	}
 
-	public bool AddAsteroid(float asteroidX, float asteroidY, float asteroidSize)
+	public bool AddAsteroid(Asteroid asteroid)
 	{
-		if(Generator.radiusFromMass(asteroidSize) > maxSize)
+		if(Generator.radiusFromMass(asteroid.Size) > maxSize)
 		{
 			return false;
 		}
-		float range = Generator.radiusFromMass(asteroidSize) + maxSize;
-		foreach(float[] a in SearchWithinBounds(asteroidX - range, asteroidY - range, range * 2, range * 2))
+		float range = Generator.radiusFromMass(asteroid.Size) + maxSize;
+		foreach(Asteroid a in SearchWithinBounds(asteroid.X - range, asteroid.Y - range, range * 2, range * 2))
 		{
-			if(doesIntersect(new float[]{asteroidX, asteroidY, asteroidSize}, a))
+			if(doesIntersect(asteroid, a))
 			{
 				return false;
 			}
 		}
-		return AddAsteroidHelper(asteroidX, asteroidY, asteroidSize);
+		return AddAsteroidHelper(asteroid);
 	}
 
-	public bool AddAsteroidHelper(float asteroidX, float asteroidY, float asteroidSize)
+	public bool AddAsteroidHelper(Asteroid asteroid)
 	{
-		if(!isInBounds(x, y, width, height, asteroidX, asteroidY))
+		if(!isInBounds(x, y, width, height, asteroid.X, asteroid.Y))
 		{
 			return false;
 		}
 		if(IsTerminal && !HasAsteroid) 
 		{
 			hasAsteroid = true;
-			astX = asteroidX;
-			astY = asteroidY;
-			astSize = asteroidSize;
+			childAsteroid = asteroid;
 			return true;
 		}
 		int child;
 		if(HasAsteroid)
 		{
-			child = PickChild(astX, astY);
+			child = PickChild(childAsteroid.X, childAsteroid.Y);
 			AddChild(child);
-			children[child].AddAsteroidHelper(astX, astY, astSize);
+			children[child].AddAsteroidHelper(childAsteroid);
 			hasAsteroid = false;
 		}
-		child = PickChild(asteroidX, asteroidY);
+		child = PickChild(asteroid.X, asteroid.Y);
 		AddChild(child);
-		children[child].AddAsteroidHelper(asteroidX, asteroidY, asteroidSize);
+		children[child].AddAsteroidHelper(asteroid);
 		return true;
 	}
 
@@ -160,7 +161,7 @@ public class AsteroidQuadTree
 		{
 			if(a.Length == 3)
 			{
-				AddAsteroid(a[0], a[1], a[2]);
+				AddAsteroid(new Asteroid(a[0], a[1], a[2]));
 			}
 			else
 			{
@@ -169,14 +170,35 @@ public class AsteroidQuadTree
 		}
 		return this;
 	}
-	
-	public List<float[]> SearchWithinBounds(float leftX, float topY, float boundWidth, float boundHeight)
+
+	public AsteroidQuadTree AddList(List<Asteroid> asteroids)
 	{
-		List<float[]> output = new List<float[]>();
+		foreach(Asteroid a in asteroids)
+		{
+			AddAsteroid(a);
+		}
+		return this;
+	}
+
+	public Asteroid SearchAt(float x, float y)
+	{
+		if(HasAsteroid && childAsteroid.X == x && childAsteroid.Y == y)
+		{
+			return childAsteroid;
+		}
+		int child = PickChild(x,y);
+		if(HasChild(child))
+			return children[child].SearchAt(x,y);
+		return null;
+	}
+	
+	public List<Asteroid> SearchWithinBounds(float leftX, float topY, float boundWidth, float boundHeight)
+	{
+		List<Asteroid> output = new List<Asteroid>();
 		
 		if(HasAsteroid)
 		{
-			output.Add(new float[]{astX, astY, astSize});
+			output.Add(childAsteroid);
 			return output;
 		}
 		
@@ -199,12 +221,12 @@ public class AsteroidQuadTree
 		return output;
 	}
 	
-	public List<float[]> ToList()
+	public List<Asteroid> ToList()
 	{
-		List<float[]> output = new List<float[]>();
+		List<Asteroid> output = new List<Asteroid>();
 		if (hasAsteroid) 
 		{
-			output.Add(new float[]{astX, astY, astSize});
+			output.Add(childAsteroid);
 		}
 		for(int i = 0; i < 4; i++)
 		{
@@ -215,7 +237,7 @@ public class AsteroidQuadTree
 		}
 		return output;
 	}
-	
+
 	private static bool isInBounds(float start, float length, float point)
 	{
 		return (point >= start) && (point < start + length);
@@ -241,9 +263,9 @@ public class AsteroidQuadTree
 		return false;
 	}
 
-	private static bool doesIntersect(float[] a, float[] b)
+	private static bool doesIntersect(Asteroid a, Asteroid b)
 	{
-		return Math.Sqrt((a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1])) < Generator.radiusFromMass(a[2]) + Generator.radiusFromMass(b[2]);
+		return Math.Sqrt((a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y)) < Generator.radiusFromMass(a.Size) + Generator.radiusFromMass(b.Size);
 	}
 }
 

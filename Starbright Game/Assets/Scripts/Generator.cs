@@ -60,6 +60,7 @@ public class Generator : MonoBehaviour {
 	private int[][][] chunks;
 	private float xCenter;
 	private float yCenter;
+	private Dictionary<ulong, AsteroidQuadTree> world;
 
 	public GameObject foregroundLayer;
 
@@ -82,6 +83,7 @@ public class Generator : MonoBehaviour {
 		xCenter = 0;
 		yCenter = 0;
 		genRadius = 2 * chunkLen;
+		world = new Dictionary<ulong, AsteroidQuadTree>();
 		for(int yShift = 0; yShift < 4; yShift++)
 		{
 			for(int xShift = 0; xShift < 4; xShift++)
@@ -113,9 +115,9 @@ public class Generator : MonoBehaviour {
 
 		while(absXDist > chunkLen)
 		{
-			int count = 0; //God have mercy on my soul
-			for(float yOff = -1 * genRadius + yCenter; yOff < genRadius + yCenter; yOff += chunkLen)
+			for(int count = 0; count < 4; count++)
 			{
+				float yOff = -1 * genRadius + yCenter + count * chunkLen;
 				if(signX > 0)
 				{
 					////////////////////////////////////
@@ -141,8 +143,7 @@ public class Generator : MonoBehaviour {
 					chunks[2][count] = chunks[1][count];
 					chunks[1][count] = chunks[0][count];
 					chunks[0][count] = generate(-1 * genRadius + xCenter - chunkLen, yOff, false);
-			}
-				count++;
+				}
 			}
 			xCenter += chunkLen * signX;
 			xDist = loc.x - xCenter;
@@ -153,9 +154,9 @@ public class Generator : MonoBehaviour {
 		float signY = yDist / absYDist;
 		while(absYDist > chunkLen)
 		{
-			int count = 0;
-			for(float xOff = -1 * genRadius + xCenter; xOff < genRadius + xCenter; xOff += chunkLen)
-			{
+			for(int count = 0; count < 4; count++)
+			{	
+				float xOff = -1 * genRadius + xCenter + count * chunkLen;
 				if(signY > 0)
 				{
 					////////////////////////////////////
@@ -182,7 +183,6 @@ public class Generator : MonoBehaviour {
 					chunks[count][1] = chunks[count][0];
 					chunks[count][0] = generate(xOff, -1 * genRadius + yCenter - chunkLen, false);
 				}
-				count++;
 			}
 			yCenter += chunkLen * signY;
 			yDist = loc.y - yCenter;
@@ -191,7 +191,27 @@ public class Generator : MonoBehaviour {
 	}
 
 	public int[] generate(float xOff, float yOff, bool noHoles)
-	{		
+	{
+		List<int> ids = new List<int>();
+		AsteroidQuadTree asteroids;
+		ulong hash = posHash(xOff, yOff);
+		if(world.ContainsKey(hash))
+		{
+			asteroids = world[hash];
+			foreach(Asteroid a in asteroids.ToList().ToArray())
+			{
+				if(!a.IsRemoved)
+				{
+					int id = foregroundPool.addBody(a.X + xOff, a.Y + yOff, foregroundDepth, a.Size, false, a.IsBhole);
+					GameObject asteroid = foregroundPool.getBody(id);
+					asteroid.transform.parent = foregroundLayer.transform;
+					asteroid.layer = foregroundLayer.layer;
+					ids.Add(id);
+				}
+			}
+			return ids.ToArray();
+		}
+
 		int currentLayer = ProgressCircle.instance.CurrentLayer;
 		float size = ProgressCircle.SizeMultiplierFromLayer(currentLayer);
 
@@ -206,22 +226,18 @@ public class Generator : MonoBehaviour {
 		float minGenSpacing = childDistance - childDistanceJitter;
 		float genSpacingRange = childDistanceJitter * 2;
 
-		float[][] asteroids = ProceduralGeneration.generate(chunkLen, chunkLen, minDensity * densityMult, densityRange * densityMult, minGenSize, genSizeRange, minGenSpacing, genSpacingRange, minAsteroidSize, asteroidSizeRange, iterationSizeMultiplier, iterationSizeMultiplierJitter, finalSize, finalSizeJitter, sizeDistribution);
-		List<int> ids = new List<int>();
 		currentLayer += bholeChanceOffset;
-		float curvePosition = ((float)currentLayer / (float)maxLayer);
-
-		float bhChance = blackHoleChance.Evaluate(curvePosition);
+		float bhChance = blackHoleChance.Evaluate((float)currentLayer / (float)maxLayer);
 		bhChance = bhChance > 0 ? bhChance : 0;
 		if(currentLayer <= 1 || noHoles)
 			bhChance = 0;
 
-		bool isBlackHole = false;
+		asteroids = ProceduralGeneration.generate(chunkLen, chunkLen, minDensity * densityMult, densityRange * densityMult, minGenSize, genSizeRange, minGenSpacing, genSpacingRange, minAsteroidSize, asteroidSizeRange, iterationSizeMultiplier, iterationSizeMultiplierJitter, finalSize, finalSizeJitter, sizeDistribution, bhChance);
+		world[hash] = asteroids;
 
-		foreach(float[] a in asteroids)
+		foreach(Asteroid a in asteroids.ToList().ToArray())
 		{
-			isBlackHole = rand.NextDouble() < bhChance;
-			int id = foregroundPool.addBody(a[0] + xOff, a[1] + yOff, foregroundDepth, a[2], false, isBlackHole);
+			int id = foregroundPool.addBody(a.X + xOff, a.Y + yOff, foregroundDepth, a.Size, false, a.IsBhole);
 			GameObject asteroid = foregroundPool.getBody(id);
 			asteroid.transform.parent = foregroundLayer.transform;
 			asteroid.layer = foregroundLayer.layer;
@@ -235,13 +251,20 @@ public class Generator : MonoBehaviour {
 		int[] chunk = chunks[x][y];
 		foreach(int id in chunk)
 		{
-			foregroundPool.removeBody(id);
+			Vector3 pos = foregroundPool.removeBody(id);
+			//Can't set a vector to null, and I can't get it to recognize tuples...
+			if(pos.z != -1000)
+			{
+				world[posHash(x, y)].SearchAt(pos.x, pos.y).IsRemoved = true;
+			}
 		}
 	}
 
-	public int posHash(int xOff, int yOff)
+	public ulong posHash(float xOff, float yOff)
 	{
-		return yOff * 512 + xOff;
+		ulong x = (uint)(xOff / chunkLen);
+		ulong y = (uint)(yOff / chunkLen);
+		return (y << 32) | x;
 	}
 
 
@@ -252,6 +275,7 @@ public class Generator : MonoBehaviour {
 
 	public void LevelRefresh()
 	{ 
+		world = new Dictionary<ulong, AsteroidQuadTree>();
 		foregroundPool.drain();
 		for(int yShift = 0 ; yShift < 4; yShift++)
 		{
