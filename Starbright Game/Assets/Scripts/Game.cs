@@ -28,14 +28,17 @@ public class Game {
 	{
 		state = GameState.Playing;
 		Application.LoadLevel (level);
+		AnalyticsManager.Instance.LogPLayerStart();
 	}
 
 	public void EndGame(string level)
 	{
 		if (State == GameState.Playing)
 		{
+			AnalyticsManager.Instance.LogPlayerScore(ScoreManager.Instance.Score);
 			state = GameState.GameOver;
 			Application.LoadLevel (level);
+			AnalyticsManager.Instance.LogPlayerDeath();
 		}
 	}
 
