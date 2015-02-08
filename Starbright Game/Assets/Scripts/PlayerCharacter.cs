@@ -22,6 +22,8 @@ public class PlayerCharacter : MonoBehaviour {
 
 	private float initialMass;
 
+	private Body playerBody;
+
 	public float Mass 
 	{
 		get { return BodyComponent.Mass; }
@@ -30,7 +32,11 @@ public class PlayerCharacter : MonoBehaviour {
 
 	public Body BodyComponent
 	{
-		get { return GetComponent<Body>(); }
+		get {
+			if (playerBody == null)
+				playerBody = GetComponent<Body>();
+			return playerBody;
+		}
 	}
 
 	public Vector3 Position

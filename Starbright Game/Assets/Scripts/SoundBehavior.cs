@@ -7,6 +7,7 @@ public class SoundBehavior : MonoBehaviour {
 	public float interval;
 
 	private float timer;
+	private AudioSource audio;
 
 	// Use this for initialization
 	void Start () {
@@ -40,7 +41,12 @@ public class SoundBehavior : MonoBehaviour {
 
 	public AudioSource Audio
 	{
-		get { return gameObject.GetComponent<AudioSource>(); }
+		get 
+		{
+			if (audio == null)
+				audio = gameObject.GetComponent<AudioSource>(); 
+			return audio;
+		}
 	}
 
 	public bool IsPlaying 
