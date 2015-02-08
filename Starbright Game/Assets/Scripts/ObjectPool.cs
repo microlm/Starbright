@@ -119,6 +119,7 @@ public class ObjectPool : MonoBehaviour
 
 	public Vector3 removeBody(int index)
 	{
+		//Can't set a vector to null, and I can't get it to recognize tuples...I'm sorry for using a sentinel
 		Vector3 pos = new Vector3(0,0,-1000);
 		if(index >= 0)
 		{

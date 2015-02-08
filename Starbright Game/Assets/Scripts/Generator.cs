@@ -252,7 +252,7 @@ public class Generator : MonoBehaviour {
 		foreach(int id in chunk)
 		{
 			Vector3 pos = foregroundPool.removeBody(id);
-			//Can't set a vector to null, and I can't get it to recognize tuples...
+			//Can't set a vector to null, and I can't get it to recognize tuples...I'm sorry for using a sentinel
 			if(pos.z != -1000)
 			{
 				world[posHash(x, y)].SearchAt(pos.x, pos.y).IsRemoved = true;
