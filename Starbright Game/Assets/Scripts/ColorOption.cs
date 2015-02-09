@@ -4,6 +4,9 @@ using System.Collections;
 public class ColorOption : MonoBehaviour {
 
 	public Gradient colorGradient;
+
+	public GUITexture background;
+
 	public float minMass = 5f;
 	public float maxMass = 40f;
 
@@ -107,5 +110,12 @@ public class ColorOption : MonoBehaviour {
 		Gradient gradient = new Gradient ();
 		gradient.colorKeys = keys;
 		colorGradient = gradient;
+
+		//tweak background color to match color palette
+		int key = Random.Range (0, colorCount);
+		Color c = colorGradient.colorKeys[key].color;
+		c = Color.Lerp (Color.white, c, 0.25f); //make it mostly white
+		c = new Color (c.r, c.g, c.b, background.color.a);
+		background.color = c;
 	}
 }
