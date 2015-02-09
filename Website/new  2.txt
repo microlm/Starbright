@@ -1,0 +1,4 @@
+replay button doesnt replay
+clean up high score display - center text, spacing
+menus look a little bare
+animated intro for menu?
