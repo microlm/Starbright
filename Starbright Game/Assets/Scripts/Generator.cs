@@ -56,6 +56,8 @@ public class Generator : MonoBehaviour {
 	[Tooltip("Object to hold and manage bodies")]
 	public ObjectPool foregroundPool;
 
+	private int poissonSamples = 10;
+
 	private float genRadius;
 	private int[][][] chunks;
 	private float xCenter;
@@ -232,7 +234,7 @@ public class Generator : MonoBehaviour {
 		if(currentLayer <= 1 || noHoles)
 			bhChance = 0;
 
-		asteroids = ProceduralGeneration.generate(chunkLen, chunkLen, minDensity * densityMult, densityRange * densityMult, minGenSize, genSizeRange, minGenSpacing, genSpacingRange, minAsteroidSize, asteroidSizeRange, iterationSizeMultiplier, iterationSizeMultiplierJitter, finalSize, finalSizeJitter, sizeDistribution, bhChance);
+		asteroids = ProceduralGeneration.generate(chunkLen, chunkLen, minDensity * densityMult, densityRange * densityMult, minGenSize, genSizeRange, minGenSpacing, genSpacingRange, minAsteroidSize, asteroidSizeRange, iterationSizeMultiplier, iterationSizeMultiplierJitter, finalSize, finalSizeJitter, sizeDistribution, bhChance, poissonSamples, xOff, yOff);
 		world[hash] = asteroids;
 
 		foreach(Asteroid a in asteroids.ToList().ToArray())
@@ -271,6 +273,11 @@ public class Generator : MonoBehaviour {
 	public static float radiusFromMass(float mass)
 	{
 		return mass * 0.08f;
+	}
+
+	public static float massFromRadius(float radius)
+	{
+		return radius / 0.08f;
 	}
 
 	public void LevelRefresh()

@@ -38,6 +38,7 @@ public class SquashAndStretch : MonoBehaviour {
 		scale.x *= 1/lastStretch;
 		scale.x *= stretch;
 		body.Scale = scale;
-		Debug.Log (stretch);
+		//Debug.Log (stretch);
+		// :(
 	}
 }

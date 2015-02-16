@@ -238,6 +238,11 @@ public class AsteroidQuadTree
 		return output;
 	}
 
+	public bool isEmpty()
+	{
+		return (IsTerminal && !HasAsteroid);
+	}
+
 	private static bool isInBounds(float start, float length, float point)
 	{
 		return (point >= start) && (point < start + length);
