@@ -45,7 +45,13 @@ public class Body : MonoBehaviour {
 	public Vector3 Scale
 	{
 		get { return gameObject.transform.localScale; }
-		private set { gameObject.transform.localScale = value; }
+		set { gameObject.transform.localScale = value; }
+	}
+
+	public Quaternion Rotation
+	{
+		get { return gameObject.transform.rotation; }
+		set { gameObject.transform.rotation = value; }
 	}
 
 	/** The Glow gameObject that is attached to Body*/

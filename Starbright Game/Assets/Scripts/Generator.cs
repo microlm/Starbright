@@ -255,7 +255,7 @@ public class Generator : MonoBehaviour {
 			//Can't set a vector to null, and I can't get it to recognize tuples...I'm sorry for using a sentinel
 			if(pos.z != -1000)
 			{
-				world[posHash(Math.Floor(pos.x / chunkLen), Math.Floor(pos.y / chunkLen))].SearchAt(pos.x, pos.y).IsRemoved = true;
+				world[posHash((float)Math.Floor(pos.x / chunkLen), (float)Math.Floor(pos.y / chunkLen))].SearchAt(pos.x, pos.y).IsRemoved = true;
 			}
 		}
 	}
