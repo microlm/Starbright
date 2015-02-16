@@ -47,33 +47,51 @@ public class AnalyticsManager : MonoBehaviour {
 
 	public void LogPLayerStart()
 	{
-		googleAnalytics.LogTiming("Game Start Time", (long)Mathf.FloorToInt(Time.time), "Game Start", "Time player started a game");
+		try {
+			googleAnalytics.LogTiming("Game Start Time", (long)Mathf.FloorToInt(Time.time), "Game Start", "Time player started a game");
+		} 
+		catch {}
 	}
 
 	public void LogLevelStart(int level)
 	{
-		googleAnalytics.LogTiming("Level Start Time", (long)Mathf.FloorToInt(Time.time), "Level " + level, "Level " + level + " start time");
+		try {
+			googleAnalytics.LogTiming("Level Start Time", (long)Mathf.FloorToInt(Time.time), "Level " + level, "Level " + level + " start time");
+	
+		} catch {
+				}
 	}
 
 	public void LogPlayerQuit(int level)
 	{
-		googleAnalytics.LogTiming("Player Quit Time", (long)Mathf.FloorToInt(Time.time), "Quit on level " + level, "Time player quit at level " + level);
+		try {
+			googleAnalytics.LogTiming("Player Quit Time", (long)Mathf.FloorToInt(Time.time), "Quit on level " + level, "Time player quit at level " + level);
+	
+		}
+		catch{}
 	}
-
 	public void LogPlayerDeath()
 	{
-		googleAnalytics.LogTiming("Player Death Time", (long)Mathf.FloorToInt(Time.time), "Death", "Time player died");
+		try {
+			googleAnalytics.LogTiming("Player Death Time", (long)Mathf.FloorToInt(Time.time), "Death", "Time player died");
+	
+		} catch {}
 	}
 
 	public void LogPlayerScore(int score)
 	{
-		googleAnalytics.LogEvent("Score", "Final Score Earned", "Final Player Score Earned", (long)score);
+		try {
+			googleAnalytics.LogEvent("Score", "Final Score Earned", "Final Player Score Earned", (long)score);
+		} catch {}
 	}
 
 	public void LogAverageFPS()
 	{
-		googleAnalytics.LogEvent("Performance", "FPS", "Sample Player FPS", (long)Mathf.FloorToInt(AverageFPS));
+		try {
+			googleAnalytics.LogEvent("Performance", "FPS", "Sample Player FPS", (long)AverageFPS);
+		} catch {}
 		totalFPS = 0f;
 		totalFrames = 0;
+
 	}
 }

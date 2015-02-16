@@ -18,7 +18,6 @@ public class SquashAndStretch : MonoBehaviour {
 	// Update is called once per frame
 	void LateUpdate () {
 		Rotate();
-		Stretch();
 	}
 
 	/** Rotate depending on direction of velocity */

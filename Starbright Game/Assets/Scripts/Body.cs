@@ -45,7 +45,7 @@ public class Body : MonoBehaviour {
 	public Vector3 Scale
 	{
 		get { return gameObject.transform.localScale; }
-		set { gameObject.transform.localScale = value; }
+		set { transform.localScale = value; }
 	}
 
 	public Quaternion Rotation
