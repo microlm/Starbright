@@ -62,6 +62,7 @@ public class ProgressCircle : MonoBehaviour {
 				LevelDown ();
 			}
 
+			Debug.Log (PlayerCharacter.instance.Mass + " " + targetSize + " " + decrementSize);
 			if (PlayerCharacter.instance.Mass >= targetSize)
 			{
 				LevelUp ();
@@ -96,6 +97,7 @@ public class ProgressCircle : MonoBehaviour {
 		SoundManager.Instance.PlayMiscSound(1);
 		AnalyticsManager.Instance.LogLevelStart(currentLayer);
 		AnalyticsManager.Instance.LogAverageFPS();
+
 	}
 
 	void LevelDown()
@@ -217,7 +219,7 @@ public class ProgressCircle : MonoBehaviour {
 	void Scale()
 	{
 		targetSize = initialTargetSize * SizeMultiplierFromLayer (currentLayer);
-		decrementSize = initialDecrementSize * SizeMultiplierFromLayer (currentLayer);
+		//decrementSize = initialDecrementSize * SizeMultiplierFromLayer (currentLayer);
 		transform.localScale = maxScale / 20 * targetSize;
 		ColorOption.Instance.maxMass = targetSize * 2.5f;
 		ColorOption.Instance.minMass = decrementSize / 1.5f;
@@ -262,6 +264,6 @@ public class ProgressCircle : MonoBehaviour {
 
 	public static float SizeMultiplierFromLayer(int layer)
 	{
-		return Mathf.Pow (instance.incrementSize, layer - 1);
+		return Mathf.Pow (instance.incrementSize, layer - 1)/Mathf.Pow (instance.incrementSize/1.5f, layer - 1);
 	}
 }

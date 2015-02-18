@@ -34,8 +34,13 @@ public class SquashAndStretch : MonoBehaviour {
 		float lastStretch = stretch;
 		stretch = body.Velocity.magnitude * stretchFactor;
 		Vector3 scale = body.Scale;
+		if(lastStretch == 0)
+		{
+			lastStretch = 0.01f;
+		}
 		scale.x *= 1/lastStretch;
 		scale.x *= stretch;
+
 		body.Scale = scale;
 		//Debug.Log (stretch);
 		// :(
