@@ -4,15 +4,19 @@ using System.Collections.Generic;
 public class ProceduralGeneration
 {
 	private static System.Random rand = new System.Random();
-	private static float poissonCellSize = 25f;
-	private static float minDistance = 5f;
+	private static float minDistance = (float)Math.Pow(0.5, 3.3895);
 	private static int maxAttempts = 20;
 	private static Dictionary<ulong, AsteroidQuadTree> poissonSamples = new Dictionary<ulong, AsteroidQuadTree>();
 
-	public static AsteroidQuadTree generate(float areaWidth, float areaHeight, float minDensity, float densityRange, int minGenSize, int genSizeRange, float minGenSpacing, float genSpacingRange, float minAsteroidSize, float asteroidSizeRange, float multiplier, float multiplierJitter, float finalSize, float finalSizeJitter, AnimationCurve sizeDistribution, float bHoleChance, int samplePoints, float chunkX, float chunkY)
+	public static AsteroidQuadTree generate(float minDensity, float densityRange, int minGenSize, int genSizeRange, float minGenSpacing, float genSpacingRange, float minAsteroidSize, float asteroidSizeRange, float multiplier, float multiplierJitter, float finalSize, float finalSizeJitter, AnimationCurve sizeDistribution, float bHoleChance, int samplePoints, float chunkX, float chunkY)
 	{
-		AsteroidQuadTree asteroids = new AsteroidQuadTree(0, 0, areaWidth, areaHeight, minAsteroidSize + 2 * asteroidSizeRange);
-
+		AsteroidQuadTree asteroids = new AsteroidQuadTree(0, 0, Generator.instance.chunkLen, Generator.instance.chunkLen, minAsteroidSize + 2 * asteroidSizeRange);
+		float chunkLen = Generator.instance.chunkLen;
+		int baseX = (int)Math.Floor(chunkX / chunkLen);
+		int baseY = (int)Math.Floor(chunkY / chunkLen);
+		ulong hash = posHash(baseX,baseY);
+		if(!poissonSamples.ContainsKey(hash))
+			poissonSamples[hash] = new AsteroidQuadTree(baseX, baseY, chunkLen, chunkLen, Generator.massFromRadius(minDistance * 2));
 
 		//Generate number of seed asteroids
 		int numSeeds = (int)Math.Round(minDensity + rand.NextDouble() * densityRange);
@@ -20,9 +24,9 @@ public class ProceduralGeneration
 		for (int i = 0; i < numSeeds; i++) 
 		{
 			Asteroid sample = pickSample(chunkX, chunkY);
-			float seedX;
-			float seedY;
-			float seedSize;
+			float seedX = 0;
+			float seedY = 0;
+			float seedSize = 0;
             //Generate seed asteroid position
 			if(sample != null)
 			{
@@ -34,15 +38,11 @@ public class ProceduralGeneration
 					double dist = (rand.NextDouble() * minDistance) + minDistance;
 					seedX = sample.X + (float)(dist * Math.Cos(angle));
 					seedY = sample.Y + (float)(dist * Math.Sin(angle));
-					int baseX = (int)Math.Floor(seedX / poissonCellSize);
-					int baseY = (int)Math.Floor(seedY / poissonCellSize);
-					ulong hash = posHash(baseX,baseY);
-					if(!poissonSamples.ContainsKey(hash))
-						poissonSamples[hash] = new AsteroidQuadTree(baseX, baseY, poissonCellSize, poissonCellSize, Generator.massFromRadius(minDistance * 2));
-					if(!poissonSamples[hash].AddAsteroid(new Asteroid(seedX, seedY, minDistance)))
+					seedSize = minAsteroidSize + (sizeDistribution.Evaluate((float)rand.NextDouble())) * asteroidSizeRange;
+					if(seedX < chunkX || seedX > chunkX + chunkLen || seedY < chunkY || seedY > chunkY + chunkLen || !addToWorld(new Asteroid(seedX, seedY, Math.Min(Generator.radiusFromMass(minDistance), 1000000))))
 						failed = true;
 					attempts++;
-				}while(seedX < chunkX || seedX > chunkX + areaWidth || seedY < chunkY || seedY > chunkY + areaHeight || failed || attempts < maxAttempts);
+				}while(failed && attempts < maxAttempts);
 				if(attempts >= maxAttempts)
 				{
 					continue;
@@ -52,11 +52,9 @@ public class ProceduralGeneration
 			}
 			else
 			{
-				seedX = (float)rand.NextDouble() * areaWidth;
-				seedY = (float)rand.NextDouble() * areaHeight;
+				seedX = (float)rand.NextDouble() * chunkLen;
+				seedY = (float)rand.NextDouble() * chunkLen;
 			}
-			//Pick a size for the asteroid
-            seedSize = minAsteroidSize + (sizeDistribution.Evaluate((float)rand.NextDouble())) * asteroidSizeRange;
 
 			float mult = multiplier + (float)(0.5 - rand.NextDouble()) * multiplierJitter;
 			float final = finalSize + (float)(0.5 - rand.NextDouble()) * finalSizeJitter;
@@ -119,12 +117,12 @@ public class ProceduralGeneration
 
 	private static Asteroid pickSample(float x, float y)
 	{
-		int baseX = (int)Math.Floor(x / poissonCellSize);
-		int baseY = (int)Math.Floor(y / poissonCellSize);
+		int baseX = (int)Math.Floor(x / Generator.instance.chunkLen);
+		int baseY = (int)Math.Floor(y / Generator.instance.chunkLen);
 		List<AsteroidQuadTree> candidates= new List<AsteroidQuadTree>();
-		for(int xOff = -2; xOff <= 2; xOff++)
+		for(int xOff = -1; xOff <= 1; xOff++)
 		{
-			for(int yOff = -2; yOff <= 2; yOff++)
+			for(int yOff = -1; yOff <= 1; yOff++)
 			{
 				ulong hash = posHash(baseX + xOff, baseY + yOff);
 				if(poissonSamples.ContainsKey(hash) && !poissonSamples[hash].isEmpty())
@@ -139,5 +137,30 @@ public class ProceduralGeneration
 		}
 		List<Asteroid> container = candidates[rand.Next(candidates.Count)].ToList();
 		return container[rand.Next(container.Count)];
+	}
+
+	private static bool addToWorld(Asteroid ast)
+	{
+		Asteroid astCpy = new Asteroid(ast.X, ast.Y, Generator.massFromRadius(minDistance));
+		int baseX = (int)Math.Floor(ast.X / Generator.instance.chunkLen);
+		int baseY = (int)Math.Floor(ast.Y / Generator.instance.chunkLen);
+		for(int xOff = -1; xOff <= 1; xOff++)
+		{
+			for(int yOff = -1; yOff <= 1; yOff++)
+			{
+				ulong hash = posHash(baseX + xOff, baseY + yOff);
+				List<Asteroid> asteroids = poissonSamples[hash].SearchWithinBounds(ast.X - ast.Size, ast.Y + ast.Size, minDistance, minDistance);
+				foreach(Asteroid a in asteroids)
+				{
+					Asteroid aCpy = new Asteroid(a.X, a.Y, Generator.massFromRadius(minDistance));
+					if(AsteroidQuadTree.doesIntersect(astCpy, aCpy))
+					{
+						return false;
+					}
+				}
+			}
+		}
+		poissonSamples[posHash(baseX, baseY)].AddAsteroid(ast);
+		return true;
 	}
 }

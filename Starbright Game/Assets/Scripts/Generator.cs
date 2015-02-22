@@ -234,7 +234,7 @@ public class Generator : MonoBehaviour {
 		if(currentLayer <= 1 || noHoles)
 			bhChance = 0;
 
-		asteroids = ProceduralGeneration.generate(chunkLen, chunkLen, minDensity * densityMult, densityRange * densityMult, minGenSize, genSizeRange, minGenSpacing, genSpacingRange, minAsteroidSize, asteroidSizeRange, iterationSizeMultiplier, iterationSizeMultiplierJitter, finalSize, finalSizeJitter, sizeDistribution, bhChance, poissonSamples, xOff, yOff);
+		asteroids = ProceduralGeneration.generate(minDensity * densityMult, densityRange * densityMult, minGenSize, genSizeRange, minGenSpacing, genSpacingRange, minAsteroidSize, asteroidSizeRange, iterationSizeMultiplier, iterationSizeMultiplierJitter, finalSize, finalSizeJitter, sizeDistribution, bhChance, poissonSamples, xOff, yOff);
 		world[hash] = asteroids;
 
 		foreach(Asteroid a in asteroids.ToList().ToArray())

@@ -4,6 +4,8 @@ using System.Collections;
 public class ProgressCircle : MonoBehaviour {
 
 	public static ProgressCircle instance;
+
+	public LevelIndicator levelIndicator;
 	public float initialTargetSize;
 	public float incrementSize;
 	public float initialDecrementSize;
@@ -91,6 +93,7 @@ public class ProgressCircle : MonoBehaviour {
 	{
 		StartLeveling (true);
 		currentLayer++;
+		levelIndicator.UpdateLevel(currentLayer, true);
 		PlayerCharacter.instance.LevelRefresh ();
 		Scale ();
 		SoundManager.Instance.PlayMiscSound(1);
@@ -104,6 +107,7 @@ public class ProgressCircle : MonoBehaviour {
 		if (currentLayer > 1) 
 		{
 			StartLeveling (false);
+			levelIndicator.UpdateLevel(currentLayer, false);
 			currentLayer--;
 			PlayerCharacter.instance.LevelRefresh ();
 			Scale ();

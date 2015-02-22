@@ -268,7 +268,7 @@ public class AsteroidQuadTree
 		return false;
 	}
 
-	private static bool doesIntersect(Asteroid a, Asteroid b)
+	public static bool doesIntersect(Asteroid a, Asteroid b)
 	{
 		return Math.Sqrt((a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y)) < Generator.radiusFromMass(a.Size) + Generator.radiusFromMass(b.Size);
 	}
