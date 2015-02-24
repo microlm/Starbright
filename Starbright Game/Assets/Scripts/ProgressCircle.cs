@@ -97,6 +97,7 @@ public class ProgressCircle : MonoBehaviour {
 		PlayerCharacter.instance.LevelRefresh ();
 		Scale ();
 		SoundManager.Instance.PlayMiscSound(1);
+		MusicController.Instance.LevelUp ();
 		AnalyticsManager.Instance.LogLevelStart(currentLayer);
 		AnalyticsManager.Instance.LogAverageFPS();
 
@@ -112,6 +113,7 @@ public class ProgressCircle : MonoBehaviour {
 			PlayerCharacter.instance.LevelRefresh ();
 			Scale ();
 			SoundManager.Instance.PlayMiscSound(2);
+			MusicController.Instance.LevelDown ();
 			AnalyticsManager.Instance.LogLevelStart(currentLayer);
 			AnalyticsManager.Instance.LogAverageFPS();
 		}
