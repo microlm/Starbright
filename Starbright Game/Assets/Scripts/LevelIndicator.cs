@@ -48,7 +48,7 @@ public class LevelIndicator : MonoBehaviour {
 	{
 		Active[level] = active;
 		if (active)
-			Nodes[level] = (GameObject)GameObject.Instantiate(ActiveNode);
+			Nodes[level] = (GameObject)GameObject.Instantiate(ActiveNode, transform.position, Quaternion.identity);
 		else
 			Nodes[level] = (GameObject)GameObject.Instantiate(InactiveNode);
 		Nodes[level].transform.parent = transform;

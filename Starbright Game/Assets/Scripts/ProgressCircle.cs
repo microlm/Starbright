@@ -35,7 +35,7 @@ public class ProgressCircle : MonoBehaviour {
 	void Start () {
 		originalColor = GetComponent<SpriteRenderer> ().color;
 		transisitionTime = 0f;
-		maxScale = transform.localScale;
+		maxScale = levelIndicator.transform.localScale;
 		targetSize = initialTargetSize;
 		decrementSize = initialDecrementSize;
 		Scale ();
@@ -135,95 +135,10 @@ public class ProgressCircle : MonoBehaviour {
 		Time.timeScale = 1f;
 	}
 
-	/*
-	// handles moving up a layer
-	void LevelUp()
-	{
-		if(!flash.getWhiteFlash() && !whiteFlashStarted)
-		{
-			flash.whiteFlash();
-			whiteFlashStarted = true;
-		}
-
-		if(flash.getWhiteFlash () && flash.getCurrentFrame() == (flash.getMaxFrame() - 10))
-		{
-			// turns off pc's trail, disables the colliders of the pc, and moves the pc to the location of the bg camera
-
-			foreach(Transform child in pc.gameObject.transform)
-			{
-				child.gameObject.SetActive(false);
-			}
-
-			pc.gameObject.GetComponent<CircleCollider2D>().enabled = false;
-			pc.BodyComponent.enabled = false;
-			pc.transform.position = backgroundCamera.transform.position;
-			camera.transform.position = pc.transform.position;
-			Generator.instance.GetComponent<Generator>().LayerUp ();
-		}
-		
-		
-		if(!flash.getWhiteFlash () && whiteFlashStarted)
-		{
-			foreach(Transform child in pc.gameObject.transform)
-			{
-				child.gameObject.SetActive(true);
-			}
-
-			pc.BodyComponent.enabled = true;
-			
-			pc.gameObject.GetComponent<CircleCollider2D>().enabled = true;
-			
-			whiteFlashStarted = false;
-			currentLayer++;
-
-			targetSize = initialTargetSize * SizeMultiplierFromLayer(currentLayer);
-
-			Scale ();
-		}
-		pc.setOrbiting(false);
-	}
-
-
-	public void LevelDown()
-	{
-		
-		if(!flash.getBlackFlash () && !blackFlashStarted)
-		{
-			flash.blackFlash();
-			Generator.instance.GetComponent<Generator>().LayerDown ();
-			
-			pc.transform.position = camera.transform.position;
-		}
-		
-		if(flash.getBlackFlash () && !blackFlashStarted)
-		{
-			blackFlashStarted = true;
-			foreach(Transform child in pc.gameObject.transform)
-			{
-				child.gameObject.SetActive(false);
-			}
-			pc.BodyComponent.enabled = false;
-		}
-		
-		if(!flash.getBlackFlash ())
-		{
-			foreach(Transform child in pc.gameObject.transform)
-			{
-				child.gameObject.SetActive(true);
-			}
-			pc.BodyComponent.enabled = true;
-			//downMass = downMass/2f;
-	
-		}
-		pc.setOrbiting(false);
-	}
-	*/
-
 	void Scale()
 	{
 		targetSize = initialTargetSize * SizeMultiplierFromLayer (currentLayer);
-		//decrementSize = initialDecrementSize * SizeMultiplierFromLayer (currentLayer);
-		transform.localScale = maxScale / 20 * targetSize;
+		levelIndicator.transform.localScale = maxScale / 60 * targetSize;
 		ColorOption.Instance.maxMass = targetSize * 2.5f;
 		ColorOption.Instance.minMass = decrementSize / 1.5f;
 	}
