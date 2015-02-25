@@ -35,10 +35,10 @@ public class Game {
 	{
 		if (State == GameState.Playing)
 		{
-			AnalyticsManager.Instance.LogPlayerScore(ScoreManager.Instance.Score);
+			//AnalyticsManager.Instance.LogPlayerScore(ScoreManager.Instance.Score);
 			state = GameState.GameOver;
 			Application.LoadLevel (level);
-			AnalyticsManager.Instance.LogPlayerDeath();
+			//AnalyticsManager.Instance.LogPlayerDeath();
 		}
 	}
 

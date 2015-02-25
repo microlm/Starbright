@@ -8,8 +8,8 @@ public class OptionsBehavior : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		Slider slider = GameObject.Find ("Tutorial Slider").GetComponent<Slider>();
-
+		GameObject toggleText = GameObject.Find ("Tutorial Text");
+		Toggle toggle = gameObject.GetComponent<Toggle>();
 		if(PlayerPrefs.HasKey("TutorialOn"))
 		{
 			on = PlayerPrefs.GetInt ("TutorialOn");
@@ -22,13 +22,13 @@ public class OptionsBehavior : MonoBehaviour {
 
 		if(on == 1)
 		{
-			gameObject.GetComponent<Text>().text = "Tutorial On";
-			slider.value = 1f;
+			toggleText.GetComponent<Text>().text = "Tutorial On";
+			toggle.isOn = true;
 		}
 		else
 		{
-			gameObject.GetComponent<Text>().text = "Tutorial Off";
-			slider.value = 0f;
+			toggleText.GetComponent<Text>().text = "Tutorial Off";
+			toggle.isOn = false;
 		}
 	}
 	
@@ -39,17 +39,19 @@ public class OptionsBehavior : MonoBehaviour {
 
 	public void changeText()
 	{
-		Slider slider = GameObject.Find ("Tutorial Slider").GetComponent<Slider>();
-		if(slider.value == 1)
+		GameObject toggleText = GameObject.Find ("Tutorial Text");
+		Toggle toggle = gameObject.GetComponent<Toggle>();
+
+		if(toggle.isOn)
 		{
-			gameObject.GetComponent<Text>().text = "Tutorial On";
+			toggleText.GetComponent<Text>().text = "Tutorial On";
 		}
 		else
 		{
-			gameObject.GetComponent<Text>().text = "Tutorial Off";
+			toggleText.GetComponent<Text>().text = "Tutorial Off";
 		}
 
-		if(slider.value == 1f)
+		if(toggle.isOn)
 		{
 			PlayerPrefs.SetInt("TutorialOn", 1);
 		}
