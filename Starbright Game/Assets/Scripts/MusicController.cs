@@ -13,12 +13,14 @@ public class MusicController : MonoBehaviour {
 	void Start () {
 		CurrentTrack = 0;
 		Tracks [CurrentTrack].Play ();
+		Debug.Log (Tracks[CurrentTrack].name);
 		Instance = this;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 	
+		Debug.Log (Tracks[CurrentTrack].name);
 	}
 
 	public void LevelUp()
